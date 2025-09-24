@@ -1,9 +1,7 @@
 import React from 'react';
 import { BellIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../../context/AuthContext';
 
-const Header = () => {
-  const { user, logout } = useAuth();
+const Header = ({ user, onLogout }) => {
 
   return (
     <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
@@ -39,7 +37,7 @@ const Header = () => {
                 <p className="text-xs text-gray-500">{user?.schoolName}</p>
               </div>
               <button
-                onClick={logout}
+                onClick={onLogout}
                 className="text-sm text-gray-500 hover:text-gray-700 ml-2"
               >
                 Sign out

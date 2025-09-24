@@ -12,31 +12,55 @@ import FinancialHealth from './components/Health/FinancialHealth';
 import EnrollmentPipeline from './components/Enrollment/EnrollmentPipeline';
 import LeaseAnalyzer from './components/Lease/LeaseAnalyzer';
 import AIAssistant from './components/AI/AIAssistant';
-import Login from './components/Auth/Login';
-
-// Context
-import { AuthProvider, useAuth } from './context/AuthContext';
+import SimpleLogin from './components/Auth/SimpleLogin';
 
 // Services
 import { initializeApp } from './services/api';
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const [user, setUser] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     initializeApp();
+    checkExistingAuth();
   }, []);
+
+  const checkExistingAuth = () => {
+    try {
+      const token = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      
+      if (token && savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   if (!user) {
-    return <Login />;
+    return <SimpleLogin onLogin={handleLogin} />;
   }
 
   return (
@@ -49,7 +73,7 @@ function AppContent() {
         
         {/* Main content */}
         <div className="flex-1">
-          <Header />
+          <Header user={user} onLogout={handleLogout} />
           
           <main className="p-6">
             <Routes>
@@ -83,11 +107,9 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
