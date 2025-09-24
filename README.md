@@ -275,3 +275,4 @@ For questions about implementation or customization:
 ---
 
 **Built for microschool operators who need powerful financial insights without the complexity of enterprise software.**
+# lanternprototype
