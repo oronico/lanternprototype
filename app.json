@@ -1,0 +1,41 @@
+{
+  "name": "Microschool Platform",
+  "description": "Comprehensive financial operating system for microschools",
+  "repository": "https://github.com/yourusername/microschool-platform",
+  "logo": "https://cdn.jsdelivr.net/gh/yourusername/microschool-platform/logo.png",
+  "keywords": [
+    "microschool",
+    "education",
+    "financial-management",
+    "enrollment",
+    "ai-assistant"
+  ],
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "JWT_SECRET": {
+      "description": "Secret key for JWT tokens",
+      "generator": "secret"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini",
+      "as": "DATABASE"
+    }
+  ]
+}
