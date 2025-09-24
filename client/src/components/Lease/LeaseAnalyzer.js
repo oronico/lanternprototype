@@ -11,7 +11,6 @@ import {
   ChartBarIcon,
   InformationCircleIcon,
   ArrowUpIcon,
-  ArrowDownIcon,
   SparklesIcon,
   AcademicCapIcon
 } from '@heroicons/react/24/outline';
@@ -63,26 +62,6 @@ const LeaseAnalyzer = () => {
     }
   };
 
-  const getSeverityColor = (severity) => {
-    const colors = {
-      critical: 'border-red-500 bg-red-50 text-red-700',
-      high: 'border-orange-500 bg-orange-50 text-orange-700',
-      medium: 'border-yellow-500 bg-yellow-50 text-yellow-700',
-      low: 'border-blue-500 bg-blue-50 text-blue-700'
-    };
-    return colors[severity] || 'border-gray-500 bg-gray-50 text-gray-700';
-  };
-
-  const getSeverityIcon = (severity) => {
-    const icons = {
-      critical: ExclamationTriangleIcon,
-      high: ExclamationTriangleIcon,
-      medium: InformationCircleIcon,
-      low: CheckCircleIcon
-    };
-    const Icon = icons[severity] || InformationCircleIcon;
-    return <Icon className="h-5 w-5" />;
-  };
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
