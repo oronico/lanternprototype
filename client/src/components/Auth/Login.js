@@ -89,10 +89,13 @@ const Login = () => {
 
           <div className="mt-6">
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h4>
-              <p className="text-xs text-blue-800">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">🎭 Demo Mode - Try the Platform!</h4>
+              <p className="text-xs text-blue-800 mb-2">
                 <strong>Email:</strong> admin@sunshine-microschool.com<br />
                 <strong>Password:</strong> admin123
+              </p>
+              <p className="text-xs text-blue-600">
+                ✨ Full demo with realistic financial data, payment integrations, AI tools, and more!
               </p>
             </div>
           </div>

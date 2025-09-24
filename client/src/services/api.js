@@ -55,17 +55,27 @@ export const authAPI = {
   login: async (email, password) => {
     if (USE_MOCK_DATA) {
       // Mock authentication for demo
-      if (email === 'admin@sunshine-microschool.com' && password === 'admin123') {
-        return {
-          data: {
-            success: true,
-            token: 'mock_token_12345',
-            user: mockUser
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (email === 'admin@sunshine-microschool.com' && password === 'admin123') {
+            resolve({
+              data: {
+                success: true,
+                token: 'mock_token_12345',
+                user: mockUser
+              }
+            });
+          } else {
+            reject({
+              response: {
+                data: {
+                  error: 'Invalid credentials. Use admin@sunshine-microschool.com / admin123'
+                }
+              }
+            });
           }
-        };
-      } else {
-        throw new Error('Invalid credentials');
-      }
+        }, 500); // Simulate network delay
+      });
     }
     return api.post('/auth/login', { email, password });
   },

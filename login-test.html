@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test - Microschool Platform</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 5px; font-weight: 500; cursor: pointer; }
+        button:hover { background: #2563eb; }
+        .error { color: #dc2626; margin-top: 10px; }
+        .success { color: #16a34a; margin-top: 10px; }
+        .demo-box { background: #dbeafe; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🏮 Microschool Platform - Login Test</h1>
+    
+    <div class="demo-box">
+        <h3>🎭 Demo Credentials</h3>
+        <p><strong>Email:</strong> admin@sunshine-microschool.com<br>
+        <strong>Password:</strong> admin123</p>
+    </div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" value="admin@sunshine-microschool.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="password" value="admin123" required>
+        </div>
+        
+        <button type="submit" id="loginBtn">Sign In</button>
+        
+        <div id="result"></div>
+    </form>
+
+    <script>
+        // Mock authentication test
+        const mockUser = {
+            id: 1,
+            email: 'admin@sunshine-microschool.com',
+            name: 'Sarah Johnson',
+            role: 'director',
+            schoolName: 'Sunshine Microschool'
+        };
+
+        const mockLogin = async (email, password) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (email === 'admin@sunshine-microschool.com' && password === 'admin123') {
+                        resolve({
+                            data: {
+                                success: true,
+                                token: 'mock_token_12345',
+                                user: mockUser
+                            }
+                        });
+                    } else {
+                        reject({
+                            response: {
+                                data: {
+                                    error: 'Invalid credentials. Use demo credentials above.'
+                                }
+                            }
+                        });
+                    }
+                }, 500);
+            });
+        };
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Show loading state
+            loginBtn.textContent = 'Signing in...';
+            loginBtn.disabled = true;
+            resultDiv.innerHTML = '';
+            
+            try {
+                const response = await mockLogin(email, password);
+                const { token, user } = response.data;
+                
+                // Simulate storing token
+                localStorage.setItem('token', token);
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Login successful!<br>
+                        Welcome, ${user.name}<br>
+                        School: ${user.schoolName}<br>
+                        Token: ${token}
+                    </div>
+                `;
+                
+                // Redirect to main platform after success
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ ${error.response?.data?.error || 'Login failed'}
+                    </div>
+                `;
+            } finally {
+                loginBtn.textContent = 'Sign In';
+                loginBtn.disabled = false;
+            }
+        });
+
+        // Check if already logged in
+        const existingToken = localStorage.getItem('token');
+        if (existingToken) {
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    ✅ Already logged in with token: ${existingToken}<br>
+                    <a href="/">Go to Dashboard</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
