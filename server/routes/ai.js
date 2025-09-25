@@ -185,71 +185,266 @@ Emergency: [EMERGENCY_CONTACT]`,
   }
 };
 
-// Document templates and AI prompts
+// Comprehensive AI Document Library - Organized by Business Function
 const documentTemplates = {
+  // === LEGAL & GOVERNANCE ===
   bylaws: {
     name: 'Corporate Bylaws',
     description: 'Comprehensive bylaws for nonprofit microschool incorporation',
-    category: 'legal',
+    category: 'governance',
+    subcategory: 'incorporation',
     complexity: 'high',
     estimatedTime: '15-20 minutes',
-    requirements: ['School name', 'State of incorporation', 'Board structure preferences']
+    requirements: ['School name', 'State of incorporation', 'Board structure', 'Voting procedures'],
+    tags: ['nonprofit', 'incorporation', 'board governance', 'legal compliance']
   },
-  handbook: {
+  
+  operating_agreement_llc: {
+    name: 'Single Member LLC Operating Agreement',
+    description: 'Operating agreement for single-member LLC microschools',
+    category: 'governance',
+    subcategory: 'incorporation',
+    complexity: 'high',
+    estimatedTime: '12-18 minutes',
+    requirements: ['Owner name', 'Business purpose', 'State of formation', 'Management structure'],
+    tags: ['LLC', 'for-profit', 'business structure', 'liability protection']
+  },
+  
+  board_resolution: {
+    name: 'Board Resolution Generator',
+    description: 'Formal board resolutions for key decisions',
+    category: 'governance',
+    subcategory: 'board_management',
+    complexity: 'low',
+    estimatedTime: '3-5 minutes',
+    requirements: ['Resolution topic', 'Voting details', 'Implementation timeline'],
+    tags: ['board governance', 'decision making', 'legal documentation']
+  },
+  
+  conflict_of_interest: {
+    name: 'Conflict of Interest Policy',
+    description: 'Comprehensive conflict of interest policy for board and staff',
+    category: 'governance',
+    subcategory: 'policies',
+    complexity: 'medium',
+    estimatedTime: '8-12 minutes',
+    requirements: ['Organization type', 'Board structure', 'Financial thresholds'],
+    tags: ['ethics', 'governance', 'board policies', 'nonprofit compliance']
+  },
+  
+  whistleblower_policy: {
+    name: 'Whistleblower Protection Policy',
+    description: 'Required policy for nonprofit organizations',
+    category: 'governance',
+    subcategory: 'policies',
+    complexity: 'medium',
+    estimatedTime: '6-10 minutes',
+    requirements: ['Reporting procedures', 'Protection measures', 'Investigation process'],
+    tags: ['nonprofit compliance', 'employee protection', 'ethics']
+  },
+
+  // === OPERATIONS & POLICIES ===
+  family_handbook: {
     name: 'Family Handbook',
     description: 'Complete family handbook with policies and procedures',
     category: 'operations',
+    subcategory: 'family_relations',
     complexity: 'medium',
     estimatedTime: '10-15 minutes',
-    requirements: ['Educational philosophy', 'Daily schedule', 'Policy preferences']
+    requirements: ['Educational philosophy', 'Daily schedule', 'Discipline approach', 'Communication systems'],
+    tags: ['family engagement', 'school policies', 'expectations', 'procedures']
   },
+  
+  staff_handbook: {
+    name: 'Staff Handbook',
+    description: 'Comprehensive employee handbook with HR policies',
+    category: 'operations',
+    subcategory: 'human_resources',
+    complexity: 'medium',
+    estimatedTime: '12-15 minutes',
+    requirements: ['Compensation structure', 'Benefits', 'Performance expectations', 'Discipline procedures'],
+    tags: ['HR policies', 'employee relations', 'performance management']
+  },
+  
+  hiring_guide: {
+    name: 'Teacher Hiring Guide',
+    description: 'Complete hiring process and interview guide for educators',
+    category: 'operations',
+    subcategory: 'human_resources',
+    complexity: 'medium',
+    estimatedTime: '10-12 minutes',
+    requirements: ['Position requirements', 'Interview questions', 'Background check process', 'Salary ranges'],
+    tags: ['recruitment', 'hiring process', 'teacher selection', 'interviewing']
+  },
+  
+  safety_plan: {
+    name: 'Safety & Emergency Plan',
+    description: 'Comprehensive safety and emergency response plan',
+    category: 'operations',
+    subcategory: 'safety_compliance',
+    complexity: 'medium',
+    estimatedTime: '8-10 minutes',
+    requirements: ['Facility layout', 'Local emergency contacts', 'Evacuation procedures', 'Medical protocols'],
+    tags: ['safety', 'emergency response', 'compliance', 'risk management']
+  },
+
+  // === LEGAL & CONTRACTS ===
   enrollment_contract: {
     name: 'Enrollment Agreement',
     description: 'Legal enrollment contract for families',
     category: 'legal',
+    subcategory: 'contracts',
     complexity: 'high',
     estimatedTime: '10-12 minutes',
-    requirements: ['Tuition structure', 'Payment terms', 'Withdrawal policies']
+    requirements: ['Tuition structure', 'Payment terms', 'Withdrawal policies', 'Liability waivers'],
+    tags: ['enrollment', 'legal protection', 'family contracts', 'tuition agreements']
   },
-  staff_handbook: {
-    name: 'Staff Handbook',
-    description: 'Employee handbook with HR policies',
-    category: 'hr',
-    complexity: 'medium',
-    estimatedTime: '12-15 minutes',
-    requirements: ['Compensation structure', 'Benefits', 'Performance expectations']
-  },
-  safety_plan: {
-    name: 'Safety & Emergency Plan',
-    description: 'Comprehensive safety and emergency response plan',
-    category: 'safety',
+  
+  vendor_agreement: {
+    name: 'Vendor Service Agreement',
+    description: 'Contract template for service providers and vendors',
+    category: 'legal',
+    subcategory: 'contracts',
     complexity: 'medium',
     estimatedTime: '8-10 minutes',
-    requirements: ['Facility layout', 'Local emergency contacts', 'Specific risks']
+    requirements: ['Service description', 'Payment terms', 'Performance standards', 'Termination clauses'],
+    tags: ['vendor management', 'service contracts', 'business relationships']
   },
-  board_resolution: {
-    name: 'Board Resolution',
-    description: 'Formal board resolution template',
-    category: 'governance',
+  
+  liability_waiver: {
+    name: 'Activity Liability Waiver',
+    description: 'Liability waiver for field trips and activities',
+    category: 'legal',
+    subcategory: 'risk_management',
+    complexity: 'medium',
+    estimatedTime: '6-8 minutes',
+    requirements: ['Activity type', 'Risk factors', 'Emergency contacts', 'Medical information'],
+    tags: ['liability protection', 'field trips', 'activities', 'risk management']
+  },
+
+  // === MARKETING & GROWTH ===
+  social_media_campaign: {
+    name: 'Social Media Campaign Strategy',
+    description: 'Complete social media marketing campaign for enrollment',
+    category: 'marketing',
+    subcategory: 'digital_marketing',
+    complexity: 'medium',
+    estimatedTime: '8-12 minutes',
+    requirements: ['Target audience', 'Platform preferences', 'Budget range', 'Key messages'],
+    tags: ['social media', 'marketing strategy', 'enrollment growth', 'digital marketing']
+  },
+  
+  recruitment_playbook: {
+    name: 'Student Recruitment Playbook',
+    description: 'Complete guide for attracting and enrolling families',
+    category: 'marketing',
+    subcategory: 'enrollment_strategy',
+    complexity: 'medium',
+    estimatedTime: '12-18 minutes',
+    requirements: ['Target demographics', 'Value proposition', 'Competition analysis', 'Budget constraints'],
+    tags: ['recruitment', 'enrollment strategy', 'marketing funnel', 'family acquisition']
+  },
+  
+  referral_program: {
+    name: 'Family Referral Program',
+    description: 'Structured referral program to drive word-of-mouth growth',
+    category: 'marketing',
+    subcategory: 'growth_strategy',
     complexity: 'low',
-    estimatedTime: '3-5 minutes',
-    requirements: ['Resolution topic', 'Voting details', 'Implementation timeline']
+    estimatedTime: '5-8 minutes',
+    requirements: ['Incentive structure', 'Tracking method', 'Program rules', 'Communication plan'],
+    tags: ['referrals', 'word of mouth', 'growth strategy', 'family engagement']
   },
+  
+  community_outreach: {
+    name: 'Community Outreach Plan',
+    description: 'Strategy for building local community relationships',
+    category: 'marketing',
+    subcategory: 'community_relations',
+    complexity: 'medium',
+    estimatedTime: '8-10 minutes',
+    requirements: ['Local organizations', 'Event calendar', 'Partnership goals', 'Messaging strategy'],
+    tags: ['community building', 'local partnerships', 'public relations', 'networking']
+  },
+
+  // === FINANCIAL & BUSINESS ===
+  tuition_policy: {
+    name: 'Tuition & Payment Policy',
+    description: 'Comprehensive tuition structure and payment policies',
+    category: 'financial',
+    subcategory: 'revenue_management',
+    complexity: 'medium',
+    estimatedTime: '8-10 minutes',
+    requirements: ['Tuition rates', 'Payment schedules', 'Late fees', 'Financial aid policies'],
+    tags: ['tuition management', 'payment policies', 'financial planning']
+  },
+  
+  budget_template: {
+    name: 'Annual Budget Template',
+    description: 'Comprehensive budget planning template',
+    category: 'financial',
+    subcategory: 'planning',
+    complexity: 'medium',
+    estimatedTime: '10-12 minutes',
+    requirements: ['Revenue projections', 'Fixed costs', 'Variable expenses', 'Growth assumptions'],
+    tags: ['budget planning', 'financial management', 'cost control']
+  },
+  
+  grant_application: {
+    name: 'Grant Application Template',
+    description: 'Template for education grant applications',
+    category: 'financial',
+    subcategory: 'funding',
+    complexity: 'high',
+    estimatedTime: '15-25 minutes',
+    requirements: ['Grant requirements', 'School mission', 'Program details', 'Budget narrative'],
+    tags: ['grant writing', 'funding', 'nonprofit grants', 'education grants']
+  },
+
+  // === FACILITY & OPERATIONS ===
   lease_review: {
     name: 'Lease Analysis & Review',
-    description: 'AI-powered lease document analysis',
-    category: 'legal',
+    description: 'AI-powered lease document analysis with insurance requirements',
+    category: 'facility',
+    subcategory: 'lease_management',
     complexity: 'high',
     estimatedTime: '5-8 minutes',
-    requirements: ['Lease document upload', 'Specific concerns', 'Market context']
+    requirements: ['Lease document', 'Market context', 'Insurance needs', 'Business projections'],
+    tags: ['lease analysis', 'facility management', 'insurance requirements', 'cost optimization']
   },
-  policy_template: {
-    name: 'School Policy',
-    description: 'Individual policy document (attendance, discipline, etc.)',
-    category: 'operations',
-    complexity: 'low',
-    estimatedTime: '5-7 minutes',
-    requirements: ['Policy topic', 'Current challenges', 'Desired outcomes']
+  
+  facility_checklist: {
+    name: 'Facility Setup Checklist',
+    description: 'Complete checklist for setting up educational space',
+    category: 'facility',
+    subcategory: 'setup',
+    complexity: 'medium',
+    estimatedTime: '8-10 minutes',
+    requirements: ['Space type', 'Student capacity', 'Grade levels', 'Special needs'],
+    tags: ['facility setup', 'space planning', 'compliance', 'educational environment']
+  },
+
+  // === COMPLIANCE & REGULATORY ===
+  state_compliance: {
+    name: 'State Compliance Checklist',
+    description: 'State-specific requirements for microschool operation',
+    category: 'compliance',
+    subcategory: 'regulatory',
+    complexity: 'high',
+    estimatedTime: '12-18 minutes',
+    requirements: ['State location', 'Grade levels', 'Student count', 'Program type'],
+    tags: ['state compliance', 'educational regulations', 'licensing requirements']
+  },
+  
+  ferpa_policy: {
+    name: 'FERPA Compliance Policy',
+    description: 'Student privacy and data protection policy',
+    category: 'compliance',
+    subcategory: 'data_privacy',
+    complexity: 'medium',
+    estimatedTime: '8-12 minutes',
+    requirements: ['Data collection practices', 'Access procedures', 'Disclosure policies', 'Records retention'],
+    tags: ['FERPA', 'student privacy', 'data protection', 'educational records']
   }
 };
 

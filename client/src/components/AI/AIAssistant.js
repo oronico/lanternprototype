@@ -96,13 +96,30 @@ const AIAssistant = () => {
 
   const getCategoryIcon = (category) => {
     const icons = {
-      legal: ShieldCheckIcon,
+      governance: DocumentCheckIcon,
       operations: BuildingOfficeIcon,
+      legal: ShieldCheckIcon,
+      marketing: SparklesIcon,
+      financial: DocumentTextIcon,
+      facility: BuildingOfficeIcon,
+      compliance: ShieldCheckIcon,
       hr: UserGroupIcon,
-      safety: ExclamationTriangleIcon,
-      governance: DocumentCheckIcon
+      safety: ExclamationTriangleIcon
     };
     return icons[category] || DocumentTextIcon;
+  };
+
+  const getCategoryColor = (category) => {
+    const colors = {
+      governance: 'text-purple-600 bg-purple-100',
+      operations: 'text-blue-600 bg-blue-100', 
+      legal: 'text-red-600 bg-red-100',
+      marketing: 'text-green-600 bg-green-100',
+      financial: 'text-yellow-600 bg-yellow-100',
+      facility: 'text-indigo-600 bg-indigo-100',
+      compliance: 'text-orange-600 bg-orange-100'
+    };
+    return colors[category] || 'text-gray-600 bg-gray-100';
   };
 
   const getComplexityColor = (complexity) => {
@@ -170,40 +187,78 @@ const AIAssistant = () => {
           {/* Template Selection */}
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white rounded-lg shadow card-shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose Document Type</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(templates).map(([key, template]) => {
-                  const IconComponent = getCategoryIcon(template.category);
-                  return (
-                    <div
-                      key={key}
-                      onClick={() => setSelectedTemplate(key)}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                        selectedTemplate === key
-                          ? 'border-purple-500 bg-purple-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-start space-x-3">
-                        <IconComponent className="h-6 w-6 text-gray-600 mt-1" />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-gray-900">{template.name}</h4>
-                          <p className="text-xs text-gray-500 mt-1">{template.description}</p>
-                          <div className="flex items-center space-x-3 mt-2">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getComplexityColor(template.complexity)}`}>
-                              {template.complexity}
-                            </span>
-                            <span className="text-xs text-gray-500 flex items-center">
-                              <ClockIcon className="h-3 w-3 mr-1" />
-                              {template.estimatedTime}
-                            </span>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">🤖 AI Business Document Generator</h3>
+              <p className="text-sm text-gray-600 mb-6">Choose from 20+ professional document templates organized by business function</p>
+              
+              {/* Category Filter */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {['governance', 'operations', 'legal', 'marketing', 'financial', 'facility', 'compliance'].map(category => (
+                  <button
+                    key={category}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(category)} border-opacity-50`}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Group templates by category */}
+              {Object.entries(
+                Object.entries(templates).reduce((acc, [key, template]) => {
+                  if (!acc[template.category]) acc[template.category] = [];
+                  acc[template.category].push([key, template]);
+                  return acc;
+                }, {})
+              ).map(([category, categoryTemplates]) => (
+                <div key={category} className="mb-6">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                    {React.createElement(getCategoryIcon(category), { className: 'h-4 w-4 mr-2' })}
+                    {category.charAt(0).toUpperCase() + category.slice(1)} Documents
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {categoryTemplates.map(([key, template]) => {
+                      const IconComponent = getCategoryIcon(template.category);
+                      return (
+                        <div
+                          key={key}
+                          onClick={() => setSelectedTemplate(key)}
+                          className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                            selectedTemplate === key
+                              ? 'border-purple-500 bg-purple-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-start space-x-3">
+                            <IconComponent className="h-5 w-5 text-gray-600 mt-0.5" />
+                            <div className="flex-1 min-w-0">
+                              <h5 className="text-sm font-medium text-gray-900">{template.name}</h5>
+                              <p className="text-xs text-gray-500 mt-1">{template.description}</p>
+                              <div className="flex items-center space-x-2 mt-2">
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getComplexityColor(template.complexity)}`}>
+                                  {template.complexity}
+                                </span>
+                                <span className="text-xs text-gray-500 flex items-center">
+                                  <ClockIcon className="h-3 w-3 mr-1" />
+                                  {template.estimatedTime}
+                                </span>
+                              </div>
+                              {template.tags && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {template.tags.slice(0, 2).map((tag, idx) => (
+                                    <span key={idx} className="inline-block bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded">
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* School Information */}

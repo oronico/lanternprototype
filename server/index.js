@@ -2,17 +2,68 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const session = require('express-session');
+const { body, validationResult } = require('express-validator');
 require('dotenv').config();
+
+// Security Configuration
+const { 
+  securityConfig, 
+  createSecurityMiddleware,
+  AuditLogger 
+} = require('./config/security');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(morgan('combined'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Security Middleware
+const security = createSecurityMiddleware();
+
+// Core Security Headers
+app.use(security.helmet);
+
+// CORS Configuration (Restrictive for Production)
+const corsOptions = {
+  origin: securityConfig.apiSecurity.allowedOrigins,
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+app.use(cors(corsOptions));
+
+// Session Management (Secure)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'microschool_session_secret_change_in_production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    httpOnly: true, // Prevent XSS
+    maxAge: 30 * 60 * 1000, // 30 minutes
+    sameSite: 'strict' // CSRF protection
+  }
+}));
+
+// Request Logging (Security Monitoring)
+app.use(morgan('combined', {
+  stream: {
+    write: (message) => {
+      // In production: send to security monitoring system
+      console.log('ACCESS_LOG:', message.trim());
+    }
+  }
+}));
+
+// Body Parsing with Size Limits (Security)
+app.use(express.json({ limit: securityConfig.apiSecurity.requestSizeLimit }));
+app.use(express.urlencoded({ extended: true, limit: securityConfig.apiSecurity.requestSizeLimit }));
+
+// Rate Limiting
+app.use('/api/auth/', security.authRateLimit);
+app.use('/api/payments/', security.financialRateLimit);
+app.use('/api/health/', security.financialRateLimit);
+app.use('/api/', security.generalRateLimit);
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -24,13 +75,32 @@ const enrollmentRoutes = require('./routes/enrollment');
 const leaseRoutes = require('./routes/lease');
 const aiRoutes = require('./routes/ai');
 
-// Routes
+// Routes with Security Classifications
 app.use('/api/auth', authRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/payments', paymentsRoutes);
+app.use('/api/dashboard', 
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  security.auditAccess('dashboard'),
+  dashboardRoutes
+);
+app.use('/api/payments', 
+  security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
+  security.auditAccess('payments'),
+  security.protectFinancialData,
+  paymentsRoutes
+);
 app.use('/api/calculator', calculatorRoutes);
-app.use('/api/health', healthRoutes);
-app.use('/api/enrollment', enrollmentRoutes);
+app.use('/api/health', 
+  security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
+  security.auditAccess('financial_health'),
+  security.protectFinancialData,
+  healthRoutes
+);
+app.use('/api/enrollment', 
+  security.classifyData(securityConfig.dataClassification.RESTRICTED),
+  security.auditAccess('student_data'),
+  security.protectStudentData,
+  enrollmentRoutes
+);
 app.use('/api/lease', leaseRoutes);
 app.use('/api/ai', aiRoutes);
 
