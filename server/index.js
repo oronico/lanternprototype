@@ -136,9 +136,10 @@ app.use('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microschool Platform API server running on port ${PORT}`);
+  console.log(`🏮 SchoolStack.ai API server running on port ${PORT}`);
   console.log(`📊 Dashboard: http://localhost:3000`);
   console.log(`🔌 API Health: http://localhost:${PORT}/api/health-check`);
+  console.log(`🌐 Production: https://schoolstack.ai`);
 });
 
 module.exports = app;

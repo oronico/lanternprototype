@@ -1,7 +1,7 @@
 {
-  "name": "microschool-platform",
-  "version": "1.0.0",
-  "description": "Comprehensive platform for microschool management and financial operations",
+  "name": "schoolstack-ai",
+  "version": "1.0.0", 
+  "description": "SchoolStack.ai - Complete tech stack for education businesses with AI-powered financial intelligence",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",

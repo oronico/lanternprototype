@@ -1,6 +1,9 @@
-# Microschool Platform - Unified Financial Operating System
+# 🏮 SchoolStack.ai - Complete Tech Stack for Education
 
-A comprehensive platform designed specifically for microschool operators to manage finances, track enrollment, analyze facilities, and generate essential documents using AI assistance.
+*The all-in-one platform that replaces expensive bookkeeping and provides AI-powered business coaching for microschools, tutoring centers, and education programs.*
+
+**🌐 Domain:** https://schoolstack.ai  
+**📱 Platform:** AI-powered financial intelligence + business automation
 
 ## 🌟 Key Features
 

@@ -49,10 +49,10 @@ const SimpleLogin = ({ onLogin }) => {
             <SparklesIcon className="h-8 w-8 text-purple-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Microschool Platform
+            SchoolStack.ai
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Financial Operating System Demo
+            Complete Tech Stack for Education
           </p>
         </div>
         

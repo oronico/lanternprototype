@@ -25,11 +25,11 @@ const PricingPlans = () => {
     const mockPlans = [
       {
         id: 'freemium',
-        name: 'Microschool Starter',
+        name: 'Education Starter',
         price: 0,
         maxStudents: 25,
         popular: false,
-        description: 'Perfect for new microschools getting started',
+        description: 'Perfect for new education programs getting started',
         features: [
           'Basic financial dashboard',
           'Simple payment tracking (2 sources)',
@@ -58,7 +58,7 @@ const PricingPlans = () => {
       },
       {
         id: 'professional', 
-        name: 'Microschool Professional',
+        name: 'Education Professional',
         price: 149,
         maxStudents: 50,
         popular: true,
@@ -89,11 +89,11 @@ const PricingPlans = () => {
       },
       {
         id: 'expert',
-        name: 'Microschool Expert', 
+        name: 'Education Expert', 
         price: 299,
         maxStudents: 100,
         popular: false,
-        description: 'Advanced business intelligence for growing schools',
+        description: 'Advanced business intelligence for growing education businesses',
         features: [
           'Everything in Professional +',
           'Daily coaching insights',
@@ -164,25 +164,25 @@ const PricingPlans = () => {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Choose Your Microschool Business Intelligence Plan
+          Choose Your Education Business Intelligence Plan
         </h1>
         <p className="text-lg text-gray-600 mb-8">
-          From free starter tools to expert business coaching - designed specifically for microschools
+          From free starter tools to expert business coaching - designed for all education businesses
         </p>
         
         {/* Student Count Selector */}
         <div className="inline-flex items-center space-x-4 bg-white rounded-lg shadow p-4">
           <UserGroupIcon className="h-5 w-5 text-gray-600" />
-          <span className="text-sm font-medium text-gray-700">Your school size:</span>
+          <span className="text-sm font-medium text-gray-700">Your program size:</span>
           <input
             type="number"
             value={studentCount}
             onChange={(e) => setStudentCount(parseInt(e.target.value) || 1)}
             className="w-20 px-2 py-1 border border-gray-300 rounded text-center"
             min="1"
-            max="100"
+            max="500"
           />
-          <span className="text-sm text-gray-600">students</span>
+          <span className="text-sm text-gray-600">students/participants</span>
         </div>
       </div>
 
@@ -310,7 +310,7 @@ const PricingPlans = () => {
 
       {/* Feature Comparison */}
       <div className="bg-white rounded-lg shadow p-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">🎯 What Makes This Worth More Than Bookkeeping</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-6">🎯 SchoolStack.ai vs. Traditional Solutions</h3>
         
         <div className="overflow-x-auto">
           <table className="min-w-full">
@@ -350,7 +350,7 @@ const PricingPlans = () => {
               <tr>
                 <td className="py-4 px-4 font-medium text-gray-900">Industry Expertise</td>
                 <td className="py-4 px-4 text-sm text-gray-600">Generic business knowledge</td>
-                <td className="py-4 px-4 text-sm text-green-700">Microschool-specific best practices</td>
+                <td className="py-4 px-4 text-sm text-green-700">Education-specific best practices</td>
                 <td className="py-4 px-4 text-sm font-medium text-green-600">Specialized expertise</td>
               </tr>
               <tr>
@@ -440,7 +440,7 @@ const PricingPlans = () => {
 
       {/* Freemium Strategy */}
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">🎯 Our Freemium Strategy</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">🎯 Flexible Pricing Strategy</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
@@ -453,9 +453,9 @@ const PricingPlans = () => {
               <li>• 5 essential document templates</li>
             </ul>
             <div className="mt-4 p-3 bg-green-100 rounded-lg">
-              <div className="text-sm text-green-800">
-                <strong>Perfect for:</strong> New microschools (≤15 students) getting started
-              </div>
+                  <div className="text-sm text-green-800">
+                    <strong>Perfect for:</strong> New education programs (≤25 students/participants) getting started
+                  </div>
             </div>
           </div>
           
@@ -471,7 +471,7 @@ const PricingPlans = () => {
             </ul>
             <div className="mt-4 p-3 bg-purple-100 rounded-lg">
               <div className="text-sm text-purple-800">
-                <strong>ROI:</strong> Saves $22,000-44,000 annually vs. traditional bookkeeping
+                <strong>ROI:</strong> Saves $22,000-44,000 annually vs. traditional bookkeeping services
               </div>
             </div>
           </div>
