@@ -8,7 +8,8 @@ import {
   BuildingOfficeIcon,
   UserGroupIcon,
   SparklesIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  BanknotesIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { name: 'Lease Analyzer', href: '/lease', icon: BuildingOfficeIcon },
   { name: 'AI Assistant', href: '/ai-assistant', icon: SparklesIcon, highlight: true },
   { name: 'Documents & Contracts', href: '/documents', icon: DocumentTextIcon, highlight: true },
+  { name: 'Financial Accounts', href: '/accounts', icon: BanknotesIcon, highlight: true },
   { name: 'Plans & Pricing', href: '/pricing', icon: CreditCardIcon, highlight: true },
 ];
 

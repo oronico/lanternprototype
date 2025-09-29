@@ -15,6 +15,7 @@ import LeaseAnalyzer from './components/Lease/LeaseAnalyzer';
 import AIAssistant from './components/AI/AIAssistant';
 import PricingPlans from './components/Pricing/PricingPlans';
 import DocumentManager from './components/Documents/DocumentManager';
+import FinancialAccounts from './components/Accounts/FinancialAccounts';
 import SimpleLogin from './components/Auth/SimpleLogin';
 
 // Services
@@ -90,6 +91,7 @@ function AppContent() {
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/pricing" element={<PricingPlans />} />
               <Route path="/documents" element={<DocumentManager />} />
+              <Route path="/accounts" element={<FinancialAccounts />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>
