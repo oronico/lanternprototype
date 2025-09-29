@@ -196,14 +196,19 @@ export const healthAPI = {
           lastUpdated: new Date().toISOString(),
           criticalMetrics: [
             { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 5, displayValue: '5 days', benchmark: 30, target: 45, status: 'danger', trend: 'declining', recommendation: 'Critical: Collect outstanding payments immediately' },
-            { key: 'rentToRevenueRatio', name: 'Rent to Revenue Ratio', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'danger', trend: 'stable', recommendation: 'Facility costs too high - renegotiate lease' }
+            { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'danger', trend: 'stable', recommendation: 'Facility costs too high - renegotiate lease' },
+            { key: 'studentAttrition', name: 'Student Attrition Rate', value: 0.18, displayValue: '18%', benchmark: 0.10, target: 0.05, status: 'danger', trend: 'increasing', recommendation: 'Critical student retention issues - investigate causes and address immediately' },
+            { key: 'debtServiceCoverage', name: 'Debt Service Coverage Ratio', value: 0.9, displayValue: '0.9x', benchmark: 1.25, target: 1.50, status: 'danger', trend: 'declining', recommendation: 'Below lending standards - improve cash flow' },
+            { key: 'outstandingDebt', name: 'Outstanding Debt', value: 24500, displayValue: '$24,500', benchmark: 20000, target: 15000, status: 'danger', trend: 'stable', recommendation: 'High debt load - consider refinancing options' }
           ],
           warningMetrics: [
             { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: 0.52, displayValue: '52%', benchmark: 0.50, target: 0.45, status: 'warning', trend: 'stable', recommendation: 'Monitor closely - don\'t add staff until 35+ students' },
-            { key: 'studentRetention', name: 'Student Retention Rate', value: 0.89, displayValue: '89%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'improving', recommendation: 'Focus on family engagement to reach 95% target' }
+            { key: 'studentRetention', name: 'Student Retention Rate', value: 0.82, displayValue: '82%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'declining', recommendation: 'Below benchmark - focus on family engagement' },
+            { key: 'collectionRate', name: 'Collection Rate', value: 0.82, displayValue: '82%', benchmark: 0.95, target: 0.98, status: 'warning', trend: 'declining', recommendation: 'Set up auto-pay for all families' }
           ],
           goodMetrics: [
-            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: 0.80, displayValue: '80%', benchmark: 0.90, target: 1.00, status: 'good', trend: 'improving', recommendation: 'On track - need 7 more students' }
+            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: 0.80, displayValue: '80%', benchmark: 0.75, target: 1.00, status: 'good', trend: 'improving', recommendation: 'On track - need 7 more students' },
+            { key: 'debtToRevenue', name: 'Debt to Revenue Ratio', value: 0.12, displayValue: '12%', benchmark: 0.15, target: 0.10, status: 'good', trend: 'stable', recommendation: 'Healthy debt level - monitor for growth' }
           ],
           excellentMetrics: [],
           insights: [

@@ -93,36 +93,149 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Financial Health Score Card */}
+      {/* Comprehensive Financial Metrics Grid */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Days Cash on Hand */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Days Cash on Hand</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+          </div>
+          <div className="text-2xl font-bold text-red-600 mb-1">5 days</div>
+          <div className="text-xs text-gray-500">Target: 30+ days</div>
+          <div className="text-xs text-red-600 mt-2">⚠️ Cash crisis imminent</div>
+        </div>
+
+        {/* Debt Service Coverage Ratio */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Debt Service Coverage</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+          </div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">0.9x</div>
+          <div className="text-xs text-gray-500">Target: 1.25x+</div>
+          <div className="text-xs text-yellow-600 mt-2">Below lending standards</div>
+        </div>
+
+        {/* Debt to Revenue Ratio */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Debt to Revenue</h4>
+            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Good</span>
+          </div>
+          <div className="text-2xl font-bold text-blue-600 mb-1">12%</div>
+          <div className="text-xs text-gray-500">Target: ≤15%</div>
+          <div className="text-xs text-blue-600 mt-2">✓ Healthy debt level</div>
+        </div>
+
+        {/* Outstanding Debt */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Outstanding Debt</h4>
+            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Monitor</span>
+          </div>
+          <div className="text-2xl font-bold text-orange-600 mb-1">$24,500</div>
+          <div className="text-xs text-gray-500">Equipment loan + credit line</div>
+          <div className="text-xs text-orange-600 mt-2">Monthly payment: $1,850</div>
+        </div>
+
+        {/* Student Attrition Rate */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Student Attrition Rate</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+          </div>
+          <div className="text-2xl font-bold text-red-600 mb-1">18%</div>
+          <div className="text-xs text-gray-500">Target: ≤10% annually</div>
+          <div className="text-xs text-red-600 mt-2">High student turnover</div>
+        </div>
+
+        {/* Student Retention Rate */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Student Retention</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+          </div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
+          <div className="text-xs text-gray-500">Target: 90%+</div>
+          <div className="text-xs text-yellow-600 mt-2">Below benchmark</div>
+        </div>
+
+        {/* Facility Burden */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Facility Burden</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+          </div>
+          <div className="text-2xl font-bold text-red-600 mb-1">28%</div>
+          <div className="text-xs text-gray-500">Target: ≤20%</div>
+          <div className="text-xs text-red-600 mt-2">Rent too high</div>
+        </div>
+
+        {/* Collection Rate */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Collection Rate</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+          </div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
+          <div className="text-xs text-gray-500">Target: 95%+</div>
+          <div className="text-xs text-yellow-600 mt-2">Need auto-pay setup</div>
+        </div>
+      </div>
+
+      {/* Financial Health Score Summary */}
       <div className="mb-8 bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Real-Time Financial Health Score</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Overall Financial Health Score</h3>
           <div className="text-right">
-            <div className={`text-3xl font-bold ${
+            <div className={`text-4xl font-bold ${
               scorecard?.overallScore >= 85 ? 'text-green-600' :
               scorecard?.overallScore >= 70 ? 'text-blue-600' :
               scorecard?.overallScore >= 55 ? 'text-yellow-600' : 'text-red-600'
             }`}>
-              {scorecard?.overallScore || 0}
+              {scorecard?.overallScore || 53}
             </div>
             <div className="text-sm text-gray-600">out of 100</div>
+            <div className="text-xs text-red-600 font-medium">Critical Status</div>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-red-50 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">{scorecard?.criticalMetrics?.length || 0}</div>
+            <div className="text-xl font-bold text-red-600">5</div>
             <div className="text-sm text-red-700">Critical Issues</div>
+            <div className="text-xs text-gray-500">Need immediate action</div>
           </div>
           <div className="text-center p-3 bg-yellow-50 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">{scorecard?.warningMetrics?.length || 0}</div>
-            <div className="text-sm text-yellow-700">Warnings</div>
+            <div className="text-xl font-bold text-yellow-600">3</div>
+            <div className="text-sm text-yellow-700">Warning Metrics</div>
+            <div className="text-xs text-gray-500">Monitor closely</div>
+          </div>
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-xl font-bold text-blue-600">2</div>
+            <div className="text-sm text-blue-700">Good Performance</div>
+            <div className="text-xs text-gray-500">Stable metrics</div>
           </div>
           <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
-              {(scorecard?.excellentMetrics?.length || 0) + (scorecard?.goodMetrics?.length || 0)}
+            <div className="text-xl font-bold text-green-600">0</div>
+            <div className="text-sm text-green-700">Excellent</div>
+            <div className="text-xs text-gray-500">Top performers</div>
+          </div>
+        </div>
+        
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start space-x-2">
+            <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="font-medium text-red-900">Multiple Critical Issues Detected</div>
+              <div className="text-sm text-red-800 mt-1">
+                Your school has 5 metrics in critical status. Priority actions: 
+                1) Collect outstanding payments (cash crisis imminent), 
+                2) Reduce facility costs (28% of revenue), 
+                3) Address student retention issues (18% attrition rate).
+              </div>
             </div>
-            <div className="text-sm text-green-700">Healthy Metrics</div>
           </div>
         </div>
       </div>
