@@ -16,6 +16,7 @@ import AIAssistant from './components/AI/AIAssistant';
 import PricingPlans from './components/Pricing/PricingPlans';
 import DocumentManager from './components/Documents/DocumentManager';
 import FinancialAccounts from './components/Accounts/FinancialAccounts';
+import FinancialControlsGuide from './components/Accounts/FinancialControlsGuide';
 import SimpleLogin from './components/Auth/SimpleLogin';
 
 // Services
@@ -92,6 +93,7 @@ function AppContent() {
               <Route path="/pricing" element={<PricingPlans />} />
               <Route path="/documents" element={<DocumentManager />} />
               <Route path="/accounts" element={<FinancialAccounts />} />
+              <Route path="/financial-controls-guide" element={<FinancialControlsGuide />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

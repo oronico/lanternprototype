@@ -113,8 +113,11 @@ const FinancialAccounts = () => {
       creditUtilization: 0.22,
       financialHealthScore: 68,
       alerts: [
-        { type: 'critical', message: 'Operating account will go negative in 7 days', priority: 1 },
-        { type: 'warning', message: 'Emergency fund below target', priority: 2 }
+        { type: 'critical', message: 'Operating account below minimum safe balance - establish $5,000 floor immediately', priority: 1 },
+        { type: 'critical', message: 'Monthly expenses exceed revenue - negative cash flow requires immediate action', priority: 1 },
+        { type: 'warning', message: 'Emergency fund at 0.82 months vs. 3+ month target - insufficient business continuity protection', priority: 2 },
+        { type: 'warning', message: 'Debt service at 5.7% of revenue - approaching 10% maximum threshold', priority: 2 },
+        { type: 'info', message: 'Payment history excellent - maintain strong vendor relationships', priority: 3 }
       ]
     };
 
@@ -207,37 +210,62 @@ const FinancialAccounts = () => {
       <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Financial Health Score</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Financial Controls Score</h3>
             <div className="flex items-center space-x-4">
               <div className={`text-4xl font-bold ${getHealthColor(summary?.financialHealthScore)}`}>
                 {summary?.financialHealthScore || 0}
               </div>
               <div className="text-sm text-gray-600">
                 <div>/100</div>
-                <div className="text-yellow-600 font-medium">Needs Improvement</div>
+                <div className="text-yellow-600 font-medium">Needs Strengthening</div>
               </div>
+            </div>
+            <div className="mt-2 text-xs text-gray-600">
+              Based on conservative business management principles
             </div>
           </div>
           
           <div className="text-right">
-            <div className="text-sm text-gray-600 mb-2">Key Factors</div>
+            <div className="text-sm text-gray-600 mb-2">Critical Control Metrics</div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
-                <span>Net Worth:</span>
-                <span className={`font-medium ${summary?.netWorth > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {formatCurrency(summary?.netWorth || 0)}
+                <span>Operating Liquidity:</span>
+                <span className="font-medium text-red-600">0.82 months (Target: 3+)</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Debt Service Ratio:</span>
+                <span className={`font-medium ${(summary?.monthlyDebtService || 0) / 16324 < 0.1 ? 'text-green-600' : 'text-red-600'}`}>
+                  {Math.round(((summary?.monthlyDebtService || 0) / 16324) * 100)}% (Target: <10%)
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Credit Utilization:</span>
-                <span className={`font-medium ${(summary?.creditUtilization || 0) < 0.3 ? 'text-green-600' : 'text-red-600'}`}>
-                  {Math.round((summary?.creditUtilization || 0) * 100)}%
+                <span className={`font-medium ${(summary?.creditUtilization || 0) < 0.2 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  {Math.round((summary?.creditUtilization || 0) * 100)}% (Target: <20%)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Emergency Fund:</span>
-                <span className="font-medium text-yellow-600">0.65 months</span>
+                <span>Cash Flow:</span>
+                <span className="font-medium text-red-600">Negative (Fix Priority #1)</span>
               </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t border-blue-200">
+          <div className="text-sm text-blue-900 font-medium mb-2">Next Steps to Improve Controls:</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div className="bg-white p-3 rounded border">
+              <div className="font-semibold text-red-700">Immediate (0-30 days)</div>
+              <div className="text-gray-600">Establish cash minimums, automate transfers</div>
+            </div>
+            <div className="bg-white p-3 rounded border">
+              <div className="font-semibold text-yellow-700">Short-term (1-3 months)</div>
+              <div className="text-gray-600">Build emergency fund, optimize debt</div>
+            </div>
+            <div className="bg-white p-3 rounded border">
+              <div className="font-semibold text-green-700">Long-term (3-12 months)</div>
+              <div className="text-gray-600">Diversify revenue, strengthen reserves</div>
             </div>
           </div>
         </div>
@@ -430,31 +458,82 @@ const FinancialAccounts = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <CheckCircleIcon className="h-5 w-5 mr-2 text-green-600" />
-            AI Recommendations
+            Financial Control Recommendations
           </h3>
           
-          <div className="space-y-3">
-            <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-              <div className="font-medium text-green-900">Transfer $2,000 to Operating</div>
-              <div className="text-sm text-green-800">
-                Move funds from savings to prevent overdraft in 7 days
+          <div className="space-y-4">
+            <div className="p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-semibold text-red-900">🚨 Establish Operating Cash Minimum</div>
+                <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">IMMEDIATE</span>
+              </div>
+              <div className="text-sm text-red-800 mb-2">
+                Maintain minimum $5,000 operating balance with automatic transfers from reserves
+              </div>
+              <div className="text-xs text-red-700 bg-red-100 p-2 rounded">
+                <strong>Business Control:</strong> Cash flow management - maintain operational liquidity
               </div>
             </div>
             
-            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <div className="font-medium text-blue-900">Set Up Emergency Fund Auto-Save</div>
-              <div className="text-sm text-blue-800">
-                Automatically transfer $500/month to reach 3-month target
+            <div className="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-semibold text-yellow-900">⚠️ Build Emergency Fund to 3-Month Target</div>
+                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">HIGH</span>
+              </div>
+              <div className="text-sm text-yellow-800 mb-2">
+                Systematic monthly contributions to reach $57,500 emergency reserve
+              </div>
+              <div className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
+                <strong>Business Control:</strong> Risk management - ensure business continuity
               </div>
             </div>
             
-            <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="font-medium text-purple-900">Consider Debt Consolidation</div>
-              <div className="text-sm text-purple-800">
-                SBA loan at 6.75% could reduce monthly payments by $200
+            <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-semibold text-blue-900">📊 Optimize Debt Structure</div>
+                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">MEDIUM</span>
+              </div>
+              <div className="text-sm text-blue-800 mb-2">
+                Evaluate refinancing high-interest debt with SBA loans at favorable rates
+              </div>
+              <div className="text-xs text-blue-700 bg-blue-100 p-2 rounded">
+                <strong>Business Control:</strong> Capital structure optimization - reduce financial burden
+              </div>
+            </div>
+            
+            <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-semibold text-green-900">💳 Maintain Conservative Credit Utilization</div>
+                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">MEDIUM</span>
+              </div>
+              <div className="text-sm text-green-800 mb-2">
+                Keep total credit utilization below 20% across all business accounts
+              </div>
+              <div className="text-xs text-green-700 bg-green-100 p-2 rounded">
+                <strong>Business Control:</strong> Credit preservation - maintain access to capital when needed
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Financial Controls Guide Link */}
+      <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 border border-green-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Help Strengthening Financial Controls?</h3>
+            <p className="text-gray-600">
+              Our comprehensive guide provides specific recommendations for education businesses, 
+              including implementation timelines and best practices.
+            </p>
+          </div>
+          <a
+            href="/financial-controls-guide"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          >
+            <ShieldCheckIcon className="h-4 w-4 mr-2" />
+            View Controls Guide
+          </a>
         </div>
       </div>
 

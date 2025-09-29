@@ -161,10 +161,42 @@ const accountSummary = {
   ],
   
   recommendations: [
-    'Transfer $2,000 from savings to checking to prevent overdraft',
-    'Set up automatic savings transfer of $500/month to build emergency fund',
-    'Consider paying down line of credit to reduce interest expense',
-    'Apply for SBA loan to consolidate debt at lower interest rate'
+    {
+      priority: 'immediate',
+      category: 'cash_management',
+      title: 'Establish Operating Cash Minimum',
+      description: 'Maintain minimum $5,000 operating balance with automatic transfers from reserves',
+      reasoning: 'Prevents overdraft fees and maintains vendor relationships',
+      implementation: 'Set up automatic transfer when checking falls below $5,000',
+      businessControl: 'Cash flow management - maintain operational liquidity'
+    },
+    {
+      priority: 'high',
+      category: 'emergency_planning',
+      title: 'Build Emergency Fund to 3-Month Target',
+      description: 'Systematic monthly contributions to reach $57,500 emergency reserve',
+      reasoning: 'Protects against enrollment drops, unexpected expenses, and economic downturns',
+      implementation: 'Automatic $1,500 monthly transfer after positive cash flow months',
+      businessControl: 'Risk management - ensure business continuity'
+    },
+    {
+      priority: 'medium',
+      category: 'debt_management',
+      title: 'Optimize Debt Structure',
+      description: 'Evaluate refinancing high-interest debt with SBA loans at favorable rates',
+      reasoning: 'Reduce monthly debt service and improve cash flow for operations',
+      implementation: 'Consult with SBA-preferred lender for qualification assessment',
+      businessControl: 'Capital structure optimization - reduce financial burden'
+    },
+    {
+      priority: 'medium',
+      category: 'credit_management',
+      title: 'Maintain Conservative Credit Utilization',
+      description: 'Keep total credit utilization below 20% across all business accounts',
+      reasoning: 'Preserves borrowing capacity for genuine emergencies and growth opportunities',
+      implementation: 'Monthly review and paydown plan for balances above 15%',
+      businessControl: 'Credit preservation - maintain access to capital when needed'
+    }
   ]
 };
 
@@ -280,37 +312,71 @@ router.get('/cash-flow-forecast', (req, res) => {
 });
 
 function calculateAccountHealthFactors(accounts, summary) {
+  const monthlyExpenses = 19166;
+  const monthlyRevenue = 16324;
+  const currentLiquidity = summary.totalLiquidAssets;
+  const debtServiceRatio = summary.monthlyDebtService / monthlyRevenue;
+  
   return {
-    liquidityHealth: {
-      score: summary.totalLiquidAssets > 10000 ? 85 : 45,
-      factor: 'Emergency fund adequacy',
-      current: `${(summary.totalLiquidAssets / 19166).toFixed(1)} months expenses`,
-      target: '3+ months expenses',
+    operationalLiquidity: {
+      score: currentLiquidity >= (monthlyExpenses * 3) ? 95 : 
+             currentLiquidity >= (monthlyExpenses * 1) ? 75 :
+             currentLiquidity >= (monthlyExpenses * 0.5) ? 45 : 25,
+      factor: 'Operational Cash Reserves',
+      current: `${(currentLiquidity / monthlyExpenses).toFixed(1)} months operating expenses`,
+      target: '3+ months minimum, 6+ months optimal',
+      businessControl: 'Liquidity management ensures uninterrupted operations',
+      impact: 'critical'
+    },
+    
+    debtServiceCoverage: {
+      score: debtServiceRatio <= 0.05 ? 95 : 
+             debtServiceRatio <= 0.10 ? 85 :
+             debtServiceRatio <= 0.15 ? 65 : 35,
+      factor: 'Debt Service Coverage',
+      current: `${Math.round(debtServiceRatio * 100)}% of revenue`,
+      target: '<10% of revenue (conservative), <5% optimal',
+      businessControl: 'Conservative debt levels protect against revenue fluctuations',
       impact: 'high'
     },
     
-    debtHealth: {
-      score: summary.creditUtilization < 0.30 ? 75 : 45,
-      factor: 'Credit utilization',
-      current: `${Math.round(summary.creditUtilization * 100)}%`,
-      target: '<30%',
+    creditUtilization: {
+      score: summary.creditUtilization <= 0.10 ? 95 :
+             summary.creditUtilization <= 0.20 ? 85 :
+             summary.creditUtilization <= 0.30 ? 65 : 35,
+      factor: 'Credit Utilization Management',
+      current: `${Math.round(summary.creditUtilization * 100)}% of available credit`,
+      target: '<10% optimal, <20% acceptable',
+      businessControl: 'Low utilization preserves emergency borrowing capacity',
       impact: 'medium'
     },
     
-    cashFlowHealth: {
-      score: summary.netWorth > 0 ? 85 : 35,
-      factor: 'Net cash flow',
-      current: summary.monthlyDebtService < 16324 * 0.1 ? 'healthy' : 'concerning',
-      target: '<10% of revenue',
+    cashFlowStability: {
+      score: monthlyRevenue > monthlyExpenses ? 85 : 
+             monthlyRevenue > (monthlyExpenses * 0.95) ? 65 : 35,
+      factor: 'Cash Flow Sustainability', 
+      current: monthlyRevenue > monthlyExpenses ? 'Positive' : 'Negative',
+      target: 'Consistent positive operating cash flow',
+      businessControl: 'Sustainable operations without external financing',
+      impact: 'critical'
+    },
+    
+    paymentDiscipline: {
+      score: 95, // Based on excellent payment history
+      factor: 'Payment History & Compliance',
+      current: 'Excellent - no late payments in 24 months',
+      target: 'Maintain 100% on-time payment record',
+      businessControl: 'Strong payment discipline maintains vendor relationships',
+      impact: 'medium'
+    },
+    
+    diversificationRisk: {
+      score: 65, // Educational businesses face enrollment concentration risk
+      factor: 'Revenue Diversification',
+      current: 'Primarily tuition-dependent',
+      target: 'Multiple revenue streams (aftercare, camps, programs)',
+      businessControl: 'Revenue diversification reduces business risk',
       impact: 'high'
-    },
-    
-    paymentHistory: {
-      score: 90, // Based on loan payment history
-      factor: 'Payment reliability',
-      current: 'Excellent payment history',
-      target: 'Maintain current performance',
-      impact: 'medium'
     }
   };
 }
