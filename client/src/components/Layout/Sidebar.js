@@ -14,7 +14,7 @@ import {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
   { name: 'Payment Tracking', href: '/payments', icon: CreditCardIcon },
-  { name: 'Pricing Calculator', href: '/calculator', icon: CalculatorIcon },
+  { name: 'Tuition Engine', href: '/calculator', icon: CalculatorIcon },
   { name: 'Financial Health', href: '/health', icon: HeartIcon },
   { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
   { name: 'Lease Analyzer', href: '/lease', icon: BuildingOfficeIcon },
@@ -41,8 +41,8 @@ const SidebarContent = ({ location }) => {
         <div className="flex items-center space-x-3">
           <div className="text-2xl">🏮</div>
           <div>
-            <div className="text-lg font-semibold text-gray-900">Microschool Platform</div>
-            <div className="text-xs text-gray-500">Financial Operating System</div>
+            <div className="text-lg font-semibold text-gray-900">Education Platform</div>
+            <div className="text-xs text-gray-500">For Schools, Tutoring & Programs</div>
           </div>
         </div>
       </div>

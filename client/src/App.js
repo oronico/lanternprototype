@@ -8,6 +8,7 @@ import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
 import PaymentTracking from './components/Payments/PaymentTracking';
 import PricingCalculator from './components/Calculator/PricingCalculator';
+import FlexibleTuitionEngine from './components/Calculator/FlexibleTuitionEngine';
 import FinancialHealth from './components/Health/FinancialHealth';
 import EnrollmentPipeline from './components/Enrollment/EnrollmentPipeline';
 import LeaseAnalyzer from './components/Lease/LeaseAnalyzer';
@@ -82,7 +83,7 @@ function AppContent() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/payments" element={<PaymentTracking />} />
-              <Route path="/calculator" element={<PricingCalculator />} />
+              <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />

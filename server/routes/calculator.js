@@ -7,13 +7,41 @@ router.post('/tuition-engine', (req, res) => {
     const {
       // Current Situation
       studentCount = 28,
-      currentTuition = 583,
+      currentTuition = 667, // $8000 annual / 12 months
       targetStudentCount = 35,
       
-      // ESA & Voucher Data
-      esaAmount = 583,
-      esaEligibleStudents = 18,
-      voucherPrograms = ['Florida ESA', 'Step Up'],
+      // Program Structure
+      programType = 'full_time', // full_time, part_time, tutoring, afterschool
+      programSchedule = {
+        daysPerWeek: 5,
+        hoursPerDay: 6,
+        weeksPerYear: 36,
+        sessions: 'full_year' // full_year, semester, trimester, hourly
+      },
+      
+      // Funding Sources (Flexible by State)
+      fundingOptions = {
+        hasESA: true,
+        hasVouchers: false,
+        hasTaxCredits: false,
+        hasPrivatePay: true,
+        primaryFunding: 'esa' // esa, voucher, tax_credit, private_pay, mixed
+      },
+      
+      // ESA/Voucher Data (when applicable)
+      publicFunding = {
+        annualAmount: 8000, // ESA annual amount
+        monthlyEquivalent: 667,
+        eligibleStudents: 18,
+        programName: 'Florida ESA',
+        restrictions: ['approved_vendors', 'educational_expenses'],
+        stateProgramDetails: {
+          florida: { esa: 8000, stepUp: 7500 },
+          arizona: { esa: 7500, taxCredit: 4500 },
+          texas: { privateSchoolChoice: 8000 },
+          northCarolina: { opportunityScholarship: 6000 }
+        }
+      },
       
       // Operating Costs
       facilityCost = 4500,
@@ -25,7 +53,7 @@ router.post('/tuition-engine', (req, res) => {
       marketingCost = 300,
       otherExpenses = 1200,
       
-      // Business Parameters
+      // Business Parameters  
       operatingMargin = 0.15,
       daysCashReserve = 30,
       
@@ -35,26 +63,29 @@ router.post('/tuition-engine', (req, res) => {
       competitorAnalysis = true,
       
       // Strategic Goals
-      growthTarget = 0.20, // 20% growth
+      growthTarget = 0.20,
       profitabilityGoal = 'sustainable',
-      marketPosition = 'competitive' // affordable, competitive, premium
+      marketPosition = 'competitive'
     } = req.body;
 
     // Calculate comprehensive cost structure
     const totalMonthlyCosts = facilityCost + payrollCost + ownerSalary + utilitiesCost + 
                              insuranceCost + suppliesCost + marketingCost + otherExpenses;
     
-    // Market Landscape Analysis
-    const marketData = getMarketLandscape(state, zipCode);
+    // Program Structure Analysis
+    const programAnalysis = analyzeProgramStructure(programType, programSchedule, totalMonthlyCosts);
     
-    // ESA Analysis
-    const esaAnalysis = analyzeESAOpportunity(esaAmount, esaEligibleStudents, studentCount, voucherPrograms);
+    // Market Landscape Analysis (Program-Specific)
+    const marketData = getMarketLandscape(state, zipCode, programType);
     
-    // Cost Analysis
+    // Public Funding Analysis (State-Specific)
+    const fundingAnalysis = analyzePublicFunding(fundingOptions, publicFunding, studentCount, state);
+    
+    // Cost Analysis (Adjusted for Program Type)
     const costAnalysis = analyzeCostStructure({
       facilityCost, payrollCost, ownerSalary, utilitiesCost, 
       insuranceCost, suppliesCost, marketingCost, otherExpenses
-    }, studentCount);
+    }, studentCount, programSchedule);
     
     // Calculate multiple tuition scenarios
     const scenarios = calculateTuitionScenarios({
@@ -62,8 +93,9 @@ router.post('/tuition-engine', (req, res) => {
       studentCount,
       targetStudentCount,
       currentTuition,
-      esaAmount,
-      esaEligibleStudents,
+      publicFunding,
+      fundingOptions,
+      programSchedule,
       operatingMargin,
       marketData,
       marketPosition
@@ -168,8 +200,141 @@ router.post('/scenario', (req, res) => {
   }
 });
 
-// Market Landscape Analysis
-function getMarketLandscape(state, zipCode) {
+// Program Structure Analysis
+function analyzeProgramStructure(programType, schedule, totalCosts) {
+  const analysis = {
+    programType,
+    schedule,
+    costStructure: {},
+    pricingModel: {},
+    utilization: {}
+  };
+  
+  // Calculate utilization and cost allocation
+  const annualHours = schedule.daysPerWeek * schedule.hoursPerDay * schedule.weeksPerYear;
+  const monthlyHours = annualHours / 12;
+  
+  analysis.utilization = {
+    annualHours,
+    monthlyHours,
+    utilizationRate: schedule.daysPerWeek / 5, // vs. full-time
+    efficiency: monthlyHours / (schedule.daysPerWeek * 4.33 * schedule.hoursPerDay) // actual vs. theoretical
+  };
+  
+  // Program-specific cost models
+  switch (programType) {
+    case 'full_time':
+      analysis.costStructure = {
+        model: 'per_student_monthly',
+        baseUnit: 'student',
+        costPerUnit: Math.round(totalCosts / 28), // assuming 28 students
+        includes: ['full_curriculum', 'meals', 'supervision', 'activities']
+      };
+      break;
+      
+    case 'part_time':
+      analysis.costStructure = {
+        model: 'per_student_per_day',
+        baseUnit: 'student_day', 
+        costPerUnit: Math.round(totalCosts / (28 * schedule.daysPerWeek)),
+        includes: ['curriculum', 'supervision', 'materials']
+      };
+      break;
+      
+    case 'tutoring':
+      analysis.costStructure = {
+        model: 'per_hour',
+        baseUnit: 'hour',
+        costPerUnit: Math.round(totalCosts / monthlyHours),
+        includes: ['instruction', 'materials', 'assessment']
+      };
+      break;
+      
+    case 'afterschool':
+      analysis.costStructure = {
+        model: 'per_student_monthly',
+        baseUnit: 'student',
+        costPerUnit: Math.round(totalCosts / 40), // typically higher capacity
+        includes: ['supervision', 'activities', 'snacks', 'homework_help']
+      };
+      break;
+  }
+  
+  return analysis;
+}
+
+// Public Funding Analysis (State-Flexible)
+function analyzePublicFunding(fundingOptions, publicFunding, studentCount, state) {
+  const analysis = {
+    state,
+    availableFunding: [],
+    eligibilityAnalysis: {},
+    optimizationStrategy: {},
+    complianceRequirements: []
+  };
+  
+  // State-specific funding programs
+  const stateFunding = {
+    florida: [
+      { type: 'esa', name: 'Florida ESA', amount: 8000, eligibility: 'income_based', restrictions: ['approved_vendors'] },
+      { type: 'voucher', name: 'Step Up Scholarships', amount: 7500, eligibility: 'low_income', restrictions: ['approved_schools'] }
+    ],
+    arizona: [
+      { type: 'esa', name: 'Arizona ESA', amount: 7500, eligibility: 'broad', restrictions: ['educational_expenses'] },
+      { type: 'tax_credit', name: 'Arizona Tax Credit', amount: 4500, eligibility: 'donations', restrictions: ['nonprofit_schools'] }
+    ],
+    texas: [
+      { type: 'voucher', name: 'Texas Private School Choice', amount: 8000, eligibility: 'income_based', restrictions: ['accredited_schools'] }
+    ],
+    north_carolina: [
+      { type: 'voucher', name: 'Opportunity Scholarship', amount: 6000, eligibility: 'income_based', restrictions: ['approved_schools'] }
+    ],
+    indiana: [
+      { type: 'voucher', name: 'Indiana Choice Scholarship', amount: 5500, eligibility: 'income_based', restrictions: ['accredited_schools'] },
+      { type: 'tax_credit', name: 'Indiana Tax Credit', amount: 1000, eligibility: 'donations', restrictions: ['nonprofit_only'] }
+    ]
+  };
+  
+  analysis.availableFunding = stateFunding[state.toLowerCase()] || [];
+  
+  // Funding optimization strategy
+  if (fundingOptions.hasESA || fundingOptions.hasVouchers) {
+    const primaryProgram = analysis.availableFunding.find(f => f.type === fundingOptions.primaryFunding);
+    
+    analysis.optimizationStrategy = {
+      recommendedFunding: primaryProgram,
+      familyContribution: Math.max(0, publicFunding.monthlyEquivalent - primaryProgram?.amount / 12 || 0),
+      eligibilityRate: publicFunding.eligibleStudents / studentCount,
+      revenueStability: primaryProgram ? 'high' : 'medium',
+      marketingAdvantage: primaryProgram ? 'significant' : 'none',
+      retentionBenefit: primaryProgram ? '90% retention rate' : 'standard'
+    };
+    
+    // Compliance requirements based on funding type
+    if (primaryProgram) {
+      analysis.complianceRequirements = [
+        `${primaryProgram.name} vendor approval required`,
+        'Quarterly expense reporting', 
+        'Annual audit compliance',
+        'Approved educational expense categories only'
+      ];
+    }
+  } else {
+    analysis.optimizationStrategy = {
+      recommendedFunding: 'private_pay',
+      familyContribution: publicFunding.monthlyEquivalent,
+      eligibilityRate: 1.0,
+      revenueStability: 'medium',
+      marketingAdvantage: 'flexibility',
+      pricing: 'market_competitive'
+    };
+  }
+  
+  return analysis;
+}
+
+// Market Landscape Analysis (Program-Specific)
+function getMarketLandscape(state, zipCode, programType) {
   // Mock market data - in production, integrate with real estate APIs and school databases
   const marketData = {
     region: state,
@@ -180,26 +345,8 @@ function getMarketLandscape(state, zipCode) {
       privateschoolEnrollment: 0.18,
       homeschoolRate: 0.08
     },
-    competitorAnalysis: {
-      microschools: [
-        { name: 'Learning Lab Academy', tuition: 675, students: 25, distance: 2.1 },
-        { name: 'Bright Minds Micro', tuition: 750, students: 32, distance: 3.8 },
-        { name: 'Future Leaders School', tuition: 825, students: 28, distance: 1.5 }
-      ],
-      privateSchools: [
-        { name: 'St. Mary Catholic', tuition: 1200, students: 450, distance: 2.8 },
-        { name: 'Sunshine Prep Academy', tuition: 1450, students: 320, distance: 4.2 }
-      ],
-      publicSchoolRating: 6.2,
-      averageClassSize: 24
-    },
-    marketRates: {
-      microschoolAverage: 750,
-      microschoolRange: [625, 875],
-      privateSchoolAverage: 1325,
-      publicSchoolCostPerPupil: 9800,
-      tutorRatePerHour: 65
-    },
+    competitorAnalysis: getCompetitorsByProgramType(programType),
+    marketRates: getMarketRatesByProgram(programType),
     economicFactors: {
       unemploymentRate: 0.034,
       costOfLivingIndex: 98.5,
@@ -209,6 +356,94 @@ function getMarketLandscape(state, zipCode) {
   };
   
   return marketData;
+}
+
+// Program-Specific Competitor Analysis
+function getCompetitorsByProgramType(programType) {
+  const competitors = {
+    full_time: {
+      microschools: [
+        { name: 'Learning Lab Academy', tuition: 675, students: 25, distance: 2.1, schedule: '5 days/week' },
+        { name: 'Bright Minds Micro', tuition: 750, students: 32, distance: 3.8, schedule: '5 days/week' },
+        { name: 'Future Leaders School', tuition: 825, students: 28, distance: 1.5, schedule: '5 days/week' }
+      ],
+      privateSchools: [
+        { name: 'St. Mary Catholic', tuition: 1200, students: 450, distance: 2.8 },
+        { name: 'Sunshine Prep Academy', tuition: 1450, students: 320, distance: 4.2 }
+      ]
+    },
+    
+    part_time: {
+      microschools: [
+        { name: 'Flexible Learning Co-op', tuition: 350, students: 20, distance: 1.8, schedule: '3 days/week' },
+        { name: 'Morning Microschool', tuition: 425, students: 15, distance: 2.5, schedule: '3 days/week' },
+        { name: 'Hybrid Academy', tuition: 500, students: 25, distance: 3.2, schedule: '4 days/week' }
+      ],
+      homeschoolCoops: [
+        { name: 'Community Learning Hub', tuition: 250, students: 35, distance: 2.0, schedule: '2 days/week' }
+      ]
+    },
+    
+    tutoring: {
+      tutoringCenters: [
+        { name: 'Sylvan Learning', hourlyRate: 65, students: 150, distance: 1.2, model: 'group_tutoring' },
+        { name: 'Kumon Math & Reading', monthlyRate: 180, students: 200, distance: 2.8, model: 'self_paced' },
+        { name: 'Mathnasium', hourlyRate: 75, students: 100, distance: 3.1, model: 'math_specialist' }
+      ],
+      privateTutors: [
+        { type: 'individual', hourlyRate: 85, availability: 'high' },
+        { type: 'small_group', hourlyRate: 45, availability: 'medium' }
+      ]
+    },
+    
+    afterschool: {
+      afterschoolPrograms: [
+        { name: 'YMCA After School', monthlyRate: 320, students: 80, distance: 1.5, hours: '3-6pm' },
+        { name: 'Boys & Girls Club', monthlyRate: 280, students: 120, distance: 2.2, hours: '3-6pm' },
+        { name: 'Learning Express', monthlyRate: 450, students: 40, distance: 1.8, hours: '3-6pm' }
+      ],
+      daycareExtended: [
+        { name: 'Sunshine Daycare Extended', monthlyRate: 400, students: 60, distance: 2.5 }
+      ]
+    }
+  };
+  
+  return competitors[programType] || competitors.full_time;
+}
+
+// Market Rates by Program Type
+function getMarketRatesByProgram(programType) {
+  const rates = {
+    full_time: {
+      microschoolAverage: 750,
+      microschoolRange: [625, 875],
+      privateSchoolAverage: 1325,
+      publicSchoolCostPerPupil: 9800
+    },
+    
+    part_time: {
+      microschoolAverage: 425,
+      microschoolRange: [300, 550],
+      homeschoolCoopAverage: 250,
+      perDayAverage: 85
+    },
+    
+    tutoring: {
+      groupTutoringAverage: 65,
+      groupTutoringRange: [45, 85],
+      individualTutoringAverage: 85,
+      learningCenterAverage: 180
+    },
+    
+    afterschool: {
+      afterschoolAverage: 350,
+      afterschoolRange: [280, 450],
+      daycareExtendedAverage: 400,
+      perHourAverage: 25
+    }
+  };
+  
+  return rates[programType] || rates.full_time;
 }
 
 // ESA Opportunity Analysis
