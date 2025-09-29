@@ -12,6 +12,8 @@ import FinancialHealth from './components/Health/FinancialHealth';
 import EnrollmentPipeline from './components/Enrollment/EnrollmentPipeline';
 import LeaseAnalyzer from './components/Lease/LeaseAnalyzer';
 import AIAssistant from './components/AI/AIAssistant';
+import PricingPlans from './components/Pricing/PricingPlans';
+import DocumentManager from './components/Documents/DocumentManager';
 import SimpleLogin from './components/Auth/SimpleLogin';
 
 // Services
@@ -85,6 +87,8 @@ function AppContent() {
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
+              <Route path="/pricing" element={<PricingPlans />} />
+              <Route path="/documents" element={<DocumentManager />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

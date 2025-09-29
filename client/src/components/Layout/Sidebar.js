@@ -7,7 +7,8 @@ import {
   HeartIcon,
   BuildingOfficeIcon,
   UserGroupIcon,
-  SparklesIcon
+  SparklesIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -18,6 +19,8 @@ const navigation = [
   { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
   { name: 'Lease Analyzer', href: '/lease', icon: BuildingOfficeIcon },
   { name: 'AI Assistant', href: '/ai-assistant', icon: SparklesIcon, highlight: true },
+  { name: 'Documents & Contracts', href: '/documents', icon: DocumentTextIcon, highlight: true },
+  { name: 'Plans & Pricing', href: '/pricing', icon: CreditCardIcon, highlight: true },
 ];
 
 const Sidebar = () => {

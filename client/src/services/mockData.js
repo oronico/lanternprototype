@@ -48,8 +48,116 @@ export const mockData = {
   },
   ai: {
     templates: {
-      bylaws: { name: 'Corporate Bylaws', description: 'Nonprofit incorporation documents', category: 'legal', complexity: 'high', estimatedTime: '15-20 minutes' },
-      handbook: { name: 'Family Handbook', description: 'Complete policy guide', category: 'operations', complexity: 'medium', estimatedTime: '10-15 minutes' }
+      // GOVERNANCE
+      bylaws: { 
+        name: 'Corporate Bylaws', 
+        description: 'Comprehensive bylaws for nonprofit incorporation', 
+        category: 'governance', 
+        subcategory: 'incorporation',
+        complexity: 'high', 
+        estimatedTime: '15-20 minutes',
+        tags: ['nonprofit', 'incorporation', 'board governance']
+      },
+      operating_agreement_llc: {
+        name: 'Single Member LLC Operating Agreement',
+        description: 'Operating agreement for single-member LLC microschools',
+        category: 'governance',
+        subcategory: 'incorporation', 
+        complexity: 'high',
+        estimatedTime: '12-18 minutes',
+        tags: ['LLC', 'for-profit', 'business structure']
+      },
+      conflict_of_interest: {
+        name: 'Conflict of Interest Policy',
+        description: 'Board and staff conflict of interest policy',
+        category: 'governance',
+        subcategory: 'policies',
+        complexity: 'medium',
+        estimatedTime: '8-12 minutes',
+        tags: ['ethics', 'governance', 'compliance']
+      },
+      
+      // OPERATIONS  
+      family_handbook: { 
+        name: 'Family Handbook', 
+        description: 'Complete family handbook with policies', 
+        category: 'operations', 
+        subcategory: 'family_relations',
+        complexity: 'medium', 
+        estimatedTime: '10-15 minutes',
+        tags: ['family engagement', 'policies', 'procedures']
+      },
+      hiring_guide: {
+        name: 'Teacher Hiring Guide',
+        description: 'Complete hiring process and interview guide',
+        category: 'operations',
+        subcategory: 'human_resources',
+        complexity: 'medium', 
+        estimatedTime: '10-12 minutes',
+        tags: ['recruitment', 'hiring', 'interviews']
+      },
+      
+      // LEGAL
+      enrollment_contract: {
+        name: 'Enrollment Agreement',
+        description: 'Legal enrollment contract for families',
+        category: 'legal',
+        subcategory: 'contracts',
+        complexity: 'high',
+        estimatedTime: '10-12 minutes', 
+        tags: ['enrollment', 'contracts', 'legal protection']
+      },
+      tuition_contract: {
+        name: 'Tuition Agreement & Payment Terms',
+        description: 'Comprehensive tuition contract with payment terms',
+        category: 'legal',
+        subcategory: 'contracts',
+        complexity: 'high',
+        estimatedTime: '8-10 minutes',
+        tags: ['tuition', 'payment terms', 'legal protection']
+      },
+      
+      // MARKETING
+      social_media_campaign: {
+        name: 'Social Media Campaign Strategy', 
+        description: 'Complete social media marketing campaign',
+        category: 'marketing',
+        subcategory: 'digital_marketing',
+        complexity: 'medium',
+        estimatedTime: '8-12 minutes',
+        tags: ['social media', 'marketing', 'enrollment']
+      },
+      recruitment_playbook: {
+        name: 'Student Recruitment Playbook',
+        description: 'Complete guide for attracting families',
+        category: 'marketing', 
+        subcategory: 'enrollment_strategy',
+        complexity: 'medium',
+        estimatedTime: '12-18 minutes',
+        tags: ['recruitment', 'enrollment', 'marketing funnel']
+      },
+      
+      // FINANCIAL
+      budget_template: {
+        name: 'Annual Budget Template',
+        description: 'Comprehensive budget planning template',
+        category: 'financial',
+        subcategory: 'planning',
+        complexity: 'medium',
+        estimatedTime: '10-12 minutes',
+        tags: ['budget planning', 'financial management']
+      },
+      
+      // COMPLIANCE
+      ferpa_policy: {
+        name: 'FERPA Compliance Policy',
+        description: 'Student privacy and data protection policy',
+        category: 'compliance',
+        subcategory: 'data_privacy',
+        complexity: 'medium',
+        estimatedTime: '8-12 minutes',
+        tags: ['FERPA', 'privacy', 'data protection']
+      }
     }
   },
   lease: {

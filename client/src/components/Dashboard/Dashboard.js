@@ -173,36 +173,86 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Quick Wins */}
+        {/* AI Business Coaching */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Quick Wins Available</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex-1">
-                <div className="font-medium text-gray-900">Raise tuition by $75/month</div>
-                <div className="text-sm text-gray-600">Would add 15 days cash • Still $200 below market</div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              🧠 AI Business Coach
+            </h3>
+            <span className="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+              Professional Plan
+            </span>
+          </div>
+          
+          <div className="space-y-4">
+            {/* Strategic Insight */}
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <span className="text-purple-600 font-bold text-sm">1</span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-purple-900 mb-1">Facility Cost Optimization Strategy</div>
+                  <div className="text-sm text-purple-800 mb-2">
+                    Your facility burden (28%) is 8% above healthy schools. Similar schools that reduced costs to 20% saw:
+                  </div>
+                  <div className="text-xs text-purple-700 space-y-1">
+                    <div>• Average savings: $1,200/month</div>
+                    <div>• Cash runway improvement: +18 days</div>
+                    <div>• Success rate: 65% achieve reduction</div>
+                  </div>
+                  <button className="mt-3 px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
+                    Get Negotiation Strategy
+                  </button>
+                </div>
               </div>
-              <button className="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
-                See Template
-              </button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex-1">
-                <div className="font-medium text-gray-900">3 enrollment inquiries pending</div>
-                <div className="text-sm text-gray-600">Follow up today • Worth $1,749/month</div>
+
+            {/* Growth Opportunity */}
+            <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 font-bold text-sm">2</span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-green-900 mb-1">Enrollment Conversion Coaching</div>
+                  <div className="text-sm text-green-800 mb-2">
+                    Your inquiry-to-tour rate (42%) has room for improvement. Schools that reached 60%+ used:
+                  </div>
+                  <div className="text-xs text-green-700 space-y-1">
+                    <div>• Saturday tours (convert 2x better)</div>
+                    <div>• 2-hour response time to inquiries</div>
+                    <div>• ESA family-specific materials</div>
+                  </div>
+                  <button className="mt-3 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+                    View Conversion Playbook
+                  </button>
+                </div>
               </div>
-              <button className="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
-                View Leads
-              </button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex-1">
-                <div className="font-medium text-gray-900">Apply for FL Opportunity Grant</div>
-                <div className="text-sm text-gray-600">You qualify • $15,000 available • Due in 10 days</div>
+
+            {/* Freemium Upgrade Prompt */}
+            <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span className="text-yellow-600 font-bold text-sm">💎</span>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-yellow-900 mb-1">Unlock Advanced Business Intelligence</div>
+                  <div className="text-sm text-yellow-800 mb-2">
+                    Professional plan includes weekly coaching insights worth $2,000+/month in consultant value:
+                  </div>
+                  <div className="text-xs text-yellow-700 space-y-1">
+                    <div>• Crisis management protocols</div>
+                    <div>• Market opportunity analysis</div>
+                    <div>• Competitive intelligence reports</div>
+                    <div>• Growth strategy recommendations</div>
+                  </div>
+                  <button className="mt-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700">
+                    Upgrade to Professional ($149/mo)
+                  </button>
+                </div>
               </div>
-              <button className="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
-                Start Application
-              </button>
             </div>
           </div>
         </div>

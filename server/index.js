@@ -74,6 +74,8 @@ const healthRoutes = require('./routes/health');
 const enrollmentRoutes = require('./routes/enrollment');
 const leaseRoutes = require('./routes/lease');
 const aiRoutes = require('./routes/ai');
+const coachingRoutes = require('./routes/coaching');
+const documentsRoutes = require('./routes/documents');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -103,6 +105,12 @@ app.use('/api/enrollment',
 );
 app.use('/api/lease', leaseRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/coaching', coachingRoutes);
+app.use('/api/documents', 
+  security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
+  security.auditAccess('contracts'),
+  documentsRoutes
+);
 
 // Health check endpoint
 app.get('/api/health-check', (req, res) => {
