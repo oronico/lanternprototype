@@ -8,7 +8,8 @@ import {
   CurrencyDollarIcon,
   ClockIcon,
   MapPinIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  CheckIcon
 } from '@heroicons/react/24/outline';
 
 const FlexibleTuitionEngine = () => {
