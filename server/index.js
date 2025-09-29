@@ -76,6 +76,7 @@ const leaseRoutes = require('./routes/lease');
 const aiRoutes = require('./routes/ai');
 const coachingRoutes = require('./routes/coaching');
 const documentsRoutes = require('./routes/documents');
+const reconciliationRoutes = require('./routes/reconciliation');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -110,6 +111,12 @@ app.use('/api/documents',
   security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
   security.auditAccess('contracts'),
   documentsRoutes
+);
+app.use('/api/reconciliation',
+  security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
+  security.auditAccess('payment_reconciliation'),
+  security.protectFinancialData,
+  reconciliationRoutes
 );
 
 // Health check endpoint
