@@ -9,7 +9,8 @@ import {
   UserGroupIcon,
   SparklesIcon,
   DocumentTextIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Documents & Contracts', href: '/documents', icon: DocumentTextIcon, highlight: true },
   { name: 'Account Integration', href: '/accounts', icon: BanknotesIcon, highlight: true },
   { name: 'Growth Plans', href: '/pricing', icon: CreditCardIcon, highlight: true },
+  { name: '⚙️ School Settings', href: '/settings', icon: Cog6ToothIcon, highlight: false },
 ];
 
 const Sidebar = () => {

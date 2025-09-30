@@ -511,22 +511,30 @@ const LeaseDataEntry = ({ onAnalyze }) => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Per Occurrence</label>
-                    <input
-                      type="text"
-                      value={`$${leaseData.insuranceRequirements.generalLiability.minimumCoverage.toLocaleString()}`}
-                      disabled
-                      className="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm"
-                    />
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Per Occurrence Limit</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.generalLiability.minimumCoverage}
+                        onChange={(e) => handleInputChange('insuranceRequirements.generalLiability.minimumCoverage', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 text-sm"
+                        placeholder="2000000"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Aggregate Limit</label>
-                    <input
-                      type="text"
-                      value={`$${leaseData.insuranceRequirements.generalLiability.aggregateLimit.toLocaleString()}`}
-                      disabled
-                      className="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.generalLiability.aggregateLimit}
+                        onChange={(e) => handleInputChange('insuranceRequirements.generalLiability.aggregateLimit', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 text-sm"
+                        placeholder="4000000"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Your Monthly Cost</label>
@@ -556,13 +564,17 @@ const LeaseDataEntry = ({ onAnalyze }) => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Coverage Amount</label>
-                    <input
-                      type="text"
-                      value={`$${leaseData.insuranceRequirements.professionalLiability.minimumCoverage.toLocaleString()}`}
-                      disabled
-                      className="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm"
-                    />
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Required Coverage Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.professionalLiability.minimumCoverage}
+                        onChange={(e) => handleInputChange('insuranceRequirements.professionalLiability.minimumCoverage', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 text-sm"
+                        placeholder="1000000"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Your Monthly Cost</label>
@@ -631,27 +643,98 @@ const LeaseDataEntry = ({ onAnalyze }) => {
                 </div>
               </div>
 
-              {/* Optional but Recommended */}
+              {/* Cyber Liability - Optional but Recommended */}
               <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="font-medium text-gray-900">Cyber Liability (Recommended)</h4>
-                    <div className="text-sm text-gray-600">Student data protection</div>
+                    <div className="text-sm text-gray-600">Student data & privacy protection</div>
                   </div>
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Optional</span>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={leaseData.insuranceRequirements.cyberLiability.required}
+                      onChange={(e) => handleInputChange('insuranceRequirements.cyberLiability.required', e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-xs text-blue-800">Required by lease</span>
+                  </label>
                 </div>
                 
-                <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">Your Monthly Cost</label>
-                  <div className="relative">
-                    <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Coverage Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.cyberLiability.minimumCoverage}
+                        onChange={(e) => handleInputChange('insuranceRequirements.cyberLiability.minimumCoverage', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="1000000"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Your Monthly Cost</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.cyberLiability.estimatedCost}
+                        onChange={(e) => handleInputChange('insuranceRequirements.cyberLiability.estimatedCost', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="125"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Umbrella Policy - Optional */}
+              <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="font-medium text-gray-900">Umbrella Policy (Additional Coverage)</h4>
+                    <div className="text-sm text-gray-600">Extra liability protection above primary policies</div>
+                  </div>
+                  <label className="flex items-center">
                     <input
-                      type="number"
-                      value={leaseData.insuranceRequirements.cyberLiability.estimatedCost}
-                      onChange={(e) => handleInputChange('insuranceRequirements.cyberLiability.estimatedCost', e.target.value)}
-                      className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
-                      placeholder="125"
+                      type="checkbox"
+                      checked={leaseData.insuranceRequirements.umbrellaPolicy.required}
+                      onChange={(e) => handleInputChange('insuranceRequirements.umbrellaPolicy.required', e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
+                    <span className="ml-2 text-xs text-blue-800">Required by lease</span>
+                  </label>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Coverage Amount</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.umbrellaPolicy.minimumCoverage}
+                        onChange={(e) => handleInputChange('insuranceRequirements.umbrellaPolicy.minimumCoverage', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="5000000"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Your Monthly Cost</label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1 text-gray-500 text-sm">$</span>
+                      <input
+                        type="number"
+                        value={leaseData.insuranceRequirements.umbrellaPolicy.estimatedCost}
+                        onChange={(e) => handleInputChange('insuranceRequirements.umbrellaPolicy.estimatedCost', e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="100"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
