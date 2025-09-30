@@ -37,8 +37,8 @@ const FinancialAccounts = () => {
           accountName: 'Operating Account',
           accountType: 'checking',
           accountNumber: '****1234',
-          currentBalance: 3247.89,
-          availableBalance: 3247.89,
+          currentBalance: 6700.00,
+          availableBalance: 6700.00,
           status: 'connected',
           healthMetrics: {
             daysUntilLowBalance: 7,
@@ -58,8 +58,8 @@ const FinancialAccounts = () => {
           accountName: 'Emergency Reserve',
           accountType: 'savings',
           accountNumber: '****5678',
-          currentBalance: 12500.00,
-          availableBalance: 12500.00,
+          currentBalance: 7500.00,
+          availableBalance: 7500.00,
           status: 'connected',
           healthMetrics: {
             monthsOfExpenses: 0.65,
@@ -106,12 +106,12 @@ const FinancialAccounts = () => {
     };
 
     const mockSummary = {
-      totalLiquidAssets: 15747.89,
+      totalLiquidAssets: 14200.00,  // $6,700 checking + $7,500 savings
       totalDebt: -26900.00,
-      netWorth: -11152.11,
+      netWorth: -12700.00,  // $14,200 - $26,900
       monthlyDebtService: 925.00,
       creditUtilization: 0.22,
-      financialHealthScore: 68,
+      financialHealthScore: 72,  // Matches overall score
       alerts: [
         { type: 'critical', message: 'Operating account below minimum safe balance - establish $5,000 floor immediately', priority: 1 },
         { type: 'critical', message: 'Monthly expenses exceed revenue - negative cash flow requires immediate action', priority: 1 },
