@@ -235,13 +235,13 @@ const FinancialAccounts = () => {
               <div className="flex justify-between">
                 <span>Debt Service Ratio:</span>
                 <span className={`font-medium ${(summary?.monthlyDebtService || 0) / 16324 < 0.1 ? 'text-green-600' : 'text-red-600'}`}>
-                  {Math.round(((summary?.monthlyDebtService || 0) / 16324) * 100)}% (Target: <10%)
+                  {Math.round(((summary?.monthlyDebtService || 0) / 16324) * 100)}% (Target: &lt;10%)
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Credit Utilization:</span>
                 <span className={`font-medium ${(summary?.creditUtilization || 0) < 0.2 ? 'text-green-600' : 'text-yellow-600'}`}>
-                  {Math.round((summary?.creditUtilization || 0) * 100)}% (Target: <20%)
+                  {Math.round((summary?.creditUtilization || 0) * 100)}% (Target: &lt;20%)
                 </span>
               </div>
               <div className="flex justify-between">

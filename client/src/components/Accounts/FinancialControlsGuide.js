@@ -54,25 +54,25 @@ const FinancialControlsGuide = () => {
       controls: [
         {
           control: 'Debt Service Coverage',
-          standard: 'Monthly debt service <10% of revenue (optimal <5%)',
+          standard: 'Monthly debt service &lt;10% of revenue (optimal &lt;5%)',
           current: '5.7% of revenue ($925/$16,324)',
-          target: '<5% of revenue',
+          target: '&lt;5% of revenue',
           status: 'warning',
           action: 'Consider refinancing or extending terms to reduce monthly payments'
         },
         {
           control: 'Credit Utilization',
-          standard: 'Business credit utilization <20% (optimal <10%)',
+          standard: 'Business credit utilization &lt;20% (optimal &lt;10%)',
           current: '22% utilization',
-          target: '<10% utilization',
+          target: '&lt;10% utilization',
           status: 'warning',
           action: 'Pay down high-balance accounts and preserve credit capacity'
         },
         {
           control: 'Debt-to-Revenue Ratio',
-          standard: 'Total debt <1.5x annual revenue',
+          standard: 'Total debt &lt;1.5x annual revenue',
           current: '1.65x annual revenue',
-          target: '<1.5x annual revenue',
+          target: '&lt;1.5x annual revenue',
           status: 'warning',
           action: 'Focus on debt reduction before taking on additional financing'
         }
@@ -321,7 +321,7 @@ const FinancialControlsGuide = () => {
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">Risk Management</h4>
             <ul className="text-gray-700 space-y-1">
-              <li>• Conservative debt levels (<10% debt service)</li>
+              <li>• Conservative debt levels (&lt;10% debt service)</li>
               <li>• Diversified revenue streams</li>
               <li>• Annual financial audits</li>
               <li>• Comprehensive insurance coverage</li>

@@ -55,7 +55,7 @@ const Dashboard = () => {
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })} • {scorecard?.criticalMetrics?.length + scorecard?.warningMetrics?.length || 0} actions need attention today
+          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} actions need attention today
         </p>
       </div>
 
@@ -69,7 +69,7 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
                 <div>
                   <div className="text-sm opacity-90">Bank Balance (live via Plaid)</div>
-                  <div className="text-xl font-bold">${summary?.currentCash?.toLocaleString() || '3,247'}</div>
+                  <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '3,247'}</div>
                   <div className="text-sm">↓ $1,200 from yesterday (payroll)</div>
                 </div>
                 <div>
