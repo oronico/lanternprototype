@@ -94,6 +94,53 @@ const FamilyCRM = () => {
         </div>
       </div>
 
+      {/* Connection Flow Diagram */}
+      <div className="mb-8 bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
+        <h3 className="font-semibold text-blue-900 mb-4">How It Works: Students → Contract → Payments</h3>
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex-1 text-center">
+            <div className="bg-blue-100 rounded-lg p-3 mb-2">
+              <AcademicCapIcon className="h-6 w-6 text-blue-600 mx-auto mb-1" />
+              <div className="font-medium text-blue-900">1. Add Students</div>
+              <div className="text-xs text-blue-700">Emma & Liam Johnson</div>
+            </div>
+          </div>
+          
+          <div className="px-2 text-blue-600">→</div>
+          
+          <div className="flex-1 text-center">
+            <div className="bg-green-100 rounded-lg p-3 mb-2">
+              <DocumentTextIcon className="h-6 w-6 text-green-600 mx-auto mb-1" />
+              <div className="font-medium text-green-900">2. Generate Contract</div>
+              <div className="text-xs text-green-700">Auto-fills student names</div>
+            </div>
+          </div>
+          
+          <div className="px-2 text-blue-600">→</div>
+          
+          <div className="flex-1 text-center">
+            <div className="bg-purple-100 rounded-lg p-3 mb-2">
+              <LinkIcon className="h-6 w-6 text-purple-600 mx-auto mb-1" />
+              <div className="font-medium text-purple-900">3. Link Payment</div>
+              <div className="text-xs text-purple-700">ClassWallet for Emma & Liam</div>
+            </div>
+          </div>
+          
+          <div className="px-2 text-blue-600">→</div>
+          
+          <div className="flex-1 text-center">
+            <div className="bg-yellow-100 rounded-lg p-3 mb-2">
+              <CurrencyDollarIcon className="h-6 w-6 text-yellow-600 mx-auto mb-1" />
+              <div className="font-medium text-yellow-900">4. Auto-Match</div>
+              <div className="text-xs text-yellow-700">$1,166 → Emma & Liam</div>
+            </div>
+          </div>
+        </div>
+        <div className="text-center text-xs text-blue-700 mt-3">
+          Every payment automatically knows which students it's for!
+        </div>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow p-6">
@@ -283,25 +330,32 @@ const FamilyCRM = () => {
                 ))}
               </div>
               
-              {/* Contract */}
-              <div className="bg-green-50 rounded-lg p-4">
+              {/* Contract - Shows Connection */}
+              <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
                 <h4 className="font-semibold text-green-900 mb-3 flex items-center">
                   <DocumentTextIcon className="h-5 w-5 mr-2" />
-                  Contract Status
+                  Contract (Links Students to Payments)
                 </h4>
-                <div className="text-sm space-y-1">
+                <div className="text-sm space-y-2">
+                  <div className="bg-green-100 p-2 rounded">
+                    <div className="font-medium text-green-900 mb-1">Contract connects:</div>
+                    <div className="text-green-800 text-xs space-y-1">
+                      <div>• Students: {selectedFamily.students.map(s => s.firstName).join(', ')}</div>
+                      <div>• Payment: ${selectedFamily.contract.monthlyTuition}/month</div>
+                      <div>• ID: {selectedFamily.contract.contractId}</div>
+                    </div>
+                  </div>
+                  
                   <div className="flex justify-between">
                     <span className="text-green-700">Status:</span>
                     <span className="font-medium text-green-900">{selectedFamily.contract.status}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-green-700">Monthly Tuition:</span>
-                    <span className="font-medium text-green-900">${selectedFamily.contract.monthlyTuition}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-green-700">Contract ID:</span>
-                    <span className="font-medium text-green-900">{selectedFamily.contract.contractId}</span>
-                  </div>
+                  
+                  {selectedFamily.contract.status !== 'signed' && (
+                    <button className="w-full mt-2 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                      Generate Contract for {selectedFamily.students.length} Student{selectedFamily.students.length > 1 ? 's' : ''}
+                    </button>
+                  )}
                 </div>
               </div>
               
