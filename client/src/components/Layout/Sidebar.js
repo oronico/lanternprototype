@@ -51,7 +51,7 @@ const SidebarContent = ({ location }) => {
       {/* Logo */}
       <div className="flex items-center h-16 flex-shrink-0 px-4 bg-white border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="text-2xl">🏮</div>
+          <div className="text-2xl">📊</div>
           <div>
             <div className="text-lg font-semibold text-gray-900">SchoolStack.ai</div>
             <div className="text-xs text-gray-500">Complete Tech Stack for Education</div>
