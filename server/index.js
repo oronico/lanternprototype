@@ -80,6 +80,7 @@ const reconciliationRoutes = require('./routes/reconciliation');
 const accountsRoutes = require('./routes/accounts');
 const calendarRoutes = require('./routes/calendar');
 const cashflowRoutes = require('./routes/cashflow');
+const crmRoutes = require('./routes/crm');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -137,6 +138,12 @@ app.use('/api/cashflow',
   security.auditAccess('cash_flow_analysis'),
   security.protectFinancialData,
   cashflowRoutes
+);
+app.use('/api/crm',
+  security.classifyData(securityConfig.dataClassification.RESTRICTED),
+  security.auditAccess('family_student_records'),
+  security.protectStudentData,
+  crmRoutes
 );
 
 // Health check endpoint

@@ -19,6 +19,7 @@ import DocumentManager from './components/Documents/DocumentManager';
 import FinancialAccounts from './components/Accounts/FinancialAccounts';
 import FinancialControlsGuide from './components/Accounts/FinancialControlsGuide';
 import SchoolSettings from './components/Settings/SchoolSettings';
+import FamilyCRM from './components/CRM/FamilyCRM';
 import SimpleLogin from './components/Auth/SimpleLogin';
 
 // Services
@@ -98,6 +99,7 @@ function AppContent() {
               <Route path="/accounts" element={<FinancialAccounts />} />
               <Route path="/financial-controls-guide" element={<FinancialControlsGuide />} />
               <Route path="/settings" element={<SchoolSettings />} />
+              <Route path="/crm" element={<FamilyCRM />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

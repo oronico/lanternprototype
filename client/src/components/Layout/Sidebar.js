@@ -17,8 +17,9 @@ const navigation = [
   // Core Operations (Most Used)
   { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
   { name: 'Financial Health', href: '/health', icon: HeartIcon },
+  { name: 'Family & Student CRM', href: '/crm', icon: UserGroupIcon },
   { name: 'Payments & Revenue', href: '/payments', icon: CreditCardIcon },
-  { name: 'Student Enrollment', href: '/enrollment', icon: UserGroupIcon },
+  { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
   
   // Planning & Analysis
   { name: 'Pricing Calculator', href: '/calculator', icon: CalculatorIcon },
