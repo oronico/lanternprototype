@@ -70,8 +70,8 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
                 <div>
                   <div className="text-sm opacity-90">Operating Cash Balance</div>
-                  <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '3,247'}</div>
-                  <div className="text-sm">↓ $1,200 from yesterday (payroll)</div>
+                  <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '14,200'}</div>
+                  <div className="text-sm">Checking + Savings</div>
                 </div>
                 <div>
                   <div className="text-sm opacity-90">Expected Receipts Today</div>
@@ -81,12 +81,12 @@ const Dashboard = () => {
                 <div>
                   <div className="text-sm opacity-90">Outstanding Receivables</div>
                   <div className="text-xl font-bold">${summary?.outstandingRevenue?.toLocaleString() || '4,915'}</div>
-                  <div className="text-sm">8 accounts past due</div>
+                  <div className="text-sm">3 families past due</div>
                 </div>
                 <div>
                   <div className="text-sm opacity-90">Days Cash on Hand</div>
-                  <div className="text-xl font-bold">{summary?.daysCashOnHand || 7} days</div>
-                  <div className="text-sm">Target: 30+ days (industry standard)</div>
+                  <div className="text-xl font-bold">{summary?.daysCashOnHand || 22} days</div>
+                  <div className="text-sm">Goal: 30 days minimum | 60 great | 90 gold</div>
                 </div>
               </div>
             </div>

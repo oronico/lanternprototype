@@ -28,8 +28,20 @@ export const mockData = {
   enrollment: {
     pipeline: { inquiries: 12, toursScheduled: 5, applications: 3, readyToEnroll: 2, currentFamilies: 28 },
     families: [
-      { id: 1, name: 'Peterson Family', stage: 'tour_scheduled', children: 2, monthlyValue: 1166, nextStep: 'Tour prep needed', inquiryDate: '2024-11-10', status: 'tour_tomorrow' },
-      { id: 2, name: 'Anderson Family', stage: 'application_pending', children: 1, monthlyValue: 750, nextStep: 'Follow up - 3 days', inquiryDate: '2024-11-08', status: 'application_pending' }
+      // Tours Scheduled (5 families)
+      { id: 1, name: 'Peterson Family', stage: 'tour_scheduled', children: 2, monthlyValue: 1166, nextStep: 'Tour prep needed', inquiryDate: '2024-11-10', status: 'tour_tomorrow', notes: 'Interested in STEM focus' },
+      { id: 2, name: 'Anderson Family', stage: 'tour_scheduled', children: 1, monthlyValue: 667, nextStep: 'Tour this Saturday', inquiryDate: '2024-11-08', status: 'tour_scheduled', notes: 'ESA eligible' },
+      { id: 3, name: 'Williams Family', stage: 'tour_scheduled', children: 1, monthlyValue: 667, nextStep: 'Tour next week', inquiryDate: '2024-11-09', status: 'tour_scheduled', notes: 'Homeschool transition' },
+      { id: 4, name: 'Garcia Family', stage: 'tour_scheduled', children: 2, monthlyValue: 1166, nextStep: 'Tour scheduled', inquiryDate: '2024-11-11', status: 'tour_scheduled', notes: 'Sibling discount' },
+      { id: 5, name: 'Taylor Family', stage: 'tour_scheduled', children: 1, monthlyValue: 667, nextStep: 'Tour confirmed', inquiryDate: '2024-11-12', status: 'tour_scheduled', notes: 'Private pay' },
+      
+      // Ready to Enroll (2 families)
+      { id: 6, name: 'Chen Family', stage: 'ready_to_enroll', children: 1, monthlyValue: 667, nextStep: 'Send contract', inquiryDate: '2024-11-05', status: 'ready_to_enroll', notes: 'Application approved' },
+      { id: 7, name: 'Davis Family', stage: 'ready_to_enroll', children: 2, monthlyValue: 1166, nextStep: 'Generate enrollment agreement', inquiryDate: '2024-11-03', status: 'ready_to_enroll', notes: 'ESA eligible, ready to sign' },
+      
+      // At Risk Families (2 families)
+      { id: 8, name: 'Roberts Family', stage: 'current_risk', children: 2, monthlyValue: 1166, nextStep: 'Schedule meeting', inquiryDate: '2022-09-01', status: 'retention_risk', notes: '45 days late, 3 consecutive late payments' },
+      { id: 9, name: 'Brown Family', stage: 'current_risk', children: 1, monthlyValue: 667, nextStep: 'Family check-in', inquiryDate: '2023-08-15', status: 'retention_risk', notes: 'Student struggling academically, parents concerned' }
     ],
     analytics: {
       monthlyTrends: [

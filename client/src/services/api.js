@@ -110,10 +110,10 @@ export const dashboardAPI = {
     if (USE_MOCK_DATA) {
       return Promise.resolve({
         data: {
-          bankBalance: 3247,
+          bankBalance: 14200,  // Consistent with 22 days cash
           expectedToday: 1749,
           outstandingRevenue: 4915,
-          daysCashOnHand: 7,
+          daysCashOnHand: 22,  // Matches health scorecard
           urgentCollections: [
             { id: 1, family: 'Johnson Family', amount: 1166, daysLate: 15, type: 'ESA payment', note: 'Usually reliable' },
             { id: 2, family: 'Martinez Family', amount: 583, daysLate: 10, type: 'Omella failed', note: 'Card expired' },
@@ -196,7 +196,7 @@ export const healthAPI = {
           lastUpdated: new Date().toISOString(),
           criticalMetrics: [],
           warningMetrics: [
-            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 22, displayValue: '22 days', benchmark: 30, target: 60, goldStar: 90, status: 'improving', trend: 'stable', recommendation: 'Working toward 30-day minimum - on the right track' },
+            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 22, displayValue: '22 days', benchmark: 30, target: 60, goldStar: 90, status: 'improving', trend: 'stable', recommendation: 'At 22 days - working toward 30-day minimum (on track)' },
             { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'working_on_it', trend: 'stable', recommendation: 'Above 20% target - explore cost reduction opportunities' },
             { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: 0.52, displayValue: '52%', benchmark: 0.50, target: 0.45, status: 'warning', trend: 'stable', recommendation: 'Monitor closely - don\'t add staff until 35+ students' },
             { key: 'studentCompletion', name: 'Student Completion Rate (School Year)', value: 0.86, displayValue: '86%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'stable', recommendation: 'Goal: 90%+ students complete full school year' },
@@ -213,13 +213,13 @@ export const healthAPI = {
             { key: 'paymentHistory', name: 'Payment Discipline', value: 1.0, displayValue: '100%', benchmark: 0.95, target: 1.0, goldStar: 1.0, status: 'excellent', trend: 'stable', recommendation: 'Excellent! Keep it up - perfect payment record' }
           ],
           insights: [
-            { type: 'opportunity', title: 'Build Your Cash Reserve', message: '22 days cash - working toward 30-day minimum', action: 'Continue building reserves - you are making progress' },
-            { type: 'opportunity', title: 'Optimize Facility Costs', message: 'Rent at 28% vs 20% target', action: 'Opportunity to improve margins through lease negotiation' },
-            { type: 'positive', title: 'Great Student Completion!', message: '92% students complete the school year', action: 'Keep up the excellent work' }
+            { type: 'opportunity', title: 'Build Cash Reserve to 30 Days', message: 'At 22 days - need 8 more days to reach minimum', action: 'Save $5,200 to reach 30-day target' },
+            { type: 'opportunity', title: 'Optimize Facility Costs', message: 'Rent at 28% vs 20% target', action: 'Reduce facility burden or increase enrollment' },
+            { type: 'positive', title: 'Great Student Completion!', message: '92% students complete the school year (FDOS to LDOS)', action: 'Excellent! Maintain this performance' }
           ],
           urgentActions: [
-            { priority: 'high', metric: 'Days Cash on Hand', currentValue: '5 days', targetValue: '45 days', action: 'Collect outstanding payments', timeframe: 'Immediate' },
-            { priority: 'high', metric: 'Rent to Revenue Ratio', currentValue: '28%', targetValue: '15%', action: 'Reduce facility costs', timeframe: 'Immediate' }
+            { priority: 'medium', metric: 'Days Cash on Hand', currentValue: '22 days', targetValue: '30 days minimum', action: 'Build cash reserves - save $5,200', timeframe: '30-60 days' },
+            { priority: 'medium', metric: 'Rent to Revenue Ratio', currentValue: '28%', targetValue: '20%', action: 'Optimize facility costs or increase enrollment', timeframe: '60-90 days' }
           ]
         }
       });
