@@ -13,16 +13,16 @@ import {
 } from '@heroicons/react/24/outline';
 
 const navigation = [
-  { name: 'My School Overview', href: '/dashboard', icon: ChartBarIcon },
-  { name: 'Family Payments', href: '/payments', icon: CreditCardIcon },
-  { name: 'Tuition Calculator', href: '/calculator', icon: CalculatorIcon },
-  { name: 'Money Health Check', href: '/health', icon: HeartIcon },
-  { name: 'Student Enrollment', href: '/enrollment', icon: UserGroupIcon },
-  { name: 'Lease Helper', href: '/lease', icon: BuildingOfficeIcon },
-  { name: 'AI Helper', href: '/ai-assistant', icon: SparklesIcon, highlight: true },
+  { name: 'Business Dashboard', href: '/dashboard', icon: ChartBarIcon },
+  { name: 'Revenue Management', href: '/payments', icon: CreditCardIcon },
+  { name: 'Pricing Strategy', href: '/calculator', icon: CalculatorIcon },
+  { name: 'Financial Health', href: '/health', icon: HeartIcon },
+  { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
+  { name: 'Facility Analysis', href: '/lease', icon: BuildingOfficeIcon },
+  { name: 'AI Business Coach', href: '/ai-assistant', icon: SparklesIcon, highlight: true },
   { name: 'Documents & Contracts', href: '/documents', icon: DocumentTextIcon, highlight: true },
-  { name: 'Bank Accounts', href: '/accounts', icon: BanknotesIcon, highlight: true },
-  { name: 'Plans & Pricing', href: '/pricing', icon: CreditCardIcon, highlight: true },
+  { name: 'Account Integration', href: '/accounts', icon: BanknotesIcon, highlight: true },
+  { name: 'Growth Plans', href: '/pricing', icon: CreditCardIcon, highlight: true },
 ];
 
 const Sidebar = () => {

@@ -180,22 +180,22 @@ const accountSummary = {
       businessControl: 'Risk management - ensure business continuity'
     },
     {
-      priority: 'medium',
-      category: 'debt_management',
-      title: 'Optimize Debt Structure',
-      description: 'Evaluate refinancing high-interest debt with SBA loans at favorable rates',
-      reasoning: 'Reduce monthly debt service and improve cash flow for operations',
-      implementation: 'Consult with SBA-preferred lender for qualification assessment',
-      businessControl: 'Capital structure optimization - reduce financial burden'
+      priority: 'high',
+      category: 'enrollment_optimization',
+      title: 'Achieve Enrollment Sweet Spot',
+      description: 'Target optimal enrollment to cover all costs plus owner salary and reserve fund',
+      reasoning: 'With <50 kids margins are razor thin - every student matters for financial viability',
+      implementation: 'Calculate break-even enrollment, target +5-8 students for healthy margin',
+      businessControl: 'Enrollment is everything - focus on filling seats sustainably'
     },
     {
-      priority: 'medium',
-      category: 'credit_management',
-      title: 'Maintain Conservative Credit Utilization',
-      description: 'Keep total credit utilization below 20% across all business accounts',
-      reasoning: 'Preserves borrowing capacity for genuine emergencies and growth opportunities',
-      implementation: 'Monthly review and paydown plan for balances above 15%',
-      businessControl: 'Credit preservation - maintain access to capital when needed'
+      priority: 'high',
+      category: 'retention_management',
+      title: 'Maximize Student Retention',
+      description: 'Retain 95%+ of students throughout the year and into next year',
+      reasoning: 'Losing even 2-3 students can eliminate profit margin in microschool model',
+      implementation: 'Monthly family satisfaction surveys, proactive engagement, early intervention',
+      businessControl: 'Retention matters - every family leaving hurts the bottom line'
     }
   ]
 };
@@ -370,13 +370,22 @@ function calculateAccountHealthFactors(accounts, summary) {
       impact: 'medium'
     },
     
-    diversificationRisk: {
-      score: 65, // Educational businesses face enrollment concentration risk
-      factor: 'Revenue Diversification',
-      current: 'Primarily tuition-dependent',
-      target: 'Multiple revenue streams (aftercare, camps, programs)',
-      businessControl: 'Revenue diversification reduces business risk',
-      impact: 'high'
+    enrollmentOptimization: {
+      score: 45, // Below optimal enrollment for microschool model
+      factor: 'Enrollment Sweet Spot Achievement',
+      current: '28 students (break-even at 25, optimal 32-35)',
+      target: '32-35 students for healthy margins',
+      businessControl: 'Enrollment is everything - every student impacts viability',
+      impact: 'critical'
+    },
+    
+    studentRetentionRate: {
+      score: 75, // Current retention needs improvement
+      factor: 'Student Retention Management',
+      current: '85% annual retention (lost 4 families this year)',
+      target: '95%+ retention (lose max 1-2 families)',
+      businessControl: 'Retention matters - losing students eliminates profit margin',
+      impact: 'critical'
     }
   };
 }

@@ -48,14 +48,14 @@ const Dashboard = () => {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Good morning! Here's how your school is doing</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Good morning! Your business performance snapshot</h1>
         <p className="text-gray-600">
           {new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} things to focus on today
+          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} key metrics need attention
         </p>
       </div>
 
@@ -65,27 +65,27 @@ const Dashboard = () => {
           <div className="flex items-start space-x-3">
             <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
             <div>
-              <h2 className="text-xl font-semibold mb-2">⚠️ Your school needs attention - Health Score: {scorecard.overallScore}/100</h2>
+              <h2 className="text-xl font-semibold mb-2">⚠️ Business Health Alert - Performance Score: {scorecard.overallScore}/100</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
                 <div>
-                  <div className="text-sm opacity-90">Money in Bank</div>
+                  <div className="text-sm opacity-90">Operating Cash Balance</div>
                   <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '3,247'}</div>
-                  <div className="text-sm">Down from yesterday (paid staff)</div>
+                  <div className="text-sm">↓ $1,200 from yesterday (payroll)</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">Money Coming Today</div>
+                  <div className="text-sm opacity-90">Expected Receipts Today</div>
                   <div className="text-xl font-bold">${summary?.expectedToday?.toLocaleString() || '1,749'}</div>
-                  <div className="text-sm">3 families paying today</div>
+                  <div className="text-sm">3 families • 2 via Omella, 1 check</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">Families Behind on Payment</div>
+                  <div className="text-sm opacity-90">Outstanding Receivables</div>
                   <div className="text-xl font-bold">${summary?.outstandingRevenue?.toLocaleString() || '4,915'}</div>
-                  <div className="text-sm">8 families need to pay</div>
+                  <div className="text-sm">8 accounts past due</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">How Long Money Will Last</div>
+                  <div className="text-sm opacity-90">Days Cash on Hand</div>
                   <div className="text-xl font-bold">{summary?.daysCashOnHand || 7} days</div>
-                  <div className="text-sm">Need 30+ days to be safe</div>
+                  <div className="text-sm">Target: 30+ days (industry standard)</div>
                 </div>
               </div>
             </div>
@@ -95,26 +95,26 @@ const Dashboard = () => {
 
       {/* Comprehensive Financial Metrics Grid */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* How Long Money Will Last */}
+        {/* Days Cash on Hand */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">How Long Money Will Last</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Urgent</span>
+            <h4 className="text-sm font-medium text-gray-600">Days Cash on Hand</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
           </div>
           <div className="text-2xl font-bold text-red-600 mb-1">5 days</div>
-          <div className="text-xs text-gray-500">Goal: 30+ days</div>
-          <div className="text-xs text-red-600 mt-2">⚠️ Need money soon!</div>
+          <div className="text-xs text-gray-500">Industry standard: 30+ days</div>
+          <div className="text-xs text-red-600 mt-2">⚠️ Cash runway critically low</div>
         </div>
 
-        {/* Money Coming In vs Going Out */}
+        {/* Debt Service Coverage Ratio */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Money In vs Money Out</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Watch</span>
+            <h4 className="text-sm font-medium text-gray-600">Debt Service Coverage</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">90¢</div>
-          <div className="text-xs text-gray-500">For every $1 that goes out</div>
-          <div className="text-xs text-yellow-600 mt-2">Need more money coming in</div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">0.9x</div>
+          <div className="text-xs text-gray-500">Lender requirement: 1.25x+</div>
+          <div className="text-xs text-yellow-600 mt-2">Below lending standards</div>
         </div>
 
         {/* What You Owe vs What You Make */}
@@ -139,48 +139,48 @@ const Dashboard = () => {
           <div className="text-xs text-orange-600 mt-2">You pay $1,850/month</div>
         </div>
 
-        {/* Students You Have */}
+        {/* Enrollment vs Capacity */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Students You Have</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Need More</span>
+            <h4 className="text-sm font-medium text-gray-600">Enrollment vs Sweet Spot</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Below Target</span>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">28 kids</div>
-          <div className="text-xs text-gray-500">Need 32+ for good profits</div>
-          <div className="text-xs text-yellow-600 mt-2">Every new student helps a lot!</div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">28 / 32</div>
+          <div className="text-xs text-gray-500">Current / Optimal (Break-even: 25)</div>
+          <div className="text-xs text-yellow-600 mt-2">4 students needed for healthy margins</div>
         </div>
 
-        {/* Families That Stay */}
+        {/* Student Retention Rate */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Families That Stay</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Urgent</span>
+            <h4 className="text-sm font-medium text-gray-600">Student Retention Rate</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
           </div>
           <div className="text-2xl font-bold text-red-600 mb-1">85%</div>
-          <div className="text-xs text-gray-500">Goal: 95% (lost 4 families)</div>
-          <div className="text-xs text-red-600 mt-2">Keep families happy!</div>
+          <div className="text-xs text-gray-500">Industry benchmark: 95%+</div>
+          <div className="text-xs text-red-600 mt-2">Lost 4 families this year</div>
         </div>
 
-        {/* Rent Cost */}
+        {/* Rent to Revenue Ratio */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">How Much Rent Costs</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Too High</span>
+            <h4 className="text-sm font-medium text-gray-600">Rent to Revenue Ratio</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
           </div>
           <div className="text-2xl font-bold text-red-600 mb-1">28%</div>
-          <div className="text-xs text-gray-500">Goal: 20% or less</div>
-          <div className="text-xs text-red-600 mt-2">Rent costs too much</div>
+          <div className="text-xs text-gray-500">Industry standard: ≤20%</div>
+          <div className="text-xs text-red-600 mt-2">Facility burden too high</div>
         </div>
 
-        {/* Families Paying On Time */}
+        {/* Collection Rate */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Families Paying On Time</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Improve</span>
+            <h4 className="text-sm font-medium text-gray-600">Collection Rate</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
           </div>
           <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
-          <div className="text-xs text-gray-500">Goal: 95%</div>
-          <div className="text-xs text-yellow-600 mt-2">Set up auto-pay</div>
+          <div className="text-xs text-gray-500">Industry benchmark: 95%+</div>
+          <div className="text-xs text-yellow-600 mt-2">Implement auto-pay systems</div>
         </div>
       </div>
 
@@ -228,12 +228,12 @@ const Dashboard = () => {
           <div className="flex items-start space-x-2">
             <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
             <div>
-              <div className="font-medium text-red-900">Your School Needs Some Help</div>
+              <div className="font-medium text-red-900">Business Performance Alert</div>
               <div className="text-sm text-red-800 mt-1">
-                Your school needs help in 5 areas. Here's what to do first: 
-                1) Get money from families who owe you (you need cash soon!), 
-                2) Get 4 more students (going from 28 to 32+ students), 
-                3) Keep the families you have happy (losing families hurts a lot).
+                5 key performance indicators require immediate attention. Priority actions: 
+                1) Accelerate receivables collection (critical for cash flow), 
+                2) Execute enrollment growth strategy (28→32+ students for optimal margins), 
+                3) Implement retention initiatives (prevent further revenue churn).
               </div>
             </div>
           </div>
@@ -245,7 +245,7 @@ const Dashboard = () => {
         {/* Urgent Collections */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">💰 Families Who Need to Pay</h3>
+            <h3 className="text-lg font-semibold text-gray-900">💰 Accounts Receivable</h3>
             <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
               {summary?.urgentCollections?.length || 5}
             </span>
@@ -305,18 +305,18 @@ const Dashboard = () => {
                   <span className="text-red-600 font-bold text-sm">1</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-red-900 mb-1">🎯 Get 4 More Students</div>
+                  <div className="font-medium text-red-900 mb-1">🎯 Enrollment Optimization Strategy</div>
                   <div className="text-sm text-red-800 mb-2">
-                    Right now you have 28 kids. If you get to 32 kids, you'll have:
+                    Current: 28 students | Target: 32+ for optimal margins. Benefits of reaching target:
                   </div>
                   <div className="text-xs text-red-700 space-y-1">
-                    <div>• $4,000-6,000 more every month</div>
-                    <div>• Money to pay yourself ($3,000+/month)</div>
-                    <div>• Money saved for summer when kids are gone</div>
-                    <div>• Much less stress about money</div>
+                    <div>• $4,000-6,000 additional monthly revenue</div>
+                    <div>• Sustainable owner compensation ($3,000+/month)</div>
+                    <div>• Summer operating reserve fund</div>
+                    <div>• Improved debt service coverage ratio</div>
                   </div>
                   <button className="mt-3 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
-                    Show Me How to Get More Students
+                    View Enrollment Playbook
                   </button>
                 </div>
               </div>
@@ -329,18 +329,18 @@ const Dashboard = () => {
                   <span className="text-orange-600 font-bold text-sm">2</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-orange-900 mb-1">🔄 Keep Families Happy</div>
+                  <div className="font-medium text-orange-900 mb-1">🔄 Customer Retention Management</div>
                   <div className="text-sm text-orange-800 mb-2">
-                    You lost 4 families this year. Each family that leaves costs you $1,000+ per month. Here's what helps:
+                    Current retention: 85% | Industry benchmark: 95%+. Lost revenue impact: $1,000+ per family/month.
                   </div>
                   <div className="text-xs text-orange-700 space-y-1">
-                    <div>• Check in with families every month</div>
-                    <div>• Help kids who are struggling before parents worry</div>
-                    <div>• Ask families to commit for next year by March</div>
-                    <div>• Happy families = stable money</div>
+                    <div>• Implement monthly family satisfaction surveys</div>
+                    <div>• Early intervention protocols for at-risk students</div>
+                    <div>• Q1 re-enrollment commitment campaigns</div>
+                    <div>• Proactive parent communication strategies</div>
                   </div>
                   <button className="mt-3 px-3 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">
-                    Show Me How to Keep Families
+                    View Retention Playbook
                   </button>
                 </div>
               </div>
@@ -353,18 +353,18 @@ const Dashboard = () => {
                   <span className="text-yellow-600 font-bold text-sm">💎</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-yellow-900 mb-1">💎 Get More Help</div>
+                  <div className="font-medium text-yellow-900 mb-1">💎 Professional Growth Tools</div>
                   <div className="text-sm text-yellow-800 mb-2">
-                    For $149/month, get tools that successful schools use:
+                    Professional Plan ($149/month) - Advanced business intelligence for scaling operations:
                   </div>
                   <div className="text-xs text-yellow-700 space-y-1">
-                    <div>• Calculator to find your perfect number of students</div>
-                    <div>• Tool to know if families are happy before they leave</div>
-                    <div>• Automatic reminders for re-enrollment</div>
-                    <div>• Track which marketing actually brings students</div>
+                    <div>• Enrollment optimization modeling & forecasting</div>
+                    <div>• Customer satisfaction tracking & churn prediction</div>
+                    <div>• Automated re-enrollment campaigns</div>
+                    <div>• Marketing ROI attribution & channel analytics</div>
                   </div>
                   <button className="mt-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700">
-                    Try Professional Plan ($149/month)
+                    Upgrade to Professional ($149/mo)
                   </button>
                 </div>
               </div>
@@ -375,7 +375,7 @@ const Dashboard = () => {
 
       {/* Weekly Forecast */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">📅 Your Money This Week</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">📅 Cash Flow Forecast - 5 Days</h3>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {summary?.weeklyForecast?.map((day, index) => (
             <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
