@@ -31,7 +31,7 @@ const navigation = [
   
   // Configuration
   { name: 'School Settings', href: '/settings', icon: Cog6ToothIcon },
-  { name: 'Plans & Pricing', href: '/pricing', icon: CreditCardIcon },
+  { name: 'Subscription Options', href: '/pricing', icon: CreditCardIcon },
 ];
 
 const Sidebar = () => {
