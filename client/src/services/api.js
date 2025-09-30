@@ -191,30 +191,31 @@ export const healthAPI = {
     if (USE_MOCK_DATA) {
       return Promise.resolve({
         data: {
-          overallScore: 53,
-          overallStatus: 'critical',
+          overallScore: 72,
+          overallStatus: 'good',
           lastUpdated: new Date().toISOString(),
-          criticalMetrics: [
-            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 5, displayValue: '5 days', benchmark: 30, target: 45, status: 'danger', trend: 'declining', recommendation: 'Critical: Collect outstanding payments immediately' },
-            { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'danger', trend: 'stable', recommendation: 'Facility costs too high - renegotiate lease' },
-            { key: 'outstandingDebt', name: 'Outstanding Debt', value: 24500, displayValue: '$24,500', benchmark: 20000, target: 15000, status: 'danger', trend: 'stable', recommendation: 'High debt load despite healthy debt-to-revenue ratio' },
-            { key: 'studentRetention', name: 'Student Retention (Year-over-Year)', value: 0.78, displayValue: '78%', benchmark: 0.85, target: 0.90, status: 'danger', trend: 'declining', recommendation: 'Below 85% target - measure first day to first day (excluding terminal grades)' },
-            { key: 'debtServiceCoverage', name: 'Debt Service Coverage Ratio', value: 0.9, displayValue: '0.9x', benchmark: 1.25, target: 1.50, status: 'danger', trend: 'declining', recommendation: 'Below lending standards - improve cash flow' }
-          ],
+          criticalMetrics: [],
           warningMetrics: [
+            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 22, displayValue: '22 days', benchmark: 30, target: 60, goldStar: 90, status: 'improving', trend: 'stable', recommendation: 'Working toward 30-day minimum - on the right track' },
+            { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'working_on_it', trend: 'stable', recommendation: 'Above 20% target - explore cost reduction opportunities' },
             { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: 0.52, displayValue: '52%', benchmark: 0.50, target: 0.45, status: 'warning', trend: 'stable', recommendation: 'Monitor closely - don\'t add staff until 35+ students' },
             { key: 'studentCompletion', name: 'Student Completion Rate (School Year)', value: 0.86, displayValue: '86%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'stable', recommendation: 'Goal: 90%+ students complete full school year' },
             { key: 'staffRetention', name: 'Staff Retention Rate', value: 0.80, displayValue: '80%', benchmark: 0.85, target: 0.90, status: 'warning', trend: 'declining', recommendation: 'Target: 85% annual staff retention - critical for program continuity' },
             { key: 'collectionRate', name: 'Collection Rate', value: 0.82, displayValue: '82%', benchmark: 0.95, target: 0.98, status: 'warning', trend: 'declining', recommendation: 'Set up auto-pay for all families' }
           ],
           goodMetrics: [
-            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: 0.80, displayValue: '80%', benchmark: 0.75, target: 1.00, status: 'good', trend: 'improving', recommendation: 'On track - need 7 more students' },
-            { key: 'debtToRevenue', name: 'Debt to Revenue Ratio', value: 0.12, displayValue: '12%', benchmark: 0.15, target: 0.10, status: 'good', trend: 'stable', recommendation: 'Healthy debt level - monitor for growth' }
+            { key: 'studentRetentionYoY', name: 'Student Retention (Year-over-Year)', value: 0.83, displayValue: '83%', benchmark: 0.85, target: 0.95, goldStar: 0.95, status: 'good', trend: 'stable', recommendation: 'Good - aiming for great (85-94%) or gold star (95%+)' },
+            { key: 'studentCompletionRate', name: 'Student Completion (FDOS to LDOS)', value: 0.92, displayValue: '92%', benchmark: 0.90, target: 0.95, goldStar: 0.95, status: 'great', trend: 'improving', recommendation: 'Great performance! 90-94% - close to gold star' },
+            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: 0.80, displayValue: '80%', benchmark: 0.75, target: 0.90, goldStar: 1.00, status: 'good', trend: 'improving', recommendation: 'Progressing well - 4 more students for target' },
+            { key: 'debtToRevenue', name: 'Debt to Revenue Ratio', value: 0.12, displayValue: '12%', benchmark: 0.15, target: 0.10, goldStar: 0.05, status: 'good', trend: 'stable', recommendation: 'Healthy debt level' }
           ],
-          excellentMetrics: [],
+          excellentMetrics: [
+            { key: 'paymentHistory', name: 'Payment Discipline', value: 1.0, displayValue: '100%', benchmark: 0.95, target: 1.0, goldStar: 1.0, status: 'excellent', trend: 'stable', recommendation: 'Excellent! Keep it up - perfect payment record' }
+          ],
           insights: [
-            { type: 'critical', title: 'Cash Crisis Imminent', message: 'Only 5 days of cash remaining', action: 'Collect outstanding payments immediately' },
-            { type: 'warning', title: 'Facility Costs Too High', message: 'Rent consumes 28% of revenue', action: 'Renegotiate lease or find shared space' }
+            { type: 'opportunity', title: 'Build Your Cash Reserve', message: '22 days cash - working toward 30-day minimum', action: 'Continue building reserves - you're making progress' },
+            { type: 'opportunity', title: 'Optimize Facility Costs', message: 'Rent at 28% vs 20% target', action: 'Opportunity to improve margins through lease negotiation' },
+            { type: 'positive', title: 'Great Student Completion!', message: '92% students complete the school year', action: 'Keep up the excellent work' }
           ],
           urgentActions: [
             { priority: 'high', metric: 'Days Cash on Hand', currentValue: '5 days', targetValue: '45 days', action: 'Collect outstanding payments', timeframe: 'Immediate' },

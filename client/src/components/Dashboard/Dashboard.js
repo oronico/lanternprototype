@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import { dashboardAPI, healthAPI } from '../../services/api';
 import toast from 'react-hot-toast';
@@ -59,13 +60,13 @@ const Dashboard = () => {
         </p>
       </div>
 
-      {/* Critical Alert */}
-      {scorecard?.overallScore < 55 && (
-        <div className="mb-8 p-6 bg-gradient-to-r from-red-500 to-red-600 rounded-lg text-white">
+      {/* Performance Summary */}
+      {scorecard?.overallScore >= 70 ? (
+        <div className="mb-8 p-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white">
           <div className="flex items-start space-x-3">
-            <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
+            <CheckCircleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
             <div>
-              <h2 className="text-xl font-semibold mb-2">⚠️ Business Health Alert - Performance Score: {scorecard.overallScore}/100</h2>
+              <h2 className="text-xl font-semibold mb-2">📊 Business Performance Score: {scorecard.overallScore}/100 - Good Progress!</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
                 <div>
                   <div className="text-sm opacity-90">Operating Cash Balance</div>
@@ -91,19 +92,41 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+      ) : scorecard?.overallScore >= 55 ? (
+        <div className="mb-8 p-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg text-white">
+          <div className="flex items-start space-x-3">
+            <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
+            <div>
+              <h2 className="text-xl font-semibold mb-2">⚠️ Building Your Financial Foundation - Score: {scorecard.overallScore}/100</h2>
+              <p className="text-sm opacity-90">You're making progress! Focus on these key areas to strengthen your business.</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-8 p-6 bg-gradient-to-r from-red-500 to-red-600 rounded-lg text-white">
+          <div className="flex items-start space-x-3">
+            <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
+            <div>
+              <h2 className="text-xl font-semibold mb-2">🚨 Urgent: Cash Flow Attention Needed - Score: {scorecard?.overallScore}/100</h2>
+              <p className="text-sm opacity-90">Your school needs immediate action on cash flow. We'll help you through this.</p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Comprehensive Financial Metrics Grid */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Days Cash on Hand */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-medium text-gray-600">Days Cash on Hand</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Building</span>
           </div>
-          <div className="text-2xl font-bold text-red-600 mb-1">5 days</div>
-          <div className="text-xs text-gray-500">Industry standard: 30+ days</div>
-          <div className="text-xs text-red-600 mt-2">⚠️ Cash runway critically low</div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">22 days</div>
+          <div className="text-xs text-gray-500">
+            Minimum: 30 days | Great: 60 days | ⭐ Gold: 90 days
+          </div>
+          <div className="text-xs text-yellow-600 mt-2">📈 Working toward 30-day target</div>
         </div>
 
         {/* Debt Service Coverage Ratio */}
@@ -151,14 +174,16 @@ const Dashboard = () => {
         </div>
 
         {/* Student Retention Rate */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Student Retention Rate</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+            <h4 className="text-sm font-medium text-gray-600">Student Retention (YoY)</h4>
+            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Good</span>
           </div>
-          <div className="text-2xl font-bold text-red-600 mb-1">85%</div>
-          <div className="text-xs text-gray-500">Industry benchmark: 95%+</div>
-          <div className="text-xs text-red-600 mt-2">Lost 4 families this year</div>
+          <div className="text-2xl font-bold text-blue-600 mb-1">83%</div>
+          <div className="text-xs text-gray-500">
+            Good: 80-84% | Great: 85-94% | ⭐ Gold: 95%+
+          </div>
+          <div className="text-xs text-blue-600 mt-2">✓ Solid foundation - aim for great!</div>
         </div>
 
         {/* Rent to Revenue Ratio */}
@@ -172,15 +197,28 @@ const Dashboard = () => {
           <div className="text-xs text-red-600 mt-2">Facility burden too high</div>
         </div>
 
+        {/* Student Completion Rate (FDOS to LDOS) */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">Student Completion (Year)</h4>
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Great</span>
+          </div>
+          <div className="text-2xl font-bold text-green-600 mb-1">92%</div>
+          <div className="text-xs text-gray-500">
+            Great: 90-94% | ⭐ Gold: 95-100%
+          </div>
+          <div className="text-xs text-green-600 mt-2">🎉 Excellent year-long retention!</div>
+        </div>
+        
         {/* Collection Rate */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-medium text-gray-600">Collection Rate</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Improving</span>
           </div>
           <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
-          <div className="text-xs text-gray-500">Industry benchmark: 95%+</div>
-          <div className="text-xs text-yellow-600 mt-2">Implement auto-pay systems</div>
+          <div className="text-xs text-gray-500">Target: 95%+ with auto-pay</div>
+          <div className="text-xs text-yellow-600 mt-2">Opportunity for improvement</div>
         </div>
       </div>
 
@@ -194,46 +232,52 @@ const Dashboard = () => {
               scorecard?.overallScore >= 70 ? 'text-blue-600' :
               scorecard?.overallScore >= 55 ? 'text-yellow-600' : 'text-red-600'
             }`}>
-              {scorecard?.overallScore || 53}
+              {scorecard?.overallScore || 72}
             </div>
             <div className="text-sm text-gray-600">out of 100</div>
-            <div className="text-xs text-red-600 font-medium">Critical Status</div>
+            <div className={`text-xs font-medium ${
+              scorecard?.overallScore >= 85 ? 'text-green-600' :
+              scorecard?.overallScore >= 70 ? 'text-blue-600' : 'text-yellow-600'
+            }`}>
+              {scorecard?.overallScore >= 85 ? '⭐ Gold Star!' :
+               scorecard?.overallScore >= 70 ? '✓ Good - Building Strength' : 'Working On It'}
+            </div>
           </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="text-center p-3 bg-red-50 rounded-lg">
-            <div className="text-xl font-bold text-red-600">5</div>
-            <div className="text-sm text-red-700">Critical Issues</div>
-            <div className="text-xs text-gray-500">Need immediate action</div>
-          </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
-            <div className="text-xl font-bold text-yellow-600">3</div>
-            <div className="text-sm text-yellow-700">Warning Metrics</div>
-            <div className="text-xs text-gray-500">Monitor closely</div>
+          <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-xl font-bold text-green-600">2</div>
+            <div className="text-sm text-green-700">⭐ Gold Star</div>
+            <div className="text-xs text-gray-500">Excellent performance</div>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-xl font-bold text-blue-600">2</div>
-            <div className="text-sm text-blue-700">Good Performance</div>
-            <div className="text-xs text-gray-500">Stable metrics</div>
+            <div className="text-xl font-bold text-blue-600">3</div>
+            <div className="text-sm text-blue-700">Great - Keep Going</div>
+            <div className="text-xs text-gray-500">Above benchmarks</div>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-xl font-bold text-green-600">0</div>
-            <div className="text-sm text-green-700">Excellent</div>
-            <div className="text-xs text-gray-500">Top performers</div>
+          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+            <div className="text-xl font-bold text-yellow-600">2</div>
+            <div className="text-sm text-yellow-700">Good - Building</div>
+            <div className="text-xs text-gray-500">Solid foundation</div>
+          </div>
+          <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-xl font-bold text-orange-600">3</div>
+            <div className="text-sm text-orange-700">Opportunities</div>
+            <div className="text-xs text-gray-500">Areas to improve</div>
           </div>
         </div>
         
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start space-x-2">
-            <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+            <CheckCircleIcon className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div>
-              <div className="font-medium text-red-900">Business Performance Alert</div>
-              <div className="text-sm text-red-800 mt-1">
-                5 key performance indicators require immediate attention. Priority actions: 
-                1) Accelerate receivables collection (critical for cash flow), 
-                2) Execute enrollment growth strategy (28→32+ students for optimal margins), 
-                3) Implement retention initiatives (prevent further revenue churn).
+              <div className="font-medium text-blue-900">Your Path to Financial Excellence</div>
+              <div className="text-sm text-blue-800 mt-1">
+                You're doing well! Focus areas for even better performance: 
+                1) Build cash reserves (22→30+ days for minimum standard), 
+                2) Grow enrollment (28→32+ students for optimal margins), 
+                3) Maintain your great 92% completion rate and 83% retention.
               </div>
             </div>
           </div>
