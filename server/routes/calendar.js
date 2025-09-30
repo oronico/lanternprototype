@@ -300,4 +300,106 @@ function getPriorityColor(date) {
   return '7'; // Blue - scheduled
 }
 
+// GET /api/calendar/export-ics
+router.get('/export-ics', (req, res) => {
+  try {
+    const { includeTypes } = req.query;
+    
+    // Generate ICS calendar file
+    const icsContent = generateICSFile(includeTypes);
+    
+    res.setHeader('Content-Type', 'text/calendar');
+    res.setHeader('Content-Disposition', 'attachment; filename="schoolstack-calendar.ics"');
+    res.send(icsContent);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to export calendar' });
+  }
+});
+
+function generateICSFile(includeTypes) {
+  const events = [];
+  
+  // School holidays
+  const holidays = [
+    { date: '2024-11-25', name: 'Thanksgiving Break', duration: 5 },
+    { date: '2024-12-20', name: 'Winter Break', duration: 14 },
+    { date: '2025-03-10', name: 'Spring Break', duration: 7 }
+  ];
+  
+  // Contract deadlines from criticalDates
+  const contractDeadlines = [
+    { date: '2025-03-01', name: 'Re-enrollment Deadline', type: 'deadline' },
+    { date: '2026-06-30', name: 'Lease Negotiation Start', type: 'deadline' },
+    { date: '2024-12-31', name: 'Insurance Renewal', type: 'deadline' }
+  ];
+  
+  // Tuition payment dates (1st of each month)
+  const tuitionDates = [];
+  for (let month = 0; month < 12; month++) {
+    const date = new Date(2024, 8 + month, 1); // Start August 1
+    tuitionDates.push({
+      date: date.toISOString().split('T')[0],
+      name: 'Tuition Payment Due',
+      type: 'payment'
+    });
+  }
+  
+  // Combine all events
+  const allEvents = [
+    ...holidays.map(h => ({ ...h, type: 'holiday' })),
+    ...contractDeadlines,
+    ...tuitionDates
+  ];
+  
+  // Generate ICS format
+  let ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SchoolStack.ai//School Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:SchoolStack Calendar
+X-WR-TIMEZONE:America/New_York
+`;
+
+  allEvents.forEach((event, index) => {
+    const uid = `schoolstack-${event.type}-${index}@schoolstack.ai`;
+    const dtstart = event.date.replace(/-/g, '');
+    const summary = event.name;
+    const description = getEventDescription(event);
+    
+    ics += `BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART;VALUE=DATE:${dtstart}
+SUMMARY:${summary}
+DESCRIPTION:${description}
+STATUS:CONFIRMED
+SEQUENCE:0
+BEGIN:VALARM
+TRIGGER:-P7D
+ACTION:DISPLAY
+DESCRIPTION:Reminder: ${summary} in 7 days
+END:VALARM
+END:VEVENT
+`;
+  });
+
+  ics += 'END:VCALENDAR';
+  
+  return ics;
+}
+
+function getEventDescription(event) {
+  switch (event.type) {
+    case 'holiday':
+      return `School closed for ${event.name}. Duration: ${event.duration} days`;
+    case 'deadline':
+      return `Important deadline: ${event.name}. Action required.`;
+    case 'payment':
+      return 'Monthly tuition payment due. Ensure families have paid.';
+    default:
+      return event.name;
+  }
+}
+
 module.exports = router;

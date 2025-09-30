@@ -7,7 +7,8 @@ import {
   BanknotesIcon,
   DocumentTextIcon,
   UserGroupIcon,
-  BuildingOfficeIcon
+  BuildingOfficeIcon,
+  CalculatorIcon
 } from '@heroicons/react/24/outline';
 
 const BusinessBasicsChecklist = () => {
