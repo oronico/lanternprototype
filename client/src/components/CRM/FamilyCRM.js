@@ -18,6 +18,13 @@ const FamilyCRM = () => {
   const [families, setFamilies] = useState([]);
   const [selectedFamily, setSelectedFamily] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showAddFamily, setShowAddFamily] = useState(false);
+  const [newFamily, setNewFamily] = useState({
+    familyName: '',
+    primaryContact: { name: '', email: '', phone: '' },
+    students: [{ firstName: '', lastName: '', grade: '', dateOfBirth: '', esaEligible: false, programEnrollment: '' }],
+    inquirySource: ''
+  });
 
   useEffect(() => {
     loadFamilies();
@@ -87,7 +94,10 @@ const FamilyCRM = () => {
             </div>
           </div>
           
-          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+          <button 
+            onClick={() => setShowAddFamily(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add New Family
           </button>
@@ -443,6 +453,240 @@ const FamilyCRM = () => {
                     Family in excellent standing - maintain regular check-ins
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Family Modal */}
+      {showAddFamily && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-6 border max-w-3xl shadow-lg rounded-md bg-white">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">Add New Family & Students</h3>
+              <button onClick={() => setShowAddFamily(false)} className="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Family Information */}
+              <div>
+                <h4 className="font-medium text-gray-900 mb-3">Family Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Family Last Name</label>
+                    <input
+                      type="text"
+                      value={newFamily.familyName}
+                      onChange={(e) => setNewFamily({...newFamily, familyName: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="Johnson"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Primary Contact Name</label>
+                    <input
+                      type="text"
+                      value={newFamily.primaryContact.name}
+                      onChange={(e) => setNewFamily({...newFamily, primaryContact: {...newFamily.primaryContact, name: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="Michael Johnson"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={newFamily.primaryContact.email}
+                      onChange={(e) => setNewFamily({...newFamily, primaryContact: {...newFamily.primaryContact, email: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="mjohnson@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      value={newFamily.primaryContact.phone}
+                      onChange={(e) => setNewFamily({...newFamily, primaryContact: {...newFamily.primaryContact, phone: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="555-0101"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Inquiry Source</label>
+                    <select
+                      value={newFamily.inquirySource}
+                      onChange={(e) => setNewFamily({...newFamily, inquirySource: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select source...</option>
+                      <option value="word_of_mouth">Word of Mouth</option>
+                      <option value="facebook">Facebook</option>
+                      <option value="google">Google Search</option>
+                      <option value="referral">Referral</option>
+                      <option value="event">School Event</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Student Information */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-gray-900">Students</h4>
+                  <button
+                    onClick={() => setNewFamily({
+                      ...newFamily,
+                      students: [...newFamily.students, { firstName: '', lastName: '', grade: '', dateOfBirth: '', esaEligible: false, programEnrollment: '' }]
+                    })}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    + Add Another Student
+                  </button>
+                </div>
+                
+                {newFamily.students.map((student, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-4 mb-3">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-medium text-gray-700">Student {index + 1}</span>
+                      {index > 0 && (
+                        <button
+                          onClick={() => setNewFamily({
+                            ...newFamily,
+                            students: newFamily.students.filter((_, i) => i !== index)
+                          })}
+                          className="text-xs text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">First Name</label>
+                        <input
+                          type="text"
+                          value={student.firstName}
+                          onChange={(e) => {
+                            const updated = [...newFamily.students];
+                            updated[index].firstName = e.target.value;
+                            setNewFamily({...newFamily, students: updated});
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                          placeholder="Emma"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Last Name</label>
+                        <input
+                          type="text"
+                          value={student.lastName}
+                          onChange={(e) => {
+                            const updated = [...newFamily.students];
+                            updated[index].lastName = e.target.value;
+                            setNewFamily({...newFamily, students: updated});
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                          placeholder="Johnson"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Grade</label>
+                        <select
+                          value={student.grade}
+                          onChange={(e) => {
+                            const updated = [...newFamily.students];
+                            updated[index].grade = e.target.value;
+                            setNewFamily({...newFamily, students: updated});
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        >
+                          <option value="">Select grade...</option>
+                          <option value="PreK">PreK</option>
+                          <option value="K">Kindergarten</option>
+                          {[...Array(12)].map((_, i) => (
+                            <option key={i} value={`${i+1}th`}>{i+1}th Grade</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Program Enrollment</label>
+                        <select
+                          value={student.programEnrollment}
+                          onChange={(e) => {
+                            const updated = [...newFamily.students];
+                            updated[index].programEnrollment = e.target.value;
+                            setNewFamily({...newFamily, students: updated});
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        >
+                          <option value="">Select program...</option>
+                          <option value="full_time">Full-Time (5 days/week)</option>
+                          <option value="part_time_3">Part-Time (3 days/week)</option>
+                          <option value="part_time_2">Part-Time (2 days/week)</option>
+                          <option value="virtual">Virtual/Online</option>
+                          <option value="summer_camp">Summer Camp Only</option>
+                          <option value="afterschool">Afterschool Program</option>
+                          <option value="tutoring">Tutoring Sessions</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
+                        <input
+                          type="date"
+                          value={student.dateOfBirth}
+                          onChange={(e) => {
+                            const updated = [...newFamily.students];
+                            updated[index].dateOfBirth = e.target.value;
+                            setNewFamily({...newFamily, students: updated});
+                          }}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                      </div>
+                      <div className="flex items-center">
+                        <label className="flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={student.esaEligible}
+                            onChange={(e) => {
+                              const updated = [...newFamily.students];
+                              updated[index].esaEligible = e.target.checked;
+                              setNewFamily({...newFamily, students: updated});
+                            }}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">ESA/Voucher Eligible</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3 pt-4 border-t">
+                <button
+                  onClick={() => {
+                    // Add family logic here
+                    console.log('Adding family:', newFamily);
+                    setShowAddFamily(false);
+                  }}
+                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
+                >
+                  Add Family & Generate Contract
+                </button>
+                <button
+                  onClick={() => setShowAddFamily(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+              
+              <div className="text-xs text-gray-500 text-center">
+                After adding family, you can generate their enrollment contract with student names pre-filled
               </div>
             </div>
           </div>
