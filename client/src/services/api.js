@@ -213,7 +213,7 @@ export const healthAPI = {
             { key: 'paymentHistory', name: 'Payment Discipline', value: 1.0, displayValue: '100%', benchmark: 0.95, target: 1.0, goldStar: 1.0, status: 'excellent', trend: 'stable', recommendation: 'Excellent! Keep it up - perfect payment record' }
           ],
           insights: [
-            { type: 'opportunity', title: 'Build Your Cash Reserve', message: '22 days cash - working toward 30-day minimum', action: 'Continue building reserves - you're making progress' },
+            { type: 'opportunity', title: 'Build Your Cash Reserve', message: '22 days cash - working toward 30-day minimum', action: 'Continue building reserves - you are making progress' },
             { type: 'opportunity', title: 'Optimize Facility Costs', message: 'Rent at 28% vs 20% target', action: 'Opportunity to improve margins through lease negotiation' },
             { type: 'positive', title: 'Great Student Completion!', message: '92% students complete the school year', action: 'Keep up the excellent work' }
           ],
