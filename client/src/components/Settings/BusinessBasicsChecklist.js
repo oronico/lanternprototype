@@ -100,7 +100,7 @@ const BusinessBasicsChecklist = () => {
           key: 'hasBusinessBankAccount', 
           label: 'Dedicated Business Bank Account', 
           critical: true,
-          help: 'REQUIRED: Never mix business and personal money. Opens with EIN',
+          help: 'Essential: Separate business from personal finances. Opens with your EIN',
           priority: 1
         },
         { 
@@ -129,21 +129,21 @@ const BusinessBasicsChecklist = () => {
           key: 'hasGeneralLiability', 
           label: 'General Liability Insurance ($1M-2M)', 
           critical: true,
-          help: 'REQUIRED: Protects against accidents, injuries. Typically $200-400/month',
+          help: 'Essential: Protects against accidents, injuries. Typically $200-400/month',
           priority: 1
         },
         { 
           key: 'hasProfessionalLiability', 
           label: 'Professional/E&O Insurance', 
           critical: true,
-          help: 'REQUIRED: Covers educational malpractice claims. ~$150-300/month',
+          help: 'Essential: Covers educational malpractice claims. ~$150-300/month',
           priority: 1
         },
         { 
           key: 'hasWorkersComp', 
           label: 'Workers Compensation (if employees)', 
           critical: true,
-          help: 'STATE REQUIRED: Covers employee injuries. Cost based on payroll',
+          help: 'STATE Essential: Covers employee injuries. Cost based on payroll',
           priority: 1
         },
         { 
@@ -223,7 +223,7 @@ const BusinessBasicsChecklist = () => {
           key: 'backgroundChecksComplete', 
           label: 'Background Checks for All Staff', 
           critical: true,
-          help: 'REQUIRED: State and federal background checks for anyone with student contact',
+          help: 'Essential: State and federal background checks for anyone with student contact',
           priority: 1
         },
         { 
@@ -355,8 +355,8 @@ const BusinessBasicsChecklist = () => {
                             {item.label}
                           </label>
                           {item.critical && (
-                            <span className="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded font-medium">
-                              REQUIRED
+                            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded font-medium">
+                              Essential
                             </span>
                           )}
                         </div>
