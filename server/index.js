@@ -78,6 +78,7 @@ const coachingRoutes = require('./routes/coaching');
 const documentsRoutes = require('./routes/documents');
 const reconciliationRoutes = require('./routes/reconciliation');
 const accountsRoutes = require('./routes/accounts');
+const calendarRoutes = require('./routes/calendar');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -124,6 +125,11 @@ app.use('/api/accounts',
   security.auditAccess('financial_accounts'),
   security.protectFinancialData,
   accountsRoutes
+);
+app.use('/api/calendar',
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  security.auditAccess('calendar_contracts'),
+  calendarRoutes
 );
 
 // Health check endpoint

@@ -197,13 +197,14 @@ export const healthAPI = {
           criticalMetrics: [
             { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 5, displayValue: '5 days', benchmark: 30, target: 45, status: 'danger', trend: 'declining', recommendation: 'Critical: Collect outstanding payments immediately' },
             { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'danger', trend: 'stable', recommendation: 'Facility costs too high - renegotiate lease' },
-            { key: 'studentAttrition', name: 'Student Attrition Rate', value: 0.18, displayValue: '18%', benchmark: 0.10, target: 0.05, status: 'danger', trend: 'increasing', recommendation: 'Critical student retention issues - investigate causes and address immediately' },
-            { key: 'debtServiceCoverage', name: 'Debt Service Coverage Ratio', value: 0.9, displayValue: '0.9x', benchmark: 1.25, target: 1.50, status: 'danger', trend: 'declining', recommendation: 'Below lending standards - improve cash flow' },
-            { key: 'outstandingDebt', name: 'Outstanding Debt', value: 24500, displayValue: '$24,500', benchmark: 20000, target: 15000, status: 'danger', trend: 'stable', recommendation: 'High debt load - consider refinancing options' }
+            { key: 'outstandingDebt', name: 'Outstanding Debt', value: 24500, displayValue: '$24,500', benchmark: 20000, target: 15000, status: 'danger', trend: 'stable', recommendation: 'High debt load despite healthy debt-to-revenue ratio' },
+            { key: 'studentRetention', name: 'Student Retention (Year-over-Year)', value: 0.78, displayValue: '78%', benchmark: 0.85, target: 0.90, status: 'danger', trend: 'declining', recommendation: 'Below 85% target - measure first day to first day (excluding terminal grades)' },
+            { key: 'debtServiceCoverage', name: 'Debt Service Coverage Ratio', value: 0.9, displayValue: '0.9x', benchmark: 1.25, target: 1.50, status: 'danger', trend: 'declining', recommendation: 'Below lending standards - improve cash flow' }
           ],
           warningMetrics: [
             { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: 0.52, displayValue: '52%', benchmark: 0.50, target: 0.45, status: 'warning', trend: 'stable', recommendation: 'Monitor closely - don\'t add staff until 35+ students' },
-            { key: 'studentRetention', name: 'Student Retention Rate', value: 0.82, displayValue: '82%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'declining', recommendation: 'Below benchmark - focus on family engagement' },
+            { key: 'studentCompletion', name: 'Student Completion Rate (School Year)', value: 0.86, displayValue: '86%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'stable', recommendation: 'Goal: 90%+ students complete full school year' },
+            { key: 'staffRetention', name: 'Staff Retention Rate', value: 0.80, displayValue: '80%', benchmark: 0.85, target: 0.90, status: 'warning', trend: 'declining', recommendation: 'Target: 85% annual staff retention - critical for program continuity' },
             { key: 'collectionRate', name: 'Collection Rate', value: 0.82, displayValue: '82%', benchmark: 0.95, target: 0.98, status: 'warning', trend: 'declining', recommendation: 'Set up auto-pay for all families' }
           ],
           goodMetrics: [
