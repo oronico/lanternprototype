@@ -22,6 +22,7 @@ const LeaseAnalyzer = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [leaseText, setLeaseText] = useState('');
+  const [dataEntryMode, setDataEntryMode] = useState(false);
 
   useEffect(() => {
     // Load demo analysis on component mount
@@ -76,50 +77,95 @@ const LeaseAnalyzer = () => {
         </div>
       </div>
 
-      {/* Upload Section */}
+      {/* Input Mode Selection */}
       <div className="mb-8 bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">📄 Upload Lease for AI Analysis</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Paste Lease Content or Key Terms
-            </label>
-            <textarea
-              value={leaseText}
-              onChange={(e) => setLeaseText(e.target.value)}
-              rows={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              placeholder="Paste your lease agreement text here for AI analysis of terms, deadlines, insurance requirements, CAMs, escalations, and more..."
-            />
-          </div>
-          
-          <div className="flex space-x-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">How do you want to enter your lease information?</h3>
+          <div className="flex space-x-2">
             <button
-              onClick={analyzeLeaseDocument}
-              disabled={!leaseText.trim() || loading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+              onClick={() => setDataEntryMode(true)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                dataEntryMode
+                  ? 'bg-orange-600 text-white'
+                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+              }`}
             >
-              {loading ? (
-                <>
-                  <SparklesIcon className="animate-spin -ml-1 mr-3 h-4 w-4" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <DocumentTextIcon className="-ml-1 mr-3 h-4 w-4" />
-                  Analyze with AI
-                </>
-              )}
+              <PencilIcon className="h-4 w-4 inline mr-2" />
+              Enter Details Manually
             </button>
-            
             <button
-              onClick={loadDemoAnalysis}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50"
+              onClick={() => setDataEntryMode(false)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                !dataEntryMode
+                  ? 'bg-orange-600 text-white'
+                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+              }`}
             >
-              View Demo Analysis
+              <SparklesIcon className="h-4 w-4 inline mr-2" />
+              AI Analyze Document
             </button>
           </div>
         </div>
+        
+        {!dataEntryMode && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Paste Your Lease Agreement
+              </label>
+              <textarea
+                value={leaseText}
+                onChange={(e) => setLeaseText(e.target.value)}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                placeholder="Paste your lease agreement text here for AI analysis of terms, deadlines, insurance requirements, CAMs, escalations, and more..."
+              />
+            </div>
+            
+            <div className="flex space-x-4">
+              <button
+                onClick={analyzeLeaseDocument}
+                disabled={!leaseText.trim() || loading}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50"
+              >
+                {loading ? (
+                  <>
+                    <SparklesIcon className="animate-spin -ml-1 mr-3 h-4 w-4" />
+                    Analyzing...
+                  </>
+                ) : (
+                  <>
+                    <DocumentTextIcon className="-ml-1 mr-3 h-4 w-4" />
+                    Analyze with AI
+                  </>
+                )}
+              </button>
+              
+              <button
+                onClick={loadDemoAnalysis}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50"
+              >
+                View Demo Analysis
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {dataEntryMode && (
+          <div className="text-center py-8">
+            <PencilIcon className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+            <h4 className="font-medium text-gray-900 mb-2">Manual Data Entry Mode</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Enter your lease terms, insurance requirements, and estimates for detailed analysis
+            </p>
+            <button 
+              onClick={() => window.location.href = '/lease-entry'}
+              className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+            >
+              Start Entering Lease Details
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tab Navigation */}

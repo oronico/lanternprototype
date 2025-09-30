@@ -12,6 +12,7 @@ import FlexibleTuitionEngine from './components/Calculator/FlexibleTuitionEngine
 import FinancialHealth from './components/Health/FinancialHealth';
 import EnrollmentPipeline from './components/Enrollment/EnrollmentPipeline';
 import LeaseAnalyzer from './components/Lease/LeaseAnalyzer';
+import LeaseDataEntry from './components/Lease/LeaseDataEntry';
 import AIAssistant from './components/AI/AIAssistant';
 import PricingPlans from './components/Pricing/PricingPlans';
 import DocumentManager from './components/Documents/DocumentManager';
@@ -89,6 +90,7 @@ function AppContent() {
               <Route path="/health" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />
+              <Route path="/lease-entry" element={<LeaseDataEntry onAnalyze={(data) => console.log('Analyzing:', data)} />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/pricing" element={<PricingPlans />} />
               <Route path="/documents" element={<DocumentManager />} />
