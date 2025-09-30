@@ -185,8 +185,8 @@ const FinancialAccounts = () => {
           <div className="flex items-center space-x-3">
             <BanknotesIcon className="h-8 w-8 text-green-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Financial Accounts</h1>
-              <p className="text-gray-600">Your complete financial picture - bank accounts, credit cards, and loans</p>
+              <h1 className="text-2xl font-bold text-gray-900">Your Bank Accounts</h1>
+              <p className="text-gray-600">See all your school's money in one place - checking, savings, credit cards, and loans</p>
             </div>
           </div>
           

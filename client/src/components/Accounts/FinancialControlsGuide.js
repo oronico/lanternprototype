@@ -79,35 +79,35 @@ const FinancialControlsGuide = () => {
       ]
     },
     {
-      id: 'revenue',
-      title: 'Revenue Diversification',
+      id: 'enrollment',
+      title: 'Enrollment Optimization',
       icon: ChartBarIcon,
-      priority: 'medium',
-      description: 'Reduce dependency on single revenue streams',
+      priority: 'critical',
+      description: 'Enrollment is everything - achieve and maintain optimal student count',
       controls: [
         {
-          control: 'Revenue Stream Analysis',
-          standard: 'No single revenue source >70% of total revenue',
-          current: '85% tuition dependent',
-          target: 'Multiple revenue streams',
+          control: 'Enrollment Sweet Spot',
+          standard: 'Maintain enrollment 5-8 students above break-even point',
+          current: '28 students (break-even: 25, optimal: 32-35)',
+          target: '32-35 students for healthy margins',
           status: 'warning',
-          action: 'Develop aftercare, camps, and enrichment programs'
+          action: 'Focus all marketing on reaching 32+ students - every seat matters'
         },
         {
-          control: 'Enrollment Concentration Risk',
-          standard: 'No family >5% of total revenue',
-          current: 'Need analysis',
-          target: 'Diversified family base',
-          status: 'info',
-          action: 'Analyze family contribution percentages'
+          control: 'Student Retention Rate',
+          standard: '95%+ annual retention (lose maximum 1-2 families)',
+          current: '85% retention (lost 4 families this year)',
+          target: '95%+ retention rate',
+          status: 'critical',
+          action: 'Monthly family check-ins, satisfaction surveys, early intervention'
         },
         {
-          control: 'Contractual Revenue Security',
-          standard: '80%+ of revenue under signed annual contracts',
-          current: 'Need contract analysis',
-          target: '80% contracted revenue',
-          status: 'info',
-          action: 'Implement annual contract renewals with payment schedules'
+          control: 'Summer Enrollment Planning',
+          standard: 'Secure 80%+ of families for following year by March',
+          current: 'Need to track re-enrollment commitments',
+          target: '80% committed by March 1st',
+          status: 'warning',
+          action: 'Implement early re-enrollment process with incentives'
         }
       ]
     },
@@ -271,30 +271,30 @@ const FinancialControlsGuide = () => {
           <div className="border-l-4 border-red-500 pl-4">
             <h4 className="font-semibold text-red-700 mb-2">Immediate (0-30 days)</h4>
             <ul className="text-sm text-gray-700 space-y-1">
+              <li>• <strong>Enroll 4+ students to reach 32+ total</strong></li>
+              <li>• Launch family retention check-ins</li>
               <li>• Establish $5,000 operating minimum</li>
-              <li>• Set up automatic transfer triggers</li>
-              <li>• Implement dual approval for >$500</li>
-              <li>• Begin weekly cash flow monitoring</li>
+              <li>• Begin weekly enrollment tracking</li>
             </ul>
           </div>
           
           <div className="border-l-4 border-yellow-500 pl-4">
             <h4 className="font-semibold text-yellow-700 mb-2">Short-term (1-3 months)</h4>
             <ul className="text-sm text-gray-700 space-y-1">
+              <li>• <strong>Secure 80% re-enrollment commitments</strong></li>
+              <li>• Implement family satisfaction surveys</li>
               <li>• Build emergency fund to 1 month</li>
-              <li>• Implement monthly financial statements</li>
-              <li>• Analyze debt refinancing options</li>
-              <li>• Establish board treasurer reviews</li>
+              <li>• Calculate true cost per student</li>
             </ul>
           </div>
           
           <div className="border-l-4 border-green-500 pl-4">
             <h4 className="font-semibold text-green-700 mb-2">Long-term (3-12 months)</h4>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>• Achieve 3+ month emergency fund</li>
-              <li>• Diversify revenue streams</li>
-              <li>• Complete annual independent audit</li>
-              <li>• Optimize debt structure</li>
+              <li>• <strong>Maintain 32-35 student sweet spot</strong></li>
+              <li>• Achieve 95%+ annual retention rate</li>
+              <li>• Build 3+ month summer reserve fund</li>
+              <li>• Establish sustainable owner salary</li>
             </ul>
           </div>
         </div>

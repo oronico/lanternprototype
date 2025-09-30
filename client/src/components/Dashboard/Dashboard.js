@@ -48,14 +48,14 @@ const Dashboard = () => {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Good morning! Here's your financial snapshot</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Good morning! Here's how your school is doing</h1>
         <p className="text-gray-600">
           {new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} actions need attention today
+          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} things to focus on today
         </p>
       </div>
 
@@ -65,27 +65,27 @@ const Dashboard = () => {
           <div className="flex items-start space-x-3">
             <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
             <div>
-              <h2 className="text-xl font-semibold mb-2">💡 Critical Alert: Financial Health Score: {scorecard.overallScore}/100</h2>
+              <h2 className="text-xl font-semibold mb-2">⚠️ Your school needs attention - Health Score: {scorecard.overallScore}/100</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
                 <div>
-                  <div className="text-sm opacity-90">Bank Balance (live via Plaid)</div>
+                  <div className="text-sm opacity-90">Money in Bank</div>
                   <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '3,247'}</div>
-                  <div className="text-sm">↓ $1,200 from yesterday (payroll)</div>
+                  <div className="text-sm">Down from yesterday (paid staff)</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">Expected Today</div>
+                  <div className="text-sm opacity-90">Money Coming Today</div>
                   <div className="text-xl font-bold">${summary?.expectedToday?.toLocaleString() || '1,749'}</div>
-                  <div className="text-sm">3 families • 2 via Omella, 1 check</div>
+                  <div className="text-sm">3 families paying today</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">Outstanding Revenue</div>
+                  <div className="text-sm opacity-90">Families Behind on Payment</div>
                   <div className="text-xl font-bold">${summary?.outstandingRevenue?.toLocaleString() || '4,915'}</div>
-                  <div className="text-sm">8 families late (was 5 yesterday)</div>
+                  <div className="text-sm">8 families need to pay</div>
                 </div>
                 <div>
-                  <div className="text-sm opacity-90">Days Cash on Hand</div>
+                  <div className="text-sm opacity-90">How Long Money Will Last</div>
                   <div className="text-xl font-bold">{summary?.daysCashOnHand || 7} days</div>
-                  <div className="text-sm">Critical - need 30+ for safety</div>
+                  <div className="text-sm">Need 30+ days to be safe</div>
                 </div>
               </div>
             </div>
@@ -95,92 +95,92 @@ const Dashboard = () => {
 
       {/* Comprehensive Financial Metrics Grid */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Days Cash on Hand */}
+        {/* How Long Money Will Last */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Days Cash on Hand</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+            <h4 className="text-sm font-medium text-gray-600">How Long Money Will Last</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Urgent</span>
           </div>
           <div className="text-2xl font-bold text-red-600 mb-1">5 days</div>
-          <div className="text-xs text-gray-500">Target: 30+ days</div>
-          <div className="text-xs text-red-600 mt-2">⚠️ Cash crisis imminent</div>
+          <div className="text-xs text-gray-500">Goal: 30+ days</div>
+          <div className="text-xs text-red-600 mt-2">⚠️ Need money soon!</div>
         </div>
 
-        {/* Debt Service Coverage Ratio */}
+        {/* Money Coming In vs Going Out */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Debt Service Coverage</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+            <h4 className="text-sm font-medium text-gray-600">Money In vs Money Out</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Watch</span>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">0.9x</div>
-          <div className="text-xs text-gray-500">Target: 1.25x+</div>
-          <div className="text-xs text-yellow-600 mt-2">Below lending standards</div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">90¢</div>
+          <div className="text-xs text-gray-500">For every $1 that goes out</div>
+          <div className="text-xs text-yellow-600 mt-2">Need more money coming in</div>
         </div>
 
-        {/* Debt to Revenue Ratio */}
+        {/* What You Owe vs What You Make */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Debt to Revenue</h4>
+            <h4 className="text-sm font-medium text-gray-600">What You Owe vs What You Make</h4>
             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Good</span>
           </div>
           <div className="text-2xl font-bold text-blue-600 mb-1">12%</div>
-          <div className="text-xs text-gray-500">Target: ≤15%</div>
-          <div className="text-xs text-blue-600 mt-2">✓ Healthy debt level</div>
+          <div className="text-xs text-gray-500">Goal: Keep under 15%</div>
+          <div className="text-xs text-blue-600 mt-2">✓ Manageable debt</div>
         </div>
 
-        {/* Outstanding Debt */}
+        {/* Total Money You Owe */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Outstanding Debt</h4>
-            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Monitor</span>
+            <h4 className="text-sm font-medium text-gray-600">Total Money You Owe</h4>
+            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Watch</span>
           </div>
           <div className="text-2xl font-bold text-orange-600 mb-1">$24,500</div>
           <div className="text-xs text-gray-500">Equipment loan + credit line</div>
-          <div className="text-xs text-orange-600 mt-2">Monthly payment: $1,850</div>
+          <div className="text-xs text-orange-600 mt-2">You pay $1,850/month</div>
         </div>
 
-        {/* Student Attrition Rate */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Student Attrition Rate</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
-          </div>
-          <div className="text-2xl font-bold text-red-600 mb-1">18%</div>
-          <div className="text-xs text-gray-500">Target: ≤10% annually</div>
-          <div className="text-xs text-red-600 mt-2">High student turnover</div>
-        </div>
-
-        {/* Student Retention Rate */}
+        {/* Students You Have */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Student Retention</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+            <h4 className="text-sm font-medium text-gray-600">Students You Have</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Need More</span>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
-          <div className="text-xs text-gray-500">Target: 90%+</div>
-          <div className="text-xs text-yellow-600 mt-2">Below benchmark</div>
+          <div className="text-2xl font-bold text-yellow-600 mb-1">28 kids</div>
+          <div className="text-xs text-gray-500">Need 32+ for good profits</div>
+          <div className="text-xs text-yellow-600 mt-2">Every new student helps a lot!</div>
         </div>
 
-        {/* Facility Burden */}
+        {/* Families That Stay */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Facility Burden</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+            <h4 className="text-sm font-medium text-gray-600">Families That Stay</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Urgent</span>
+          </div>
+          <div className="text-2xl font-bold text-red-600 mb-1">85%</div>
+          <div className="text-xs text-gray-500">Goal: 95% (lost 4 families)</div>
+          <div className="text-xs text-red-600 mt-2">Keep families happy!</div>
+        </div>
+
+        {/* Rent Cost */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-gray-600">How Much Rent Costs</h4>
+            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Too High</span>
           </div>
           <div className="text-2xl font-bold text-red-600 mb-1">28%</div>
-          <div className="text-xs text-gray-500">Target: ≤20%</div>
-          <div className="text-xs text-red-600 mt-2">Rent too high</div>
+          <div className="text-xs text-gray-500">Goal: 20% or less</div>
+          <div className="text-xs text-red-600 mt-2">Rent costs too much</div>
         </div>
 
-        {/* Collection Rate */}
+        {/* Families Paying On Time */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Collection Rate</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+            <h4 className="text-sm font-medium text-gray-600">Families Paying On Time</h4>
+            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Improve</span>
           </div>
           <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
-          <div className="text-xs text-gray-500">Target: 95%+</div>
-          <div className="text-xs text-yellow-600 mt-2">Need auto-pay setup</div>
+          <div className="text-xs text-gray-500">Goal: 95%</div>
+          <div className="text-xs text-yellow-600 mt-2">Set up auto-pay</div>
         </div>
       </div>
 
@@ -228,12 +228,12 @@ const Dashboard = () => {
           <div className="flex items-start space-x-2">
             <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
             <div>
-              <div className="font-medium text-red-900">Multiple Critical Issues Detected</div>
+              <div className="font-medium text-red-900">Your School Needs Some Help</div>
               <div className="text-sm text-red-800 mt-1">
-                Your school has 5 metrics in critical status. Priority actions: 
-                1) Collect outstanding payments (cash crisis imminent), 
-                2) Reduce facility costs (28% of revenue), 
-                3) Address student retention issues (18% attrition rate).
+                Your school needs help in 5 areas. Here's what to do first: 
+                1) Get money from families who owe you (you need cash soon!), 
+                2) Get 4 more students (going from 28 to 32+ students), 
+                3) Keep the families you have happy (losing families hurts a lot).
               </div>
             </div>
           </div>
@@ -245,7 +245,7 @@ const Dashboard = () => {
         {/* Urgent Collections */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">🔥 Urgent Collections</h3>
+            <h3 className="text-lg font-semibold text-gray-900">💰 Families Who Need to Pay</h3>
             <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
               {summary?.urgentCollections?.length || 5}
             </span>
@@ -266,7 +266,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex-1">
                     <div className="font-medium text-gray-900">Johnson Family - $1,166</div>
-                    <div className="text-sm text-gray-600">15 days late • ESA payment • Usually reliable</div>
+                    <div className="text-sm text-gray-600">15 days late • Usually pays on time</div>
                   </div>
                   <button className="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
                     Send Reminder
@@ -275,7 +275,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex-1">
                     <div className="font-medium text-gray-900">Martinez Family - $583</div>
-                    <div className="text-sm text-gray-600">10 days late • Omella failed • Card expired</div>
+                    <div className="text-sm text-gray-600">10 days late • Credit card expired</div>
                   </div>
                   <button className="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
                     Request New Card
@@ -298,47 +298,49 @@ const Dashboard = () => {
           </div>
           
           <div className="space-y-4">
-            {/* Strategic Insight */}
-            <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+            {/* Critical Enrollment Focus */}
+            <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-200">
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-purple-600 font-bold text-sm">1</span>
+                <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-red-600 font-bold text-sm">1</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-purple-900 mb-1">Facility Cost Optimization Strategy</div>
-                  <div className="text-sm text-purple-800 mb-2">
-                    Your facility burden (28%) is 8% above healthy schools. Similar schools that reduced costs to 20% saw:
+                  <div className="font-medium text-red-900 mb-1">🎯 Get 4 More Students</div>
+                  <div className="text-sm text-red-800 mb-2">
+                    Right now you have 28 kids. If you get to 32 kids, you'll have:
                   </div>
-                  <div className="text-xs text-purple-700 space-y-1">
-                    <div>• Average savings: $1,200/month</div>
-                    <div>• Cash runway improvement: +18 days</div>
-                    <div>• Success rate: 65% achieve reduction</div>
+                  <div className="text-xs text-red-700 space-y-1">
+                    <div>• $4,000-6,000 more every month</div>
+                    <div>• Money to pay yourself ($3,000+/month)</div>
+                    <div>• Money saved for summer when kids are gone</div>
+                    <div>• Much less stress about money</div>
                   </div>
-                  <button className="mt-3 px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
-                    Get Negotiation Strategy
+                  <button className="mt-3 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                    Show Me How to Get More Students
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Growth Opportunity */}
-            <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+            {/* Retention Focus */}
+            <div className="p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-200">
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 font-bold text-sm">2</span>
+                <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span className="text-orange-600 font-bold text-sm">2</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-green-900 mb-1">Enrollment Conversion Coaching</div>
-                  <div className="text-sm text-green-800 mb-2">
-                    Your inquiry-to-tour rate (42%) has room for improvement. Schools that reached 60%+ used:
+                  <div className="font-medium text-orange-900 mb-1">🔄 Keep Families Happy</div>
+                  <div className="text-sm text-orange-800 mb-2">
+                    You lost 4 families this year. Each family that leaves costs you $1,000+ per month. Here's what helps:
                   </div>
-                  <div className="text-xs text-green-700 space-y-1">
-                    <div>• Saturday tours (convert 2x better)</div>
-                    <div>• 2-hour response time to inquiries</div>
-                    <div>• ESA family-specific materials</div>
+                  <div className="text-xs text-orange-700 space-y-1">
+                    <div>• Check in with families every month</div>
+                    <div>• Help kids who are struggling before parents worry</div>
+                    <div>• Ask families to commit for next year by March</div>
+                    <div>• Happy families = stable money</div>
                   </div>
-                  <button className="mt-3 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
-                    View Conversion Playbook
+                  <button className="mt-3 px-3 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">
+                    Show Me How to Keep Families
                   </button>
                 </div>
               </div>
@@ -351,18 +353,18 @@ const Dashboard = () => {
                   <span className="text-yellow-600 font-bold text-sm">💎</span>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-yellow-900 mb-1">Unlock Advanced Business Intelligence</div>
+                  <div className="font-medium text-yellow-900 mb-1">💎 Get More Help</div>
                   <div className="text-sm text-yellow-800 mb-2">
-                    Professional plan includes weekly coaching insights worth $2,000+/month in consultant value:
+                    For $149/month, get tools that successful schools use:
                   </div>
                   <div className="text-xs text-yellow-700 space-y-1">
-                    <div>• Crisis management protocols</div>
-                    <div>• Market opportunity analysis</div>
-                    <div>• Competitive intelligence reports</div>
-                    <div>• Growth strategy recommendations</div>
+                    <div>• Calculator to find your perfect number of students</div>
+                    <div>• Tool to know if families are happy before they leave</div>
+                    <div>• Automatic reminders for re-enrollment</div>
+                    <div>• Track which marketing actually brings students</div>
                   </div>
                   <button className="mt-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700">
-                    Upgrade to Professional ($149/mo)
+                    Try Professional Plan ($149/month)
                   </button>
                 </div>
               </div>
@@ -373,7 +375,7 @@ const Dashboard = () => {
 
       {/* Weekly Forecast */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 This Week's Cash Flow Forecast</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">📅 Your Money This Week</h3>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {summary?.weeklyForecast?.map((day, index) => (
             <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
