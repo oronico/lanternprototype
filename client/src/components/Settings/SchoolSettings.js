@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
+import BusinessBasicsChecklist from './BusinessBasicsChecklist';
 
 const SchoolSettings = () => {
   const [schoolData, setSchoolData] = useState({
@@ -186,6 +187,7 @@ const SchoolSettings = () => {
       {/* Section Navigation */}
       <div className="mb-6 flex flex-wrap gap-2">
         {[
+          { id: 'basics', label: 'Business Basics', icon: CheckCircleIcon },
           { id: 'basic', label: 'Basic Info', icon: BuildingOfficeIcon },
           { id: 'revenue', label: 'Revenue & Students', icon: UserGroupIcon },
           { id: 'costs', label: 'Operating Costs', icon: CurrencyDollarIcon },
@@ -209,6 +211,11 @@ const SchoolSettings = () => {
           </button>
         ))}
       </div>
+
+      {/* Business Basics Checklist */}
+      {activeSection === 'basics' && (
+        <BusinessBasicsChecklist />
+      )}
 
       {/* Basic Information */}
       {activeSection === 'basic' && (

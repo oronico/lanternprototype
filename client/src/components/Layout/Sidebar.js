@@ -14,17 +14,24 @@ import {
 } from '@heroicons/react/24/outline';
 
 const navigation = [
-  { name: 'Business Dashboard', href: '/dashboard', icon: ChartBarIcon },
-  { name: 'Revenue Management', href: '/payments', icon: CreditCardIcon },
-  { name: 'Pricing Strategy', href: '/calculator', icon: CalculatorIcon },
+  // Core Operations (Most Used)
+  { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
   { name: 'Financial Health', href: '/health', icon: HeartIcon },
-  { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
-  { name: 'Facility Analysis', href: '/lease', icon: BuildingOfficeIcon },
-  { name: 'AI Business Coach', href: '/ai-assistant', icon: SparklesIcon, highlight: true },
-  { name: 'Documents & Contracts', href: '/documents', icon: DocumentTextIcon, highlight: true },
-  { name: 'Account Integration', href: '/accounts', icon: BanknotesIcon, highlight: true },
-  { name: 'Growth Plans', href: '/pricing', icon: CreditCardIcon, highlight: true },
-  { name: '⚙️ School Settings', href: '/settings', icon: Cog6ToothIcon, highlight: false },
+  { name: 'Payments & Revenue', href: '/payments', icon: CreditCardIcon },
+  { name: 'Student Enrollment', href: '/enrollment', icon: UserGroupIcon },
+  
+  // Planning & Analysis
+  { name: 'Pricing Calculator', href: '/calculator', icon: CalculatorIcon },
+  { name: 'Facility & Lease', href: '/lease', icon: BuildingOfficeIcon },
+  { name: 'Bank Accounts', href: '/accounts', icon: BanknotesIcon },
+  
+  // Business Tools
+  { name: 'AI Document Helper', href: '/ai-assistant', icon: SparklesIcon },
+  { name: 'Contracts & Signatures', href: '/documents', icon: DocumentTextIcon },
+  
+  // Configuration
+  { name: 'School Settings', href: '/settings', icon: Cog6ToothIcon },
+  { name: 'Plans & Pricing', href: '/pricing', icon: CreditCardIcon },
 ];
 
 const Sidebar = () => {
@@ -62,31 +69,18 @@ const SidebarContent = ({ location }) => {
                 to={item.href}
                 className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                   isActive
-                    ? item.highlight
-                      ? 'bg-purple-100 text-purple-700 border-r-2 border-purple-500'
-                      : 'bg-primary-100 text-primary-700 border-r-2 border-primary-500'
-                    : item.highlight
-                    ? 'text-purple-600 hover:bg-purple-50 hover:text-purple-700'
+                    ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 <item.icon
                   className={`mr-3 flex-shrink-0 h-5 w-5 ${
                     isActive
-                      ? item.highlight
-                        ? 'text-purple-500'
-                        : 'text-primary-500'
-                      : item.highlight
-                      ? 'text-purple-400 group-hover:text-purple-500'
+                      ? 'text-blue-500'
                       : 'text-gray-400 group-hover:text-gray-500'
                   }`}
                 />
                 {item.name}
-                {item.highlight && (
-                  <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    New
-                  </span>
-                )}
               </Link>
             );
           })}
