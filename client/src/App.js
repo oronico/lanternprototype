@@ -61,8 +61,16 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-medium mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-8 h-8">
+              <path d="M3 17v2c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2H3zm0-3h2v2H3v-2zm4 0h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-8-4h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zM5 3c-1.1 0-2 .9-2 2v8h18V5c0-1.1-.9-2-2-2H5z"/>
+            </svg>
+          </div>
+          <div className="animate-spin rounded-full h-8 w-8 border-3 border-primary-200 border-t-primary-600 mx-auto"></div>
+          <p className="mt-4 text-sm font-medium text-gray-600">Loading SchoolStack.ai...</p>
+        </div>
       </div>
     );
   }
@@ -75,15 +83,15 @@ function AppContent() {
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white shadow-lg">
+        <div className="w-64">
           <Sidebar />
         </div>
         
         {/* Main content */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col min-h-screen">
           <Header user={user} onLogout={handleLogout} />
           
-          <main className="p-6">
+          <main className="flex-1 p-8 bg-gradient-to-br from-gray-50 to-primary-50/20">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -111,8 +119,19 @@ function AppContent() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#363636',
+            background: '#0A5F6F',
             color: '#fff',
+            borderRadius: '0.75rem',
+            padding: '12px 16px',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 4px 16px 0 rgba(10, 95, 111, 0.16)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#22c55e',
+              secondary: '#fff',
+            },
           },
         }}
       />

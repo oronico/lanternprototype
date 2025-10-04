@@ -39,7 +39,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <div className="h-screen flex flex-col bg-white border-r border-gray-200">
+    <div className="h-screen flex flex-col bg-white border-r border-gray-200 shadow-soft">
       <SidebarContent location={location} />
     </div>
   );
@@ -49,55 +49,60 @@ const SidebarContent = ({ location }) => {
   return (
     <>
       {/* Logo */}
-      <div className="flex items-center h-16 flex-shrink-0 px-4 bg-white border-b border-gray-200">
+      <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gradient-to-r from-primary-500 to-primary-600">
         <div className="flex items-center space-x-3">
-          <div className="text-2xl">📊</div>
+          {/* Logo SVG */}
+          <div className="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center shadow-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5">
+              <path d="M3 17v2c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2H3zm0-3h2v2H3v-2zm4 0h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm-8-4h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zM5 3c-1.1 0-2 .9-2 2v8h18V5c0-1.1-.9-2-2-2H5z"/>
+            </svg>
+          </div>
           <div>
-            <div className="text-lg font-semibold text-gray-900">SchoolStack.ai</div>
-            <div className="text-xs text-gray-500">Complete Tech Stack for Education</div>
+            <div className="text-base font-bold text-white tracking-tight">SchoolStack.ai</div>
+            <div className="text-xs text-primary-100 font-medium">Education Business Platform</div>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 flex flex-col overflow-y-auto pt-5 pb-4">
-        <nav className="mt-5 flex-1 px-2 space-y-1">
+      <div className="flex-1 flex flex-col overflow-y-auto pt-4 pb-4">
+        <nav className="flex-1 px-3 space-y-0.5">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-500'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-primary-50 text-primary-700 shadow-soft'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 <item.icon
-                  className={`mr-3 flex-shrink-0 h-5 w-5 ${
+                  className={`mr-3 flex-shrink-0 h-5 w-5 transition-colors duration-200 ${
                     isActive
-                      ? 'text-blue-500'
-                      : 'text-gray-400 group-hover:text-gray-500'
+                      ? 'text-primary-600'
+                      : 'text-gray-400 group-hover:text-primary-500'
                   }`}
                 />
-                {item.name}
+                <span className={isActive ? 'font-semibold' : ''}>{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
         {/* School Info */}
-        <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200">
-          <div className="flex items-center">
+        <div className="flex-shrink-0 px-3 py-3 border-t border-gray-200 bg-gray-50">
+          <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-white transition-colors duration-200">
             <div className="flex-shrink-0">
-              <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-700">SM</span>
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center shadow-soft">
+                <span className="text-sm font-bold text-white">SM</span>
               </div>
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">Sunshine Microschool</p>
-              <p className="text-xs text-gray-500">28 students • Established 2022</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">Sunshine Microschool</p>
+              <p className="text-xs text-gray-600">28 students • Since 2022</p>
             </div>
           </div>
         </div>

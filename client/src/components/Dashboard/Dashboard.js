@@ -46,184 +46,201 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto animate-fade-in-up">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Good morning! Your business performance snapshot</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Good morning! 👋</h1>
+        <p className="text-lg text-gray-600">
           {new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
-            year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })} • {(scorecard?.criticalMetrics?.length || 0) + (scorecard?.warningMetrics?.length || 0)} key metrics need attention
+          })}
         </p>
       </div>
 
       {/* Performance Summary */}
       {scorecard?.overallScore >= 70 ? (
-        <div className="mb-8 p-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg text-white">
-          <div className="flex items-start space-x-3">
-            <CheckCircleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
-            <div>
-              <h2 className="text-xl font-semibold mb-2">📊 Business Performance Score: {scorecard.overallScore}/100 - Good Progress!</h2>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-white/90">
-                <div>
-                  <div className="text-sm opacity-90">Operating Cash Balance</div>
-                  <div className="text-xl font-bold">${summary?.bankBalance?.toLocaleString() || '14,200'}</div>
-                  <div className="text-sm">Checking + Savings</div>
+        <div className="mb-8 p-6 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl text-white shadow-strong">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <CheckCircleIcon className="h-7 w-7" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-3">Business Performance Score: {scorecard.overallScore}/100</h2>
+              <p className="text-primary-100 mb-4">Strong progress! Here's your financial snapshot.</p>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-xs font-semibold text-primary-100 mb-1">Cash Balance</div>
+                  <div className="text-2xl font-bold">${summary?.bankBalance?.toLocaleString() || '14,200'}</div>
+                  <div className="text-xs text-primary-100 mt-1">Operating accounts</div>
                 </div>
-                <div>
-                  <div className="text-sm opacity-90">Expected Receipts Today</div>
-                  <div className="text-xl font-bold">${summary?.expectedToday?.toLocaleString() || '1,749'}</div>
-                  <div className="text-sm">3 families • 2 via Omella, 1 check</div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-xs font-semibold text-primary-100 mb-1">Expected Today</div>
+                  <div className="text-2xl font-bold">${summary?.expectedToday?.toLocaleString() || '1,749'}</div>
+                  <div className="text-xs text-primary-100 mt-1">3 families</div>
                 </div>
-                <div>
-                  <div className="text-sm opacity-90">Outstanding Receivables</div>
-                  <div className="text-xl font-bold">${summary?.outstandingRevenue?.toLocaleString() || '4,915'}</div>
-                  <div className="text-sm">3 families past due</div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-xs font-semibold text-primary-100 mb-1">Receivables</div>
+                  <div className="text-2xl font-bold">${summary?.outstandingRevenue?.toLocaleString() || '4,915'}</div>
+                  <div className="text-xs text-primary-100 mt-1">3 past due</div>
                 </div>
-                <div>
-                  <div className="text-sm opacity-90">Days Cash on Hand</div>
-                  <div className="text-xl font-bold">{summary?.daysCashOnHand || 22} days</div>
-                  <div className="text-sm">Goal: 30 days minimum | 60 great | 90 gold</div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-xs font-semibold text-primary-100 mb-1">Cash on Hand</div>
+                  <div className="text-2xl font-bold">{summary?.daysCashOnHand || 22} days</div>
+                  <div className="text-xs text-primary-100 mt-1">Target: 30+ days</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       ) : scorecard?.overallScore >= 55 ? (
-        <div className="mb-8 p-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg text-white">
-          <div className="flex items-start space-x-3">
-            <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
+        <div className="mb-8 p-6 bg-gradient-to-br from-warning-400 via-warning-500 to-warning-600 rounded-2xl text-white shadow-strong">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <ExclamationTriangleIcon className="h-7 w-7" />
+              </div>
+            </div>
             <div>
-              <h2 className="text-xl font-semibold mb-2">⚠️ Building Your Financial Foundation - Score: {scorecard.overallScore}/100</h2>
-              <p className="text-sm opacity-90">You're making progress! Focus on these key areas to strengthen your business.</p>
+              <h2 className="text-2xl font-bold mb-2">Building Your Financial Foundation</h2>
+              <p className="text-warning-100">Score: {scorecard.overallScore}/100 • You're making progress! Focus on key areas below.</p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="mb-8 p-6 bg-gradient-to-r from-red-500 to-red-600 rounded-lg text-white">
-          <div className="flex items-start space-x-3">
-            <ExclamationTriangleIcon className="h-6 w-6 mt-1 flex-shrink-0" />
+        <div className="mb-8 p-6 bg-gradient-to-br from-danger-500 via-danger-600 to-danger-700 rounded-2xl text-white shadow-strong">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <ExclamationTriangleIcon className="h-7 w-7" />
+              </div>
+            </div>
             <div>
-              <h2 className="text-xl font-semibold mb-2">🚨 Urgent: Cash Flow Attention Needed - Score: {scorecard?.overallScore}/100</h2>
-              <p className="text-sm opacity-90">Your school needs immediate action on cash flow. We'll help you through this.</p>
+              <h2 className="text-2xl font-bold mb-2">Cash Flow Attention Needed</h2>
+              <p className="text-danger-100">Score: {scorecard?.overallScore}/100 • Immediate action required. We'll help you through this.</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Comprehensive Financial Metrics Grid */}
-      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Days Cash on Hand */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Days Cash on Hand</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Building</span>
+      {/* Key Financial Metrics */}
+      <div className="mb-8">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Key Financial Metrics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Days Cash on Hand */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-warning-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Days Cash on Hand</h4>
+              <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Building</span>
+            </div>
+            <div className="text-3xl font-bold text-warning-600 mb-2">22 days</div>
+            <div className="text-xs text-gray-500 mb-2">
+              Target: 30 days • Great: 60 • Gold: 90
+            </div>
+            <div className="text-xs text-warning-600 font-medium">📈 Working toward target</div>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">22 days</div>
-          <div className="text-xs text-gray-500">
-            Minimum: 30 days | Great: 60 days | ⭐ Gold: 90 days
-          </div>
-          <div className="text-xs text-yellow-600 mt-2">📈 Working toward 30-day target</div>
-        </div>
 
-        {/* Debt Service Coverage Ratio */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Debt Service Coverage</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Warning</span>
+          {/* Debt Service Coverage Ratio */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-warning-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Debt Service Coverage</h4>
+              <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Warning</span>
+            </div>
+            <div className="text-3xl font-bold text-warning-600 mb-2">0.9x</div>
+            <div className="text-xs text-gray-500 mb-2">Lender requirement: 1.25x+</div>
+            <div className="text-xs text-warning-600 font-medium">Below lending standards</div>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">0.9x</div>
-          <div className="text-xs text-gray-500">Lender requirement: 1.25x+</div>
-          <div className="text-xs text-yellow-600 mt-2">Below lending standards</div>
-        </div>
 
-        {/* What You Owe vs What You Make */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">What You Owe vs What You Make</h4>
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Good</span>
+          {/* What You Owe vs What You Make */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-primary-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Debt to Revenue Ratio</h4>
+              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Good</span>
+            </div>
+            <div className="text-3xl font-bold text-success-600 mb-2">12%</div>
+            <div className="text-xs text-gray-500 mb-2">Goal: Keep under 15%</div>
+            <div className="text-xs text-success-600 font-medium">✓ Manageable debt</div>
           </div>
-          <div className="text-2xl font-bold text-blue-600 mb-1">12%</div>
-          <div className="text-xs text-gray-500">Goal: Keep under 15%</div>
-          <div className="text-xs text-blue-600 mt-2">✓ Manageable debt</div>
-        </div>
 
-        {/* Total Money You Owe */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-orange-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Total Money You Owe</h4>
-            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Watch</span>
+          {/* Total Money You Owe */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-accent-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Total Debt</h4>
+              <span className="text-xs bg-accent-100 text-accent-800 px-2.5 py-1 rounded-full font-medium">Watch</span>
+            </div>
+            <div className="text-3xl font-bold text-accent-600 mb-2">$24,500</div>
+            <div className="text-xs text-gray-500 mb-2">Equipment loan + credit line</div>
+            <div className="text-xs text-accent-600 font-medium">$1,850/month payment</div>
           </div>
-          <div className="text-2xl font-bold text-orange-600 mb-1">$24,500</div>
-          <div className="text-xs text-gray-500">Equipment loan + credit line</div>
-          <div className="text-xs text-orange-600 mt-2">You pay $1,850/month</div>
         </div>
+      </div>
 
-        {/* Enrollment vs Capacity */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Enrollment vs Sweet Spot</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Below Target</span>
+      {/* Operational Metrics */}
+      <div className="mb-8">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Operational Metrics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* Enrollment */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-warning-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Enrollment</h4>
+              <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Below Target</span>
+            </div>
+            <div className="text-3xl font-bold text-warning-600 mb-2">28 / 32</div>
+            <div className="text-xs text-gray-500 mb-2">Current / Optimal (Break-even: 25)</div>
+            <div className="text-xs text-warning-600 font-medium">4 students needed</div>
           </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">28 / 32</div>
-          <div className="text-xs text-gray-500">Current / Optimal (Break-even: 25)</div>
-          <div className="text-xs text-yellow-600 mt-2">4 students needed for healthy margins</div>
-        </div>
 
-        {/* Student Retention Rate */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Student Retention (YoY)</h4>
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Good</span>
+          {/* Student Retention */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-success-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Student Retention (YoY)</h4>
+              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Good</span>
+            </div>
+            <div className="text-3xl font-bold text-success-600 mb-2">83%</div>
+            <div className="text-xs text-gray-500 mb-2">Good: 80-84% • Great: 85-94%</div>
+            <div className="text-xs text-success-600 font-medium">✓ Solid foundation</div>
           </div>
-          <div className="text-2xl font-bold text-blue-600 mb-1">83%</div>
-          <div className="text-xs text-gray-500">
-            Good: 80-84% | Great: 85-94% | ⭐ Gold: 95%+
-          </div>
-          <div className="text-xs text-blue-600 mt-2">✓ Solid foundation - aim for great!</div>
-        </div>
 
-        {/* Rent to Revenue Ratio */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Rent to Revenue Ratio</h4>
-            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Critical</span>
+          {/* Collection Rate */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-warning-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Collection Rate (Tuition)</h4>
+              <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Improving</span>
+            </div>
+            <div className="text-3xl font-bold text-warning-600 mb-2">82%</div>
+            <div className="text-xs text-gray-500 mb-2">Target: 95%+ with auto-pay</div>
+            <div className="text-xs text-warning-600 font-medium">Opportunity for improvement</div>
           </div>
-          <div className="text-2xl font-bold text-red-600 mb-1">28%</div>
-          <div className="text-xs text-gray-500">Industry standard: ≤20%</div>
-          <div className="text-xs text-red-600 mt-2">Facility burden too high</div>
-        </div>
 
-        {/* Student Completion Rate (FDOS to LDOS) */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Student Completion (Year)</h4>
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Great</span>
+          {/* Attrition Rate */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-success-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Attrition Rate</h4>
+              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Great</span>
+            </div>
+            <div className="text-3xl font-bold text-success-600 mb-2">8%</div>
+            <div className="text-xs text-gray-500 mb-2">Target: Below 10% • Gold: Below 5%</div>
+            <div className="text-xs text-success-600 font-medium">🎉 Low attrition!</div>
           </div>
-          <div className="text-2xl font-bold text-green-600 mb-1">92%</div>
-          <div className="text-xs text-gray-500">
-            Great: 90-94% | ⭐ Gold: 95-100%
+
+          {/* Rent to Revenue */}
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-danger-200">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold text-gray-700">Rent to Revenue</h4>
+              <span className="text-xs bg-danger-100 text-danger-800 px-2.5 py-1 rounded-full font-medium">Critical</span>
+            </div>
+            <div className="text-3xl font-bold text-danger-600 mb-2">28%</div>
+            <div className="text-xs text-gray-500 mb-2">Industry standard: ≤20%</div>
+            <div className="text-xs text-danger-600 font-medium">Facility burden high</div>
           </div>
-          <div className="text-xs text-green-600 mt-2">🎉 Excellent year-long retention!</div>
-        </div>
-        
-        {/* Collection Rate */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-600">Collection Rate</h4>
-            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Improving</span>
-          </div>
-          <div className="text-2xl font-bold text-yellow-600 mb-1">82%</div>
-          <div className="text-xs text-gray-500">Target: 95%+ with auto-pay</div>
-          <div className="text-xs text-yellow-600 mt-2">Opportunity for improvement</div>
         </div>
       </div>
 
       {/* Financial Health Score Summary */}
-      <div className="mb-8 bg-white rounded-lg shadow p-6">
+      <div className="mb-8 bg-white rounded-xl shadow-soft p-6 border border-gray-100">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Overall Financial Health Score</h3>
           <div className="text-right">
