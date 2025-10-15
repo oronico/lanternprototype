@@ -10,16 +10,32 @@ import {
   SparklesIcon,
   DocumentTextIcon,
   BanknotesIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  BellIcon,
+  TrophyIcon,
+  ArrowTrendingUpIcon,
+  ArrowPathIcon,
+  DocumentCheckIcon,
+  FolderIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
   // Core Operations (Most Used)
   { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
+  { name: 'Chief of Staff Hub', href: '/back-office', icon: SparklesIcon, badge: 'New' },
+  { name: 'Daily Guidance', href: '/nudges', icon: BellIcon, badge: 'New' },
+  { name: 'Automated Bookkeeping', href: '/bookkeeping', icon: ArrowPathIcon, badge: 'Pro' },
+  { name: 'Cash Reality', href: '/cash-reality', icon: BanknotesIcon, badge: 'New' },
+  { name: 'Budget vs. Cash', href: '/budget-vs-cash', icon: ArrowTrendingUpIcon, badge: 'New' },
+  { name: 'Your Milestones', href: '/milestones', icon: TrophyIcon, badge: 'New' },
   { name: 'Financial Health', href: '/health', icon: HeartIcon },
   { name: 'Family & Student CRM', href: '/crm', icon: UserGroupIcon },
   { name: 'Payments & Revenue', href: '/payments', icon: CreditCardIcon },
   { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
+  
+  // Bookkeeping & Reports
+  { name: 'Bank-Ready Reports', href: '/reports/bank-ready', icon: DocumentCheckIcon, badge: 'Pro' },
+  { name: 'Document Repository', href: '/documents/repository', icon: FolderIcon, badge: 'Pro' },
   
   // Planning & Analysis
   { name: 'Pricing Calculator', href: '/calculator', icon: CalculatorIcon },
@@ -73,20 +89,27 @@ const SidebarContent = ({ location }) => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                className={`group flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                   isActive
                     ? 'bg-primary-50 text-primary-700 shadow-soft'
                     : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <item.icon
-                  className={`mr-3 flex-shrink-0 h-5 w-5 transition-colors duration-200 ${
-                    isActive
-                      ? 'text-primary-600'
-                      : 'text-gray-400 group-hover:text-primary-500'
-                  }`}
-                />
-                <span className={isActive ? 'font-semibold' : ''}>{item.name}</span>
+                <div className="flex items-center">
+                  <item.icon
+                    className={`mr-3 flex-shrink-0 h-5 w-5 transition-colors duration-200 ${
+                      isActive
+                        ? 'text-primary-600'
+                        : 'text-gray-400 group-hover:text-primary-500'
+                    }`}
+                  />
+                  <span className={isActive ? 'font-semibold' : ''}>{item.name}</span>
+                </div>
+                {item.badge && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-bold bg-green-100 text-green-700 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             );
           })}

@@ -81,6 +81,9 @@ const accountsRoutes = require('./routes/accounts');
 const calendarRoutes = require('./routes/calendar');
 const cashflowRoutes = require('./routes/cashflow');
 const crmRoutes = require('./routes/crm');
+const onboardingRoutes = require('./routes/onboarding');
+const nudgesRoutes = require('./routes/nudges');
+const milestonesRoutes = require('./routes/milestones');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -144,6 +147,21 @@ app.use('/api/crm',
   security.auditAccess('family_student_records'),
   security.protectStudentData,
   crmRoutes
+);
+app.use('/api/onboarding',
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  security.auditAccess('onboarding'),
+  onboardingRoutes
+);
+app.use('/api/nudges',
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  security.auditAccess('nudges'),
+  nudgesRoutes
+);
+app.use('/api/milestones',
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  security.auditAccess('milestones'),
+  milestonesRoutes
 );
 
 // Health check endpoint

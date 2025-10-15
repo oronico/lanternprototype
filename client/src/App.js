@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 // Components
 import Sidebar from './components/Layout/Sidebar';
@@ -21,6 +22,15 @@ import FinancialControlsGuide from './components/Accounts/FinancialControlsGuide
 import SchoolSettings from './components/Settings/SchoolSettings';
 import FamilyCRM from './components/CRM/FamilyCRM';
 import SimpleLogin from './components/Auth/SimpleLogin';
+import SchoolOnboarding from './components/Onboarding/SchoolOnboarding';
+import CashRealityDashboard from './components/Dashboard/CashRealityDashboard';
+import NudgeCenter from './components/Nudges/NudgeCenter';
+import MilestoneTracker from './components/Milestones/MilestoneTracker';
+import BudgetVsCash from './components/Dashboard/BudgetVsCash';
+import AutomatedBookkeeping from './components/Bookkeeping/AutomatedBookkeeping';
+import BankReadyReports from './components/Reports/BankReadyReports';
+import DocumentRepository from './components/Documents/DocumentRepository';
+import ChiefOfStaffDashboard from './components/BackOffice/ChiefOfStaffDashboard';
 
 // Services
 import { initializeApp } from './services/api';
@@ -28,19 +38,28 @@ import { initializeApp } from './services/api';
 function AppContent() {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = React.useState(false);
 
   useEffect(() => {
     initializeApp();
     checkExistingAuth();
   }, []);
 
-  const checkExistingAuth = () => {
+  const checkExistingAuth = async () => {
     try {
       const token = localStorage.getItem('token');
       const savedUser = localStorage.getItem('user');
       
       if (token && savedUser) {
-        setUser(JSON.parse(savedUser));
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        
+        // Check onboarding status
+        // In production, make API call to check onboarding
+        const onboardingComplete = localStorage.getItem('onboardingComplete');
+        if (!onboardingComplete) {
+          setNeedsOnboarding(true);
+        }
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -51,12 +70,25 @@ function AppContent() {
 
   const handleLogin = (userData) => {
     setUser(userData);
+    // Check if user needs onboarding
+    const onboardingComplete = localStorage.getItem('onboardingComplete');
+    if (!onboardingComplete) {
+      setNeedsOnboarding(true);
+    }
+  };
+
+  const handleOnboardingComplete = (onboardingData) => {
+    localStorage.setItem('onboardingComplete', 'true');
+    setNeedsOnboarding(false);
+    toast.success('Welcome to SchoolStack.ai! 🎉');
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('onboardingComplete');
     setUser(null);
+    setNeedsOnboarding(false);
   };
 
   if (loading) {
@@ -79,6 +111,11 @@ function AppContent() {
     return <SimpleLogin onLogin={handleLogin} />;
   }
 
+  // Show onboarding flow if needed
+  if (needsOnboarding) {
+    return <SchoolOnboarding onComplete={handleOnboardingComplete} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
@@ -95,6 +132,14 @@ function AppContent() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/back-office" element={<ChiefOfStaffDashboard />} />
+              <Route path="/cash-reality" element={<CashRealityDashboard />} />
+              <Route path="/budget-vs-cash" element={<BudgetVsCash />} />
+              <Route path="/nudges" element={<NudgeCenter />} />
+              <Route path="/milestones" element={<MilestoneTracker />} />
+              <Route path="/bookkeeping" element={<AutomatedBookkeeping />} />
+              <Route path="/reports/bank-ready" element={<BankReadyReports />} />
+              <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/payments" element={<PaymentTracking />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
