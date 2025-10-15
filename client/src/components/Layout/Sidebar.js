@@ -16,7 +16,8 @@ import {
   ArrowTrendingUpIcon,
   ArrowPathIcon,
   DocumentCheckIcon,
-  FolderIcon
+  FolderIcon,
+  AcademicCapIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -36,6 +37,8 @@ const navigation = [
   // Bookkeeping & Reports
   { name: 'Bank-Ready Reports', href: '/reports/bank-ready', icon: DocumentCheckIcon, badge: 'Pro' },
   { name: 'Document Repository', href: '/documents/repository', icon: FolderIcon, badge: 'Pro' },
+  { name: 'Operational Metrics', href: '/operations/metrics', icon: ChartBarIcon, badge: 'New' },
+  { name: 'Program Management', href: '/programs', icon: AcademicCapIcon, badge: 'New' },
   
   // Planning & Analysis
   { name: 'Pricing Calculator', href: '/calculator', icon: CalculatorIcon },

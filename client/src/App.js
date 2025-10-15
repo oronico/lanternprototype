@@ -31,6 +31,8 @@ import AutomatedBookkeeping from './components/Bookkeeping/AutomatedBookkeeping'
 import BankReadyReports from './components/Reports/BankReadyReports';
 import DocumentRepository from './components/Documents/DocumentRepository';
 import ChiefOfStaffDashboard from './components/BackOffice/ChiefOfStaffDashboard';
+import OperationalMetrics from './components/Operations/OperationalMetrics';
+import ProgramManagement from './components/Programs/ProgramManagement';
 
 // Services
 import { initializeApp } from './services/api';
@@ -140,6 +142,8 @@ function AppContent() {
               <Route path="/bookkeeping" element={<AutomatedBookkeeping />} />
               <Route path="/reports/bank-ready" element={<BankReadyReports />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
+              <Route path="/operations/metrics" element={<OperationalMetrics />} />
+              <Route path="/programs" element={<ProgramManagement />} />
               <Route path="/payments" element={<PaymentTracking />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
