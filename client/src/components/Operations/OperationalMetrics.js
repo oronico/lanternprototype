@@ -248,7 +248,7 @@ const OperationalMetrics = () => {
               <span className="font-semibold text-yellow-600">{metrics.onTimePayment.breakdown.fair} families</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Poor (<70%)</span>
+              <span className="text-gray-600">Poor (&lt;70%)</span>
               <span className="font-semibold text-red-600">{metrics.onTimePayment.breakdown.poor} families</span>
             </div>
           </div>
