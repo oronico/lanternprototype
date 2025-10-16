@@ -32,6 +32,7 @@ const navigation = [
   { name: 'Financial Health', href: '/health', icon: HeartIcon },
   { name: 'Family & Student CRM', href: '/crm', icon: UserGroupIcon },
   { name: 'Payments & Revenue', href: '/payments', icon: CreditCardIcon },
+  { name: 'Payment Reconciliation', href: '/payments/reconciliation', icon: ArrowPathIcon, badge: 'Pro' },
   { name: 'Enrollment Pipeline', href: '/enrollment', icon: UserGroupIcon },
   
   // Bookkeeping & Reports

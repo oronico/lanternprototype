@@ -146,6 +146,13 @@ const schoolSchema = new mongoose.Schema({
   
   // Settings
   settings: {
+    // Accounting Method
+    accountingMethod: {
+      type: String,
+      enum: ['cash', 'accrual'],
+      default: 'cash'  // Most schools use cash accounting
+    },
+    
     cashReserveTarget: {
       type: Number,
       default: 30 // days

@@ -44,7 +44,10 @@ const SchoolOnboarding = ({ onComplete }) => {
     // Current Year Planning
     hasProforma: false,
     proformaData: null,
-    enrollmentData: null
+    enrollmentData: null,
+    
+    // Accounting Method
+    accountingMethod: 'cash' // Default to cash accounting
   });
 
   const stages = [
@@ -274,6 +277,45 @@ const SchoolOnboarding = ({ onComplete }) => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="32"
                     />
+                  </div>
+                </div>
+
+                {/* Accounting Method Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Accounting Method *
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => updateData('accountingMethod', 'cash')}
+                      className={`p-4 border-2 rounded-lg text-left transition-all ${
+                        onboardingData.accountingMethod === 'cash'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900 mb-1">Cash Accounting</div>
+                      <div className="text-xs text-gray-600">Record income when received, expenses when paid (recommended for most schools)</div>
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={() => updateData('accountingMethod', 'accrual')}
+                      className={`p-4 border-2 rounded-lg text-left transition-all ${
+                        onboardingData.accountingMethod === 'accrual'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900 mb-1">Accrual Accounting</div>
+                      <div className="text-xs text-gray-600">Record income when earned, expenses when incurred (for larger schools)</div>
+                    </button>
+                  </div>
+                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="text-xs text-blue-800">
+                      <strong>Most schools use Cash Accounting.</strong> It's simpler and shows actual cash flow. Choose Accrual only if required by your board or for GAAP compliance.
+                    </div>
                   </div>
                 </div>
               </div>

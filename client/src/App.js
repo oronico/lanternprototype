@@ -8,6 +8,7 @@ import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
 import PaymentTracking from './components/Payments/PaymentTracking';
+import PaymentReconciliation from './components/Payments/PaymentReconciliation';
 import PricingCalculator from './components/Calculator/PricingCalculator';
 import FlexibleTuitionEngine from './components/Calculator/FlexibleTuitionEngine';
 import FinancialHealth from './components/Health/FinancialHealth';
@@ -145,6 +146,7 @@ function AppContent() {
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/programs" element={<ProgramManagement />} />
               <Route path="/payments" element={<PaymentTracking />} />
+              <Route path="/payments/reconciliation" element={<PaymentReconciliation />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
