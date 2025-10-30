@@ -109,7 +109,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'tools']);
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
