@@ -84,6 +84,7 @@ const crmRoutes = require('./routes/crm');
 const onboardingRoutes = require('./routes/onboarding');
 const nudgesRoutes = require('./routes/nudges');
 const milestonesRoutes = require('./routes/milestones');
+const featuresRoutes = require('./routes/features');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -162,6 +163,10 @@ app.use('/api/milestones',
   security.classifyData(securityConfig.dataClassification.INTERNAL),
   security.auditAccess('milestones'),
   milestonesRoutes
+);
+app.use('/api/features',
+  security.classifyData(securityConfig.dataClassification.INTERNAL),
+  featuresRoutes
 );
 
 // Health check endpoint

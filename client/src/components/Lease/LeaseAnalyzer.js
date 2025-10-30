@@ -84,6 +84,13 @@ const LeaseAnalyzer = () => {
           <h3 className="text-lg font-semibold text-gray-900">How do you want to enter your lease information?</h3>
           <div className="flex space-x-2">
             <button
+              onClick={() => window.location.href = '/lease/upload'}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-primary-600 text-white hover:bg-primary-700"
+            >
+              <DocumentTextIcon className="h-4 w-4 inline mr-2" />
+              Upload Lease (OCR)
+            </button>
+            <button
               onClick={() => setDataEntryMode(true)}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${
                 dataEntryMode
@@ -92,7 +99,7 @@ const LeaseAnalyzer = () => {
               }`}
             >
               <PencilIcon className="h-4 w-4 inline mr-2" />
-              Enter Details Manually
+              Enter Manually
             </button>
             <button
               onClick={() => setDataEntryMode(false)}
@@ -103,7 +110,7 @@ const LeaseAnalyzer = () => {
               }`}
             >
               <SparklesIcon className="h-4 w-4 inline mr-2" />
-              AI Analyze Document
+              AI Analyze Text
             </button>
           </div>
         </div>

@@ -8,7 +8,8 @@ import {
   ChartBarIcon,
   Cog6ToothIcon,
   ChevronDownIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -45,7 +46,9 @@ const navigationGroups = [
     color: 'green',
     subItems: [
       { name: 'Cash Flow', href: '/cash-reality' },
+      { name: 'Budget vs. Cash', href: '/budget-vs-cash' },
       { name: 'Payments', href: '/payments' },
+      { name: 'Payment Reconciliation', href: '/payments/reconciliation', badge: 'Pro' },
       { name: 'Bookkeeping', href: '/bookkeeping', badge: 'Pro' },
       { name: 'Bank Accounts', href: '/accounts' }
     ]
@@ -54,12 +57,14 @@ const navigationGroups = [
     id: 'students',
     name: 'Students',
     icon: UserGroupIcon,
-    href: '/enrollment',
+    href: '/crm/enrolled',
     color: 'blue',
     subItems: [
-      { name: 'Enrollment', href: '/enrollment' },
+      { name: 'Enrolled Students', href: '/crm/enrolled', badge: 'New' },
+      { name: 'Recruitment Pipeline', href: '/crm/recruitment', badge: 'New' },
       { name: 'Programs', href: '/programs' },
-      { name: 'Family CRM', href: '/crm' }
+      { name: 'Family CRM (Old)', href: '/crm' },
+      { name: 'Contracts', href: '/documents' }
     ]
   },
   {
@@ -72,7 +77,21 @@ const navigationGroups = [
       { name: 'Key Metrics', href: '/operations/metrics' },
       { name: 'Financial Health', href: '/health' },
       { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' },
-      { name: 'Documents', href: '/documents/repository' }
+      { name: 'Document Repository', href: '/documents/repository', badge: 'Pro' }
+    ]
+  },
+  {
+    id: 'tools',
+    name: 'Tools',
+    icon: WrenchScrewdriverIcon,
+    href: '/calculator',
+    color: 'amber',
+    subItems: [
+      { name: 'Pricing Calculator', href: '/calculator' },
+      { name: 'Facility Management', href: '/facility', badge: 'Pro' },
+      { name: 'Lease Analyzer', href: '/lease' },
+      { name: 'Upload Lease (OCR)', href: '/lease/upload', badge: 'New' },
+      { name: 'AI Assistant', href: '/ai-assistant' }
     ]
   },
   {

@@ -34,6 +34,11 @@ import DocumentRepository from './components/Documents/DocumentRepository';
 import ChiefOfStaffDashboard from './components/BackOffice/ChiefOfStaffDashboard';
 import OperationalMetrics from './components/Operations/OperationalMetrics';
 import ProgramManagement from './components/Programs/ProgramManagement';
+import FeatureAdmin from './components/Admin/FeatureAdmin';
+import FacilityManagement from './components/Facility/FacilityManagement';
+import LeaseOCRUpload from './components/Facility/LeaseOCRUpload';
+import RecruitmentPipeline from './components/CRM/RecruitmentPipeline';
+import EnrollmentDashboard from './components/CRM/EnrollmentDashboard';
 
 // Services
 import { initializeApp } from './services/api';
@@ -150,8 +155,12 @@ function AppContent() {
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
+              <Route path="/crm/recruitment" element={<RecruitmentPipeline />} />
+              <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />
               <Route path="/lease-entry" element={<LeaseDataEntry onAnalyze={(data) => console.log('Analyzing:', data)} />} />
+              <Route path="/lease/upload" element={<LeaseOCRUpload />} />
+              <Route path="/facility" element={<FacilityManagement />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/pricing" element={<PricingPlans />} />
               <Route path="/documents" element={<DocumentManager />} />
@@ -159,6 +168,12 @@ function AppContent() {
               <Route path="/financial-controls-guide" element={<FinancialControlsGuide />} />
               <Route path="/settings" element={<SchoolSettings />} />
               <Route path="/crm" element={<FamilyCRM />} />
+              
+              {/* Admin routes (development only) */}
+              {process.env.NODE_ENV === 'development' && (
+                <Route path="/admin/features" element={<FeatureAdmin />} />
+              )}
+              
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>
