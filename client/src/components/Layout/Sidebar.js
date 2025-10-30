@@ -9,7 +9,9 @@ import {
   Cog6ToothIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  BuildingOfficeIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -81,16 +83,25 @@ const navigationGroups = [
     ]
   },
   {
+    id: 'facility',
+    name: 'Facility',
+    icon: BuildingOfficeIcon,
+    href: '/facility',
+    color: 'orange',
+    subItems: [
+      { name: 'Facility Management', href: '/facility', badge: 'Pro' },
+      { name: 'Upload Lease (OCR)', href: '/lease/upload', badge: 'New' },
+      { name: 'Lease Analyzer', href: '/lease' }
+    ]
+  },
+  {
     id: 'tools',
-    name: 'Tools',
-    icon: WrenchScrewdriverIcon,
+    name: 'AI Tools',
+    icon: SparklesIcon,
     href: '/calculator',
-    color: 'amber',
+    color: 'purple',
     subItems: [
       { name: 'Pricing Calculator', href: '/calculator' },
-      { name: 'Facility Management', href: '/facility', badge: 'Pro' },
-      { name: 'Lease Analyzer', href: '/lease' },
-      { name: 'Upload Lease (OCR)', href: '/lease/upload', badge: 'New' },
       { name: 'AI Assistant', href: '/ai-assistant' }
     ]
   },
@@ -109,7 +120,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'tools']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'tools']);
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
