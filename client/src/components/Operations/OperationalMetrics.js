@@ -11,6 +11,7 @@ import {
   ArrowTrendingDownIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import { ENROLLMENT, OPERATIONS, PROGRAM_METRICS, ATTENDANCE, DEMO_STUDENTS } from '../../data/centralizedMetrics';
 
 const OperationalMetrics = () => {
   const [metrics, setMetrics] = useState(null);
@@ -22,32 +23,37 @@ const OperationalMetrics = () => {
   }, [selectedProgram, timeframe]);
 
   const loadMetrics = async () => {
-    // Mock data - replace with API call
+    // Use centralized metrics
+    const missingContractStudents = DEMO_STUDENTS.filter(s => 
+      !s.documents.handbookSigned || 
+      !s.documents.enrollmentContractSigned ||
+      s.documents.missingDocuments.length > 0
+    );
+    
     const mockMetrics = {
       // Contract Coverage
       contractCoverage: {
-        total: 28,
-        signed: 24,
-        pending: 3,
-        notSent: 1,
-        percentage: 85.7,
+        total: ENROLLMENT.current,
+        signed: ENROLLMENT.current - OPERATIONS.missingContracts,
+        pending: OPERATIONS.missingContracts,
+        notSent: 0,
+        percentage: OPERATIONS.contractCoverage,
         trend: 'up',
         trendValue: 5.2,
-        urgentActions: [
-          { family: 'Martinez Family', status: 'Sent 10 days ago, not signed' },
-          { family: 'Chen Family', status: 'Contract not sent yet' },
-          { family: 'Williams Family', status: 'Viewed but not signed (3 days)' }
-        ]
+        urgentActions: missingContractStudents.map(s => ({
+          family: `${s.familyName} Family`,
+          status: s.documents.missingDocuments.join(', ') || 'Missing documents'
+        }))
       },
       
       // On-Time Payment
       onTimePayment: {
-        totalPayments: 156,
-        onTimePayments: 128,
-        latePayments: 22,
-        missedPayments: 6,
-        percentage: 82.1,
-        trend: 'up',
+        totalPayments: ENROLLMENT.current,
+        onTimePayments: ENROLLMENT.current - 1,
+        latePayments: 1,
+        missedPayments: 0,
+        percentage: OPERATIONS.onTimePayment,
+        trend: 'stable',
         trendValue: 3.4,
         breakdown: {
           excellent: 18, // 95%+ on-time
