@@ -46,16 +46,12 @@ const navigationGroups = [
     id: 'money',
     name: 'Money',
     icon: BanknotesIcon,
-    href: '/cash-reality',
+    href: '/payments',
     color: 'green',
     subItems: [
-      { name: 'Cash Flow', href: '/cash-reality' },
-      { name: 'Budget vs. Cash', href: '/budget-vs-cash' },
-      { name: 'Payments', href: '/payments' },
-      { name: 'Payment Engines', href: '/payments/engines', badge: 'New' },
-      { name: 'Payment Reconciliation', href: '/payments/reconciliation', badge: 'Pro' },
-      { name: 'Bookkeeping', href: '/bookkeeping', badge: 'Pro' },
-      { name: 'Bank Accounts', href: '/accounts' }
+      { name: 'Payments & Reconciliation', href: '/payments' },
+      { name: 'Bookkeeping & Accounts', href: '/bookkeeping', badge: 'Pro' },
+      { name: 'Cash Flow Forecast', href: '/cash-reality' }
     ]
   },
   {

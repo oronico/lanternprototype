@@ -48,6 +48,8 @@ import GamifiedNudges from './components/Nudges/GamifiedNudges';
 import ClassroomAssignment from './components/Programs/ClassroomAssignment';
 import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
+import UnifiedPayments from './components/Money/UnifiedPayments';
+import UnifiedBookkeeping from './components/Money/UnifiedBookkeeping';
 
 // Services
 import { initializeApp } from './services/api';
@@ -155,12 +157,12 @@ function AppContent() {
               <Route path="/budget-vs-cash" element={<BudgetVsCash />} />
               <Route path="/nudges" element={<NudgeCenter />} />
               <Route path="/milestones" element={<MilestoneTracker />} />
-              <Route path="/bookkeeping" element={<AutomatedBookkeeping />} />
+              <Route path="/bookkeeping" element={<UnifiedBookkeeping />} />
               <Route path="/reports/bank-ready" element={<BankReadyReports />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/programs" element={<ProgramManagement />} />
-              <Route path="/payments" element={<PaymentTracking />} />
+              <Route path="/payments" element={<UnifiedPayments />} />
               <Route path="/payments/reconciliation" element={<PaymentReconciliation />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
