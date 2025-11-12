@@ -120,7 +120,9 @@ export const dashboardAPI = {
     if (USE_MOCK_DATA) {
       return Promise.resolve({
         data: {
-          bankBalance: FINANCIAL.cashBalance,
+          bankBalance: FINANCIAL.operatingCash, // Use operating cash for cash flow
+          totalCash: FINANCIAL.totalCash,
+          savingsCash: FINANCIAL.savingsCash,
           expectedToday: Math.round(FINANCIAL.monthlyRevenue / 30), // Daily revenue
           outstandingRevenue: FINANCIAL.outstandingReceivables,
           daysCashOnHand: FINANCIAL.daysCash,

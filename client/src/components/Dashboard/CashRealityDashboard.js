@@ -9,6 +9,7 @@ import {
   LightBulbIcon,
   BeakerIcon
 } from '@heroicons/react/24/outline';
+import { FINANCIAL } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 
 const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
@@ -67,10 +68,10 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
     }
   };
 
-  // Mock data - replace with real API calls
-  const currentCash = schoolData?.currentCash || 14200;
-  const dailyBurn = cashFlowData?.dailyBurn || 645;
-  const daysCashOnHand = Math.floor(currentCash / dailyBurn);
+  // Use centralized metrics
+  const currentCash = FINANCIAL.operatingCash;
+  const dailyBurn = Math.round(FINANCIAL.monthlyExpenses / 30);
+  const daysCashOnHand = FINANCIAL.daysCash;
   
   const obligationsData = {
     30: {

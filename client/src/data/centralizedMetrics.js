@@ -66,7 +66,9 @@ export const ATTENDANCE = {
 // FINANCIAL METRICS (Master numbers)
 export const FINANCIAL = {
   // Cash Position
-  cashBalance: 22700, // Current cash in bank
+  operatingCash: 14200, // Checking account (operating funds)
+  savingsCash: 8500, // Savings account (reserve)
+  totalCash: 22700, // Total = operating + savings
   daysCash: 22, // Days of operating expenses covered
   cashGoal: 30,
   cashReserveProgress: 73, // 22/30 = 73%

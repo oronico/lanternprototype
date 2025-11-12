@@ -69,23 +69,22 @@ const Dashboard = () => {
         </p>
       </div>
 
-      {/* Performance Summary */}
-      {scorecard?.overallScore >= 70 ? (
-        <div className="mb-8 p-6 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl text-white shadow-strong">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <CheckCircleIcon className="h-7 w-7" />
-              </div>
+      {/* Performance Summary - Always show with centralized data */}
+      <div className="mb-8 p-6 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl text-white shadow-strong">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+              <CheckCircleIcon className="h-7 w-7" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-3">Business Performance Score: {scorecard.overallScore}/100</h2>
-              <p className="text-primary-100 mb-4">Strong progress! Here's your financial snapshot.</p>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold mb-3">Business Performance Score: {FINANCIAL.healthScore}/100</h2>
+            <p className="text-primary-100 mb-4">Strong progress! Here's your financial snapshot.</p>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-semibold text-primary-100 mb-1">Cash Balance</div>
-                  <div className="text-2xl font-bold">${FINANCIAL.cashBalance.toLocaleString()}</div>
-                  <div className="text-xs text-primary-100 mt-1">Operating accounts</div>
+                  <div className="text-xs font-semibold text-primary-100 mb-1">Operating Cash</div>
+                  <div className="text-2xl font-bold">${FINANCIAL.operatingCash.toLocaleString()}</div>
+                  <div className="text-xs text-primary-100 mt-1">Checking account</div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                   <div className="text-xs font-semibold text-primary-100 mb-1">Students Enrolled</div>
@@ -106,7 +105,10 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      ) : scorecard?.overallScore >= 55 ? (
+      </div>
+
+      {/* Rest of dashboard content */}
+      {false && scorecard?.overallScore >= 55 ? (
         <div className="mb-8 p-6 bg-gradient-to-br from-warning-400 via-warning-500 to-warning-600 rounded-2xl text-white shadow-strong">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
