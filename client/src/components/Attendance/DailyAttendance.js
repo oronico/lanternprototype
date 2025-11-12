@@ -238,9 +238,30 @@ export default function DailyAttendance() {
   };
 
   const getFilteredStudents = () => {
-    // This would come from your enrollment data
-    // For now, using the demo data from loadAttendanceData
-    const allStudents = [
+    // Use centralized student data
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    
+    const allStudents = DEMO_STUDENTS.map(student => ({
+      id: student._id,
+      name: `${student.studentInfo.firstName} ${student.studentInfo.lastName}`,
+      family: student.familyName,
+      program: student.enrollment.programName,
+      teacher: student.enrollment.leadTeacher,
+      expectedToday: student.enrollment.expectedDays.includes(today),
+      currentStreak: student.attendance.currentStreak,
+      ytdAttendance: student.attendance.ytdRate,
+      absences: student.attendance.ytdAbsent,
+      tardies: student.attendance.ytdTardy,
+      needsNudge: student.attendance.ytdAbsent >= 2
+    }));
+    
+    return selectedProgram === 'all'
+      ? allStudents
+      : allStudents.filter(s => s.program === selectedProgram);
+  };
+  
+  const getFilteredStudentsOLD = () => {
+    const allStudentsOLD = [
       {
         id: 1,
         name: 'Emma Johnson',
