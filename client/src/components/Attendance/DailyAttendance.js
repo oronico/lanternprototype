@@ -61,24 +61,15 @@ export default function DailyAttendance() {
       parentPhone: student.guardians[0]?.phone,
       needsNudge: student.attendance.ytdAbsent >= 2
     }));
+
+    const initial = {};
+    studentsForAttendance.forEach(s => {
+      initial[s.id] = s.status;
+    });
     
-    const students = studentsForAttendance;
-      {
-        id: 2,
-        name: 'Noah Williams',
-        family: 'Williams',
-        program: '5-Day Full-Time',
-        teacher: 'Ms. Sarah',
-        expectedToday: true,
-        status: null,
-        currentStreak: 52,
-        ytdAttendance: 99,
-        absences: 1,
-        tardies: 0,
-        lastAbsence: '2024-09-05',
-        parentPhone: '555-0401',
-        needsNudge: false
-      },
+    setAttendanceData(initial);
+    calculateStats(studentsForAttendance, initial);
+  };
       {
         id: 3,
         name: 'Carlos Martinez',
