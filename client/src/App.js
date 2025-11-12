@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
+import SimpleDashboard from './components/Dashboard/SimpleDashboard';
 import PaymentTracking from './components/Payments/PaymentTracking';
 import PaymentReconciliation from './components/Payments/PaymentReconciliation';
 import PricingCalculator from './components/Calculator/PricingCalculator';
@@ -153,7 +154,8 @@ function AppContent() {
           <main className="flex-1 p-8 bg-gradient-to-br from-gray-50 to-primary-50/20">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<SimpleDashboard />} />
+              <Route path="/dashboard-old" element={<Dashboard />} />
               <Route path="/command-center" element={<UnifiedCommandCenter />} />
               <Route path="/back-office" element={<ChiefOfStaffDashboard />} />
               <Route path="/cash-reality" element={<CashRealityDashboard />} />
