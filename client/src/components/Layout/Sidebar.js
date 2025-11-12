@@ -36,11 +36,7 @@ const navigationGroups = [
     icon: BellIcon,
     href: '/command-center',
     badge: '3',
-    color: 'purple',
-    subItems: [
-      { name: 'Command Center', href: '/command-center' },
-      { name: 'Daily Attendance', href: '/attendance/daily' }
-    ]
+    color: 'purple'
   },
   {
     id: 'money',
@@ -61,7 +57,8 @@ const navigationGroups = [
     href: '/students',
     color: 'blue',
     subItems: [
-      { name: 'Enrolled Students (SIS)', href: '/students' },
+      { name: 'Enrolled Students', href: '/students' },
+      { name: 'Daily Attendance', href: '/students?tab=attendance' },
       { name: 'Recruitment Pipeline', href: '/crm/recruitment' }
     ]
   },
