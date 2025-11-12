@@ -47,9 +47,8 @@ const navigationGroups = [
     subItems: [
       { name: 'Payments & Reconciliation', href: '/payments' },
       { name: 'Bookkeeping & Accounts', href: '/bookkeeping', badge: 'Pro' },
-      { name: 'Cash Flow Forecast', href: '/cash-reality' },
-      { name: 'Budget vs Actual', href: '/budget-actual', badge: 'Pro' },
-      { name: '5-Year Proforma', href: '/proforma', badge: 'Pro' }
+      { name: 'Cash Flow Forecast', href: '/cash-reality' }
+      // Budget vs Actual and Proforma hidden for now - need refinement
     ]
   },
   {
