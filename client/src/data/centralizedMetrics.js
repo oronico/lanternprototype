@@ -14,10 +14,13 @@
  * Based on 24 enrolled students across 3 programs
  */
 
-import { DEMO_STUDENTS, PROGRAMS, TEACHERS, calculateEnrollmentMetrics } from './demoStudents';
+import { DEMO_STUDENTS as STUDENTS_DATA, PROGRAMS as PROGRAMS_DATA, TEACHERS as TEACHERS_DATA, calculateEnrollmentMetrics } from './demoStudents';
+
+// Re-export for components to use
+export { STUDENTS_DATA as DEMO_STUDENTS, PROGRAMS_DATA as PROGRAMS, TEACHERS_DATA as TEACHERS };
 
 // Calculate from actual student data
-const enrollmentMetrics = calculateEnrollmentMetrics(DEMO_STUDENTS);
+const enrollmentMetrics = calculateEnrollmentMetrics(STUDENTS_DATA);
 
 // ENROLLMENT METRICS (Used everywhere)
 export const ENROLLMENT = {
