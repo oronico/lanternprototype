@@ -12,6 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { useEventEmit } from '../../shared/hooks/useEventBus';
+import { DEMO_STUDENTS, PROGRAMS } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 
@@ -41,25 +42,27 @@ export default function DailyAttendance() {
   }, [selectedDate]);
 
   const loadAttendanceData = () => {
-    // Demo data - students organized by program
-    const students = [
-      // 5-Day Full-Time Program
-      {
-        id: 1,
-        name: 'Emma Johnson',
-        family: 'Johnson',
-        program: '5-Day Full-Time',
-        teacher: 'Ms. Sarah',
-        expectedToday: true,
-        status: null, // null = not marked yet, 'present', 'absent', 'tardy'
-        currentStreak: 45, // days in a row
-        ytdAttendance: 98,
-        absences: 2,
-        tardies: 1,
-        lastAbsence: '2024-09-10',
-        parentPhone: '555-0101',
-        needsNudge: false
-      },
+    // Use centralized student data
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    
+    const studentsForAttendance = DEMO_STUDENTS.map(student => ({
+      id: student._id,
+      name: `${student.studentInfo.firstName} ${student.studentInfo.lastName}`,
+      family: student.familyName,
+      program: student.enrollment.programName,
+      teacher: student.enrollment.leadTeacher,
+      expectedToday: student.enrollment.expectedDays.includes(today),
+      status: null,
+      currentStreak: student.attendance.currentStreak,
+      ytdAttendance: student.attendance.ytdRate,
+      absences: student.attendance.ytdAbsent,
+      tardies: student.attendance.ytdTardy,
+      lastAbsence: student.attendance.lastAbsence,
+      parentPhone: student.guardians[0]?.phone,
+      needsNudge: student.attendance.ytdAbsent >= 2
+    }));
+    
+    const students = studentsForAttendance;
       {
         id: 2,
         name: 'Noah Williams',

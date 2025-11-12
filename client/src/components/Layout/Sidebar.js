@@ -58,7 +58,7 @@ const navigationGroups = [
     color: 'blue',
     subItems: [
       { name: 'Enrolled Students', href: '/students' },
-      { name: 'Daily Attendance', href: '/students?tab=attendance' },
+      { name: 'Daily Attendance', href: '/attendance/daily' },
       { name: 'Recruitment Pipeline', href: '/crm/recruitment' }
     ]
   },
