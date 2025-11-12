@@ -120,17 +120,20 @@ export default function CleanRecruitmentPipeline() {
     return colors[stageId] || colors.lead;
   };
 
-  const moveToNextStage = (familyId) => {
+  const updateStage = (familyId, newStage) => {
     const family = families.find(f => f.id === familyId);
-    const currentIndex = STAGES.findIndex(s => s.id === family.stage);
-    const nextStage = STAGES[currentIndex + 1];
+    const stageName = STAGES.find(s => s.id === newStage)?.name;
     
-    if (nextStage) {
-      setFamilies(prev => prev.map(f => 
-        f.id === familyId ? { ...f, stage: nextStage.id } : f
-      ));
-      toast.success(`${family.familyName} moved to ${nextStage.name}!`);
-    }
+    setFamilies(prev => prev.map(f => 
+      f.id === familyId ? { ...f, stage: newStage } : f
+    ));
+    
+    toast.success(`${family.familyName} moved to ${stageName}!`);
+    
+    analytics.trackFeatureUsage('recruitmentPipeline', 'change_stage', {
+      from: family.stage,
+      to: newStage
+    });
   };
 
   const getCountByStage = (stageId) => {
@@ -213,9 +216,24 @@ export default function CleanRecruitmentPipeline() {
                     
                     <div>
                       <div className="text-xs text-gray-500 mb-1">Stage</div>
-                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getStageColor(family.stage)}`}>
-                        {stageName}
-                      </span>
+                      <select
+                        value={family.stage}
+                        onChange={(e) => updateStage(family.id, e.target.value)}
+                        className={`px-3 py-1 rounded-lg text-sm font-medium border-2 focus:ring-2 focus:ring-primary-500 ${
+                          family.stage === 'enrolled' ? 'bg-green-50 border-green-500 text-green-800' :
+                          family.stage === 'contract' ? 'bg-orange-50 border-orange-500 text-orange-800' :
+                          family.stage === 'deposit' ? 'bg-yellow-50 border-yellow-500 text-yellow-800' :
+                          family.stage === 'application' ? 'bg-purple-50 border-purple-500 text-purple-800' :
+                          family.stage === 'interested' ? 'bg-blue-50 border-blue-500 text-blue-800' :
+                          'bg-gray-50 border-gray-500 text-gray-800'
+                        }`}
+                      >
+                        {STAGES.map(stage => (
+                          <option key={stage.id} value={stage.id}>
+                            {stage.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     
                     <div>
@@ -227,42 +245,31 @@ export default function CleanRecruitmentPipeline() {
                   {/* Right: Actions */}
                   <div className="flex items-center gap-2 ml-6">
                     <button
-                      className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-500"
-                      title="Call"
+                      onClick={() => window.location.href = `tel:${family.phone}`}
+                      className="p-2 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-colors"
+                      title={`Call ${family.phone}`}
                     >
                       <PhoneIcon className="h-5 w-5 text-gray-600 hover:text-blue-600" />
                     </button>
                     
                     <button
-                      className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-purple-500"
-                      title="Email"
+                      onClick={() => window.location.href = `mailto:${family.email}`}
+                      className="p-2 border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-colors"
+                      title={`Email ${family.email}`}
                     >
                       <EnvelopeIcon className="h-5 w-5 text-gray-600 hover:text-purple-600" />
                     </button>
                     
                     <button
-                      className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-green-500"
-                      title="Text"
+                      onClick={() => {
+                        toast.success(`Opening text to ${family.phone}...`);
+                        // In production: window.location.href = `sms:${family.phone}`;
+                      }}
+                      className="p-2 border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-500 transition-colors"
+                      title="Send text"
                     >
                       <ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-600 hover:text-green-600" />
                     </button>
-                    
-                    {!isLast && (
-                      <button
-                        onClick={() => moveToNextStage(family.id)}
-                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2 ml-2"
-                      >
-                        Move Forward
-                        <ArrowRightIcon className="h-4 w-4" />
-                      </button>
-                    )}
-                    
-                    {isLast && (
-                      <div className="px-4 py-2 bg-green-600 text-white rounded-lg flex items-center gap-2 ml-2">
-                        <CheckCircleIcon className="h-5 w-5" />
-                        Enrolled!
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
