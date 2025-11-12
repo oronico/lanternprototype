@@ -7,7 +7,8 @@ import {
   ClockIcon,
   ArrowDownTrayIcon,
   InformationCircleIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import toast from 'react-hot-toast';
@@ -253,11 +254,17 @@ export default function TaxFilingManager() {
   useEffect(() => {
     analytics.trackPageView('tax-filing-manager');
     
-    // Get entity type from onboarding
+    // Get entity type from onboarding (default to LLC for demo)
     const storedEntityType = localStorage.getItem('entityType') || 'llc';
     setEntityType(storedEntityType);
     
     loadFilingData(storedEntityType);
+    
+    // Show helpful message
+    toast(`Showing tax forms for ${storedEntityType.toUpperCase()}. Change in Settings if needed.`, {
+      duration: 3000,
+      icon: '📋'
+    });
   }, []);
 
   const loadFilingData = (entityType) => {
@@ -358,21 +365,30 @@ export default function TaxFilingManager() {
 
       {/* Entity Type Card */}
       <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <div className="flex items-start gap-3">
-          <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
-          <div className="flex-1">
-            <h3 className="font-semibold text-blue-900 mb-2">
-              Your Entity Type: {requirements.entityName}
-            </h3>
-            <div className="text-sm text-blue-800 mb-3">
-              <strong>Special Considerations:</strong>
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3 flex-1">
+            <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Your Entity Type: {requirements.entityName}
+              </h3>
+              <div className="text-sm text-blue-800 mb-3">
+                <strong>What This Means for Your Tax Filings:</strong>
+              </div>
+              <ul className="text-sm text-blue-700 space-y-1">
+                {requirements.specialConsiderations.slice(0, 3).map((item, idx) => (
+                  <li key={idx}>• {item}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="text-sm text-blue-700 space-y-1">
-              {requirements.specialConsiderations.map((item, idx) => (
-                <li key={idx}>• {item}</li>
-              ))}
-            </ul>
           </div>
+          <button
+            onClick={() => window.location.href = '/settings'}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center gap-2"
+          >
+            <Cog6ToothIcon className="h-4 w-4" />
+            Change Entity
+          </button>
         </div>
       </div>
 
