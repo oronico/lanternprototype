@@ -80,27 +80,26 @@ const Dashboard = () => {
           <div className="flex-1">
             <h2 className="text-2xl font-bold mb-3">Business Performance Score: {FINANCIAL.healthScore}/100</h2>
             <p className="text-primary-100 mb-4">Strong progress! Here's your financial snapshot.</p>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-semibold text-primary-100 mb-1">Operating Cash</div>
-                  <div className="text-2xl font-bold">${FINANCIAL.operatingCash.toLocaleString()}</div>
-                  <div className="text-xs text-primary-100 mt-1">Checking account</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-semibold text-primary-100 mb-1">Students Enrolled</div>
-                  <div className="text-2xl font-bold">{ENROLLMENT.current}</div>
-                  <div className="text-xs text-primary-100 mt-1">Target: {ENROLLMENT.target}</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-semibold text-primary-100 mb-1">Monthly Revenue</div>
-                  <div className="text-2xl font-bold">${FINANCIAL.monthlyRevenue.toLocaleString()}</div>
-                  <div className="text-xs text-primary-100 mt-1">From tuition</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-semibold text-primary-100 mb-1">Cash on Hand</div>
-                  <div className="text-2xl font-bold">{FINANCIAL.daysCash} days</div>
-                  <div className="text-xs text-primary-100 mt-1">Target: 30+ days</div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-xs font-semibold text-primary-100 mb-1">Operating Cash</div>
+                <div className="text-2xl font-bold">${FINANCIAL.operatingCash.toLocaleString()}</div>
+                <div className="text-xs text-primary-100 mt-1">Checking account</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-xs font-semibold text-primary-100 mb-1">Students Enrolled</div>
+                <div className="text-2xl font-bold">{ENROLLMENT.current}</div>
+                <div className="text-xs text-primary-100 mt-1">Target: {ENROLLMENT.target}</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-xs font-semibold text-primary-100 mb-1">Monthly Revenue</div>
+                <div className="text-2xl font-bold">${FINANCIAL.monthlyRevenue.toLocaleString()}</div>
+                <div className="text-xs text-primary-100 mt-1">From tuition</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="text-xs font-semibold text-primary-100 mb-1">Cash on Hand</div>
+                <div className="text-2xl font-bold">{FINANCIAL.daysCash} days</div>
+                <div className="text-xs text-primary-100 mt-1">Target: 30+ days</div>
               </div>
             </div>
           </div>
