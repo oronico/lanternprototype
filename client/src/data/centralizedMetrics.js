@@ -255,7 +255,7 @@ export const generateNudges = () => {
   const nudges = [];
   
   // Missing contracts
-  const missingDocs = DEMO_STUDENTS.filter(s => s.documents.missingDocuments.length > 0);
+  const missingDocs = STUDENTS_DATA.filter(s => s.documents.missingDocuments.length > 0);
   missingDocs.forEach(student => {
     nudges.push({
       type: 'contract',
@@ -280,7 +280,7 @@ export const generateNudges = () => {
   });
   
   // Past due payments
-  const pastDue = DEMO_STUDENTS.filter(s => s.tuition.paymentStatus === 'pastDue');
+  const pastDue = STUDENTS_DATA.filter(s => s.tuition.paymentStatus === 'pastDue');
   pastDue.forEach(student => {
     nudges.push({
       type: 'payment',
