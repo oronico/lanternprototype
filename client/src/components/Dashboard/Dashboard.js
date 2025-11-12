@@ -4,7 +4,7 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import { dashboardAPI, healthAPI } from '../../services/api';
-import { ENROLLMENT, FINANCIAL, ATTENDANCE } from '../../data/centralizedMetrics';
+import { ENROLLMENT, FINANCIAL, ATTENDANCE, OPERATIONS, FACILITY } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
@@ -200,31 +200,31 @@ const Dashboard = () => {
               <h4 className="text-sm font-semibold text-gray-700">Enrollment</h4>
               <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Below Target</span>
             </div>
-            <div className="text-3xl font-bold text-warning-600 mb-2">28 / 32</div>
-            <div className="text-xs text-gray-500 mb-2">Current / Optimal (Break-even: 25)</div>
-            <div className="text-xs text-warning-600 font-medium">4 students needed</div>
+            <div className="text-3xl font-bold text-warning-600 mb-2">{ENROLLMENT.current} / {ENROLLMENT.target}</div>
+            <div className="text-xs text-gray-500 mb-2">Current / Goal (Capacity: {ENROLLMENT.capacity})</div>
+            <div className="text-xs text-warning-600 font-medium">{ENROLLMENT.target - ENROLLMENT.current} students needed</div>
           </div>
 
           {/* Student Retention */}
           <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-success-200">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-semibold text-gray-700">Student Retention (YoY)</h4>
-              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Good</span>
+              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Excellent</span>
             </div>
-            <div className="text-3xl font-bold text-success-600 mb-2">83%</div>
-            <div className="text-xs text-gray-500 mb-2">Good: 80-84% • Great: 85-94%</div>
-            <div className="text-xs text-success-600 font-medium">✓ Solid foundation</div>
+            <div className="text-3xl font-bold text-success-600 mb-2">{ENROLLMENT.retentionRate}%</div>
+            <div className="text-xs text-gray-500 mb-2">Good: 80-84% • Great: 85-94% • Excellent: 95%+</div>
+            <div className="text-xs text-success-600 font-medium">⭐ Excellent retention!</div>
           </div>
 
           {/* Collection Rate */}
-          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-warning-200">
+          <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-success-200">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-gray-700">Collection Rate (Tuition)</h4>
-              <span className="text-xs bg-warning-100 text-warning-800 px-2.5 py-1 rounded-full font-medium">Improving</span>
+              <h4 className="text-sm font-semibold text-gray-700">On-Time Payments</h4>
+              <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Excellent</span>
             </div>
-            <div className="text-3xl font-bold text-warning-600 mb-2">82%</div>
-            <div className="text-xs text-gray-500 mb-2">Target: 95%+ with auto-pay</div>
-            <div className="text-xs text-warning-600 font-medium">Opportunity for improvement</div>
+            <div className="text-3xl font-bold text-success-600 mb-2">{OPERATIONS.onTimePayment}%</div>
+            <div className="text-xs text-gray-500 mb-2">Target: 95%+ • {ENROLLMENT.current - 1}/{ENROLLMENT.current} families on-time</div>
+            <div className="text-xs text-success-600 font-medium">✓ Great payment discipline</div>
           </div>
 
           {/* Attrition Rate */}
@@ -233,7 +233,7 @@ const Dashboard = () => {
               <h4 className="text-sm font-semibold text-gray-700">Attrition Rate</h4>
               <span className="text-xs bg-success-100 text-success-800 px-2.5 py-1 rounded-full font-medium">Great</span>
             </div>
-            <div className="text-3xl font-bold text-success-600 mb-2">8%</div>
+            <div className="text-3xl font-bold text-success-600 mb-2">{ENROLLMENT.attritionRate}%</div>
             <div className="text-xs text-gray-500 mb-2">Target: Below 10% • Gold: Below 5%</div>
             <div className="text-xs text-success-600 font-medium">🎉 Low attrition!</div>
           </div>
@@ -241,12 +241,12 @@ const Dashboard = () => {
           {/* Rent to Revenue */}
           <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-200 p-5 border border-gray-100 hover:border-danger-200">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-gray-700">Rent to Revenue</h4>
-              <span className="text-xs bg-danger-100 text-danger-800 px-2.5 py-1 rounded-full font-medium">Critical</span>
+              <h4 className="text-sm font-semibold text-gray-700">Facility Burden</h4>
+              <span className="text-xs bg-danger-100 text-danger-800 px-2.5 py-1 rounded-full font-medium">High</span>
             </div>
-            <div className="text-3xl font-bold text-danger-600 mb-2">28%</div>
+            <div className="text-3xl font-bold text-danger-600 mb-2">{Math.round(FACILITY.facilityBurden * 100)}%</div>
             <div className="text-xs text-gray-500 mb-2">Industry standard: ≤20%</div>
-            <div className="text-xs text-danger-600 font-medium">Facility burden high</div>
+            <div className="text-xs text-danger-600 font-medium">Reduce or grow enrollment</div>
           </div>
         </div>
       </div>
