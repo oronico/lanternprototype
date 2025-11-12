@@ -39,6 +39,10 @@ import FacilityManagement from './components/Facility/FacilityManagement';
 import LeaseOCRUpload from './components/Facility/LeaseOCRUpload';
 import RecruitmentPipeline from './components/CRM/RecruitmentPipeline';
 import EnrollmentDashboard from './components/CRM/EnrollmentDashboard';
+import EnhancedOnboarding from './components/Onboarding/EnhancedOnboarding';
+import PaymentEngines from './components/Payments/PaymentEngines';
+import StaffManagement from './components/Staff/StaffManagement';
+import TaxFilingManager from './components/Tax/TaxFilingManager';
 
 // Services
 import { initializeApp } from './services/api';
@@ -119,9 +123,9 @@ function AppContent() {
     return <SimpleLogin onLogin={handleLogin} />;
   }
 
-  // Show onboarding flow if needed
+  // Show enhanced onboarding flow if needed
   if (needsOnboarding) {
-    return <SchoolOnboarding onComplete={handleOnboardingComplete} />;
+    return <EnhancedOnboarding onComplete={handleOnboardingComplete} />;
   }
 
   return (
@@ -157,6 +161,9 @@ function AppContent() {
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/crm/recruitment" element={<RecruitmentPipeline />} />
               <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
+              <Route path="/payments/engines" element={<PaymentEngines />} />
+              <Route path="/staff" element={<StaffManagement />} />
+              <Route path="/tax" element={<TaxFilingManager />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />
               <Route path="/lease-entry" element={<LeaseDataEntry onAnalyze={(data) => console.log('Analyzing:', data)} />} />
               <Route path="/lease/upload" element={<LeaseOCRUpload />} />

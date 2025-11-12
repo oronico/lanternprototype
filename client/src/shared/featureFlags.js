@@ -39,6 +39,21 @@ export const FEATURES = {
   RECRUITMENT_PIPELINE: 'recruitmentPipeline',
   ENROLLMENT_DASHBOARD: 'enrollmentDashboard',
   
+  // Payment Systems
+  PAYMENT_ENGINES: 'paymentEngines',
+  TRANCHE_DEPOSITS: 'trancheDeposits',
+  QUICKBOOKS_SYNC: 'quickbooksSync',
+  
+  // Staff & HR
+  STAFF_MANAGEMENT: 'staffManagement',
+  GUSTO_INTEGRATION: 'gustoIntegration',
+  
+  // Tax & Compliance
+  TAX_FILING_MANAGER: 'taxFilingManager',
+  
+  // Enhanced Onboarding
+  ENHANCED_ONBOARDING: 'enhancedOnboarding',
+  
   // Experimental features (beta only)
   AI_FINANCIAL_ADVISOR: 'aiFinancialAdvisor',
   PREDICTIVE_ANALYTICS: 'predictiveAnalytics',
@@ -184,6 +199,55 @@ export const featureConfig = {
     rollout: 100,
     tier: 'all',
     description: 'Comprehensive dashboard for currently enrolled students with attendance tracking',
+  },
+  
+  [FEATURES.PAYMENT_ENGINES]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'ClassWallet, Stripe, and Omella payment integrations',
+  },
+  
+  [FEATURES.TRANCHE_DEPOSITS]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'Weekly batch deposit reconciliation and student allocation',
+  },
+  
+  [FEATURES.QUICKBOOKS_SYNC]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'Automatic sync to QuickBooks for payment reconciliation',
+  },
+  
+  [FEATURES.STAFF_MANAGEMENT]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'Manage W-2 employees and 1099 contractors',
+  },
+  
+  [FEATURES.GUSTO_INTEGRATION]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'Gusto payroll integration for automated payroll processing',
+  },
+  
+  [FEATURES.TAX_FILING_MANAGER]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'professional',
+    description: 'Entity-type aware tax filing tracker (LLC, S Corp, C Corp, 501c3)',
+  },
+  
+  [FEATURES.ENHANCED_ONBOARDING]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'all',
+    description: 'Enhanced onboarding with entity type, EIN, and bank account requirements',
   },
   
   // Experimental features

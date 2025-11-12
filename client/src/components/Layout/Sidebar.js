@@ -11,7 +11,9 @@ import {
   ChevronRightIcon,
   WrenchScrewdriverIcon,
   BuildingOfficeIcon,
-  SparklesIcon
+  SparklesIcon,
+  UsersIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -50,6 +52,7 @@ const navigationGroups = [
       { name: 'Cash Flow', href: '/cash-reality' },
       { name: 'Budget vs. Cash', href: '/budget-vs-cash' },
       { name: 'Payments', href: '/payments' },
+      { name: 'Payment Engines', href: '/payments/engines', badge: 'New' },
       { name: 'Payment Reconciliation', href: '/payments/reconciliation', badge: 'Pro' },
       { name: 'Bookkeeping', href: '/bookkeeping', badge: 'Pro' },
       { name: 'Bank Accounts', href: '/accounts' }
@@ -95,6 +98,18 @@ const navigationGroups = [
     ]
   },
   {
+    id: 'people',
+    name: 'People & HR',
+    icon: UsersIcon,
+    href: '/staff',
+    color: 'indigo',
+    subItems: [
+      { name: 'Staff Management', href: '/staff', badge: 'New' },
+      { name: 'Payroll (Gusto)', href: '/staff', badge: 'Pro' },
+      { name: 'Tax Filings', href: '/tax', badge: 'New' }
+    ]
+  },
+  {
     id: 'tools',
     name: 'AI Tools',
     icon: SparklesIcon,
@@ -120,7 +135,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'tools']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'people', 'tools']);
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
