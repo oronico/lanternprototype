@@ -17,7 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { DEMO_STUDENTS, ENROLLMENT, ATTENDANCE } from '../../data/centralizedMetrics';
-import AddStudentModal from './AddStudentModal';
+import ComprehensiveAddStudent from './ComprehensiveAddStudent';
 import toast from 'react-hot-toast';
 
 /**
@@ -848,8 +848,8 @@ export default function EnrolledStudentsSIS() {
         </div>
       )}
 
-      {/* Add Student Modal */}
-      <AddStudentModal
+      {/* Add Student Modal - Comprehensive & Legally Sound */}
+      <ComprehensiveAddStudent
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onAdd={handleAddStudent}
