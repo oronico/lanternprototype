@@ -107,36 +107,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Operational Metrics Section Below */}
-        <div className="mb-8 p-6 bg-gradient-to-br from-warning-400 via-warning-500 to-warning-600 rounded-2xl text-white shadow-strong">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <ExclamationTriangleIcon className="h-7 w-7" />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Building Your Financial Foundation</h2>
-              <p className="text-warning-100">Score: {scorecard.overallScore}/100 • You're making progress! Focus on key areas below.</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-8 p-6 bg-gradient-to-br from-danger-500 via-danger-600 to-danger-700 rounded-2xl text-white shadow-strong">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <ExclamationTriangleIcon className="h-7 w-7" />
-              </div>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Cash Flow Attention Needed</h2>
-              <p className="text-danger-100">Score: {scorecard?.overallScore}/100 • Immediate action required. We'll help you through this.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Key Financial Metrics */}
       <div className="mb-8">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Key Financial Metrics</h3>
