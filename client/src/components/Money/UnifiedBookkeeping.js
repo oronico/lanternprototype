@@ -31,17 +31,19 @@ const ACCOUNTING_METHODS = {
     value: 'cash',
     name: 'Cash Basis',
     description: 'Revenue recorded when received, expenses when paid',
-    bestFor: 'Simple tracking, small schools',
+    bestFor: 'Most microschools and small schools (simpler, matches bank)',
     taxRule: 'Report income when cash received',
-    example: 'Student pays September tuition in October → Count in October'
+    example: 'Student pays September tuition in October → Count in October',
+    recommended: true
   },
   ACCRUAL: {
     value: 'accrual',
     name: 'Accrual Basis',
     description: 'Revenue recorded when earned, expenses when incurred',
-    bestFor: 'GAAP compliance, bank loans, investors',
+    bestFor: 'GAAP compliance required (bank loans, investors, audits)',
     taxRule: 'Report income when invoice sent',
-    example: 'September tuition invoiced Sep 1 → Count in September (even if paid in October)'
+    example: 'September tuition invoiced Sep 1 → Count in September (even if paid in October)',
+    recommended: false
   }
 };
 
@@ -56,8 +58,8 @@ export default function UnifiedBookkeeping() {
   useEffect(() => {
     analytics.trackPageView('unified-bookkeeping');
     
-    // Load accounting method from onboarding
-    const savedMethod = localStorage.getItem('accountingMethod') || 'accrual';
+    // Load accounting method from onboarding (default to cash for small schools)
+    const savedMethod = localStorage.getItem('accountingMethod') || 'cash';
     setAccountingMethod(savedMethod);
     
     loadData();

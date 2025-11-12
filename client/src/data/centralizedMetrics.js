@@ -65,6 +65,9 @@ export const ATTENDANCE = {
 
 // FINANCIAL METRICS (Master numbers)
 export const FINANCIAL = {
+  // Accounting Method (Most schools use cash basis)
+  accountingMethod: 'cash', // 'cash' or 'accrual'
+  
   // Cash Position
   operatingCash: 14200, // Checking account (operating funds)
   savingsCash: 8500, // Savings account (reserve)
@@ -73,9 +76,9 @@ export const FINANCIAL = {
   cashGoal: 30,
   cashReserveProgress: 73, // 22/30 = 73%
   
-  // Monthly P&L
-  monthlyRevenue: 19774, // Sum of all student tuition
-  monthlyExpenses: 17650,
+  // Monthly P&L (Cash Basis - revenue when received, expenses when paid)
+  monthlyRevenue: 19774, // Sum of all student tuition RECEIVED
+  monthlyExpenses: 17650, // Expenses PAID this month
   netIncome: 2124,
   profitMargin: 11, // 2124/19774 = 11%
   

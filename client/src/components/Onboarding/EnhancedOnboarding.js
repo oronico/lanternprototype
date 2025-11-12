@@ -89,7 +89,7 @@ export default function EnhancedOnboarding({ onComplete }) {
     
     // Additional Info
     fiscalYearEnd: '12-31', // Default to calendar year
-    accountingMethod: 'accrual',
+    accountingMethod: 'cash', // Most small schools use cash basis
     numberOfFounders: 1,
     
     // Platform Setup
