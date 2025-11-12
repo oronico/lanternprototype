@@ -34,15 +34,12 @@ const navigationGroups = [
     id: 'today',
     name: 'Today',
     icon: BellIcon,
-    href: '/back-office',
+    href: '/command-center',
     badge: '3',
     color: 'purple',
     subItems: [
-      { name: 'Command Center', href: '/back-office' },
-      { name: 'Daily Attendance', href: '/attendance/daily', badge: 'New' },
-      { name: 'Gamified Nudges', href: '/nudges/gamified', badge: 'New' },
-      { name: 'Daily Guidance', href: '/nudges' },
-      { name: 'Your Milestones', href: '/milestones' }
+      { name: 'Command Center', href: '/command-center' },
+      { name: 'Daily Attendance', href: '/attendance/daily' }
     ]
   },
   {

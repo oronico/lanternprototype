@@ -47,6 +47,7 @@ import DailyAttendance from './components/Attendance/DailyAttendance';
 import GamifiedNudges from './components/Nudges/GamifiedNudges';
 import ClassroomAssignment from './components/Programs/ClassroomAssignment';
 import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
+import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
 
 // Services
 import { initializeApp } from './services/api';
@@ -148,6 +149,7 @@ function AppContent() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/command-center" element={<UnifiedCommandCenter />} />
               <Route path="/back-office" element={<ChiefOfStaffDashboard />} />
               <Route path="/cash-reality" element={<CashRealityDashboard />} />
               <Route path="/budget-vs-cash" element={<BudgetVsCash />} />
