@@ -1,5 +1,15 @@
 import axios from 'axios';
 import { mockData } from './mockData';
+import {
+  ENROLLMENT,
+  FINANCIAL,
+  ATTENDANCE,
+  STAFF,
+  FACILITY,
+  OPERATIONS,
+  DAILY_SNAPSHOT,
+  DEMO_STUDENTS
+} from '../data/centralizedMetrics';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
@@ -110,21 +120,21 @@ export const dashboardAPI = {
     if (USE_MOCK_DATA) {
       return Promise.resolve({
         data: {
-          bankBalance: 14200,  // Consistent with 22 days cash
-          expectedToday: 1749,
-          outstandingRevenue: 4915,
-          daysCashOnHand: 22,  // Matches health scorecard
+          bankBalance: FINANCIAL.cashBalance,
+          expectedToday: Math.round(FINANCIAL.monthlyRevenue / 30), // Daily revenue
+          outstandingRevenue: FINANCIAL.outstandingReceivables,
+          daysCashOnHand: FINANCIAL.daysCash,
+          enrollment: ENROLLMENT.current,
+          monthlyRevenue: FINANCIAL.monthlyRevenue,
           urgentCollections: [
-            { id: 1, family: 'Johnson Family', amount: 1166, daysLate: 15, type: 'ESA payment', note: 'Usually reliable' },
-            { id: 2, family: 'Martinez Family', amount: 583, daysLate: 10, type: 'Omella failed', note: 'Card expired' },
-            { id: 3, family: 'Smith Family', amount: 750, daysLate: 30, type: 'Need payment plan', note: 'High risk' }
+            { id: 1, family: 'Jackson Family', amount: 400, daysLate: 5, type: 'Past due', note: 'Payment overdue' }
           ],
           weeklyForecast: [
-            { day: 'Today (Tue)', balance: 3247, change: '+$1,749 expected', status: 'danger' },
-            { day: 'Wed', balance: 4996, change: 'No transactions', status: 'warning' },
-            { day: 'Thu', balance: 3496, change: '-$1,500 utilities', status: 'warning' },
-            { day: 'Fri', balance: 1246, change: '-$2,250 insurance', status: 'danger' },
-            { day: 'Mon', balance: -254, change: 'NEGATIVE!', status: 'critical' }
+            { day: 'Today', balance: FINANCIAL.cashBalance, change: '+$659 expected', status: 'healthy' },
+            { day: 'Wed', balance: FINANCIAL.cashBalance + 659, change: 'No major transactions', status: 'healthy' },
+            { day: 'Thu', balance: FINANCIAL.cashBalance + 659 - 850, change: '-$850 utilities', status: 'healthy' },
+            { day: 'Fri', balance: FINANCIAL.cashBalance - 191, change: 'No major transactions', status: 'healthy' },
+            { day: 'Mon', balance: FINANCIAL.cashBalance + 2000, change: '+$2,191 ClassWallet', status: 'healthy' }
           ]
         }
       });
@@ -191,35 +201,34 @@ export const healthAPI = {
     if (USE_MOCK_DATA) {
       return Promise.resolve({
         data: {
-          overallScore: 72,
-          overallStatus: 'good',
+          overallScore: FINANCIAL.healthScore,
+          overallStatus: FINANCIAL.healthStatus,
           lastUpdated: new Date().toISOString(),
           criticalMetrics: [],
           warningMetrics: [
-            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: 22, displayValue: '22 days', benchmark: 30, target: 60, goldStar: 90, status: 'improving', trend: 'stable', recommendation: 'At 22 days - working toward 30-day minimum (on track)' },
-            { key: 'facilityBurden', name: 'Facility Burden', value: 0.28, displayValue: '28%', benchmark: 0.20, target: 0.15, status: 'working_on_it', trend: 'stable', recommendation: 'Above 20% target - explore cost reduction opportunities' },
-            { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: 0.52, displayValue: '52%', benchmark: 0.50, target: 0.45, status: 'warning', trend: 'stable', recommendation: 'Monitor closely - don\'t add staff until 35+ students' },
-            { key: 'studentCompletion', name: 'Student Completion Rate (School Year)', value: 0.86, displayValue: '86%', benchmark: 0.90, target: 0.95, status: 'warning', trend: 'stable', recommendation: 'Goal: 90%+ students complete full school year' },
-            { key: 'staffRetention', name: 'Staff Retention Rate', value: 0.80, displayValue: '80%', benchmark: 0.85, target: 0.90, status: 'warning', trend: 'declining', recommendation: 'Target: 85% annual staff retention - critical for program continuity' },
-            { key: 'collectionRate', name: 'Collection Rate', value: 0.82, displayValue: '82%', benchmark: 0.95, target: 0.98, status: 'warning', trend: 'declining', recommendation: 'Set up auto-pay for all families' }
+            { key: 'daysCashOnHand', name: 'Days Cash on Hand', value: FINANCIAL.daysCash, displayValue: `${FINANCIAL.daysCash} days`, benchmark: 30, target: 60, goldStar: 90, status: 'improving', trend: 'stable', recommendation: `At ${FINANCIAL.daysCash} days - working toward 30-day minimum (on track)` },
+            { key: 'facilityBurden', name: 'Facility Burden', value: FACILITY.facilityBurden, displayValue: `${Math.round(FACILITY.facilityBurden * 100)}%`, benchmark: 0.20, target: 0.15, status: 'working_on_it', trend: 'stable', recommendation: 'Above 20% target - explore cost reduction opportunities' },
+            { key: 'staffingRatio', name: 'Staffing Cost Ratio', value: STAFF.staffingRatio, displayValue: `${Math.round(STAFF.staffingRatio * 100)}%`, benchmark: 0.50, target: 0.45, status: 'good', trend: 'stable', recommendation: 'Healthy staffing ratio - room to grow' },
+            { key: 'attendanceRate', name: 'Attendance Rate', value: ATTENDANCE.ytdRate / 100, displayValue: `${ATTENDANCE.ytdRate}%`, benchmark: 0.95, target: 0.98, status: 'excellent', trend: 'stable', recommendation: 'Excellent attendance! Keep families engaged.' },
+            { key: 'collectionRate', name: 'Collection Rate', value: OPERATIONS.onTimePayment / 100, displayValue: `${OPERATIONS.onTimePayment}%`, benchmark: 0.95, target: 0.98, status: 'excellent', trend: 'stable', recommendation: 'Great payment discipline!' },
+            { key: 'enrollmentUtilization', name: 'Enrollment Utilization', value: ENROLLMENT.utilization / 100, displayValue: `${ENROLLMENT.utilization}%`, benchmark: 0.75, target: 0.85, status: 'warning', trend: 'improving', recommendation: `At ${ENROLLMENT.utilization}% capacity - ${ENROLLMENT.capacity - ENROLLMENT.current} spots available` }
           ],
           goodMetrics: [
-            { key: 'studentRetentionYoY', name: 'Student Retention (Year-over-Year)', value: 0.83, displayValue: '83%', benchmark: 0.85, target: 0.95, goldStar: 0.95, status: 'good', trend: 'stable', recommendation: 'Good - aiming for great (85-94%) or gold star (95%+)' },
-            { key: 'studentCompletionRate', name: 'Student Completion (FDOS to LDOS)', value: 0.92, displayValue: '92%', benchmark: 0.90, target: 0.95, goldStar: 0.95, status: 'great', trend: 'improving', recommendation: 'Great performance! 90-94% - close to gold star' },
-            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: 0.80, displayValue: '80%', benchmark: 0.75, target: 0.90, goldStar: 1.00, status: 'good', trend: 'improving', recommendation: 'Progressing well - 4 more students for target' },
-            { key: 'debtToRevenue', name: 'Debt to Revenue Ratio', value: 0.12, displayValue: '12%', benchmark: 0.15, target: 0.10, goldStar: 0.05, status: 'good', trend: 'stable', recommendation: 'Healthy debt level' }
+            { key: 'studentRetention', name: 'Student Retention', value: ENROLLMENT.retentionRate / 100, displayValue: `${ENROLLMENT.retentionRate}%`, benchmark: 0.85, target: 0.95, status: 'excellent', trend: 'stable', recommendation: `${ENROLLMENT.retentionRate}% of students returned this year - excellent!` },
+            { key: 'enrollmentToGoal', name: 'Enrollment to Goal', value: ENROLLMENT.goalProgress / 100, displayValue: `${ENROLLMENT.goalProgress}%`, benchmark: 0.75, target: 0.90, status: 'good', trend: 'improving', recommendation: `At ${ENROLLMENT.current}/${ENROLLMENT.target} students - ${ENROLLMENT.target - ENROLLMENT.current} more to reach goal` },
+            { key: 'profitMargin', name: 'Profit Margin', value: FINANCIAL.profitMargin / 100, displayValue: `${FINANCIAL.profitMargin}%`, benchmark: 0.10, target: 0.15, status: 'good', trend: 'stable', recommendation: 'Healthy profit margin' }
           ],
           excellentMetrics: [
-            { key: 'paymentHistory', name: 'Payment Discipline', value: 1.0, displayValue: '100%', benchmark: 0.95, target: 1.0, goldStar: 1.0, status: 'excellent', trend: 'stable', recommendation: 'Excellent! Keep it up - perfect payment record' }
+            { key: 'attendance', name: 'Attendance Rate', value: ATTENDANCE.ytdRate / 100, displayValue: `${ATTENDANCE.ytdRate}%`, benchmark: 0.95, target: 0.98, status: 'excellent', trend: 'stable', recommendation: `${ATTENDANCE.ytdRate}% attendance - exceeding 95% goal!` }
           ],
           insights: [
-            { type: 'opportunity', title: 'Build Cash Reserve to 30 Days', message: 'At 22 days - need 8 more days to reach minimum', action: 'Save $5,200 to reach 30-day target' },
-            { type: 'opportunity', title: 'Optimize Facility Costs', message: 'Rent at 28% vs 20% target', action: 'Reduce facility burden or increase enrollment' },
-            { type: 'positive', title: 'Great Student Completion!', message: '92% students complete the school year (FDOS to LDOS)', action: 'Excellent! Maintain this performance' }
+            { type: 'opportunity', title: 'Build Cash Reserve to 30 Days', message: `At ${FINANCIAL.daysCash} days - need ${FINANCIAL.cashGoal - FINANCIAL.daysCash} more days to reach minimum`, action: `Save $${Math.round((FINANCIAL.cashGoal - FINANCIAL.daysCash) * (FINANCIAL.monthlyExpenses / 30))} to reach 30-day target` },
+            { type: 'opportunity', title: 'Increase Enrollment', message: `At ${ENROLLMENT.utilization}% capacity - ${ENROLLMENT.capacity - ENROLLMENT.current} spots available`, action: `Enroll ${ENROLLMENT.target - ENROLLMENT.current} more students to reach goal` },
+            { type: 'positive', title: 'Excellent Attendance!', message: `${ATTENDANCE.ytdRate}% attendance rate exceeds 95% goal`, action: 'Excellent! Maintain this performance' }
           ],
           urgentActions: [
-            { priority: 'medium', metric: 'Days Cash on Hand', currentValue: '22 days', targetValue: '30 days minimum', action: 'Build cash reserves - save $5,200', timeframe: '30-60 days' },
-            { priority: 'medium', metric: 'Rent to Revenue Ratio', currentValue: '28%', targetValue: '20%', action: 'Optimize facility costs or increase enrollment', timeframe: '60-90 days' }
+            { priority: 'medium', metric: 'Days Cash on Hand', currentValue: `${FINANCIAL.daysCash} days`, targetValue: '30 days minimum', action: `Build cash reserves - working toward goal`, timeframe: '30-60 days' },
+            { priority: 'medium', metric: 'Facility Burden', currentValue: `${Math.round(FACILITY.facilityBurden * 100)}%`, targetValue: '20%', action: 'Optimize facility costs or increase enrollment', timeframe: '60-90 days' }
           ]
         }
       });
