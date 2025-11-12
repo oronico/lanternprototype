@@ -32,15 +32,60 @@ import toast from 'react-hot-toast';
  */
 
 const TAX_REQUIREMENTS = {
-  llc: {
-    entityName: 'LLC (Limited Liability Company)',
+  'llc-single': {
+    entityName: 'Single-Member LLC (Disregarded Entity)',
+    federalForms: [
+      {
+        form: 'Schedule C',
+        name: 'Profit or Loss from Business',
+        frequency: 'Annual',
+        deadline: 'April 15',
+        description: 'Filed with your personal Form 1040',
+        estimatedCost: '$500-1,000 (CPA)'
+      },
+      {
+        form: '1040-ES',
+        name: 'Estimated Tax (Quarterly)',
+        frequency: 'Quarterly',
+        deadlines: ['Apr 15', 'Jun 15', 'Sep 15', 'Jan 15'],
+        description: 'Quarterly estimated tax payments',
+        estimatedCost: 'Based on income'
+      },
+      {
+        form: 'Schedule SE',
+        name: 'Self-Employment Tax',
+        frequency: 'Annual',
+        deadline: 'April 15',
+        description: 'Filed with Form 1040',
+        estimatedCost: 'Included with return'
+      }
+    ],
+    stateForms: [
+      {
+        form: 'State Income Tax Return',
+        deadline: 'April 15',
+        description: 'Filed with personal state return'
+      }
+    ],
+    payrollTaxes: [],
+    specialConsiderations: [
+      'Profit/loss flows to your personal tax return',
+      'Pay self-employment tax on all profit (15.3%)',
+      'No separate entity tax return',
+      'Quarterly estimated taxes required',
+      'Simplest structure, but highest self-employment tax'
+    ]
+  },
+  
+  'llc-partnership': {
+    entityName: 'Multi-Member LLC (Partnership)',
     federalForms: [
       {
         form: '1065',
         name: 'Partnership Return',
         frequency: 'Annual',
         deadline: 'March 15',
-        description: 'Partnership tax return',
+        description: 'Partnership tax return for LLC',
         estimatedCost: '$800-1,500 (CPA)'
       },
       {
@@ -48,7 +93,7 @@ const TAX_REQUIREMENTS = {
         name: 'Partner\'s Share of Income',
         frequency: 'Annual',
         deadline: 'March 15',
-        description: 'Issued to each member/partner',
+        description: 'Issued to each member - they report on personal return',
         estimatedCost: 'Included with 1065'
       },
       {
@@ -91,7 +136,7 @@ const TAX_REQUIREMENTS = {
         name: 'Shareholder\'s Share of Income',
         frequency: 'Annual',
         deadline: 'March 15',
-        description: 'Issued to each shareholder',
+        description: 'Issued to each shareholder - they report on personal return',
         estimatedCost: 'Included with 1120-S'
       },
       {
@@ -254,14 +299,22 @@ export default function TaxFilingManager() {
   useEffect(() => {
     analytics.trackPageView('tax-filing-manager');
     
-    // Get entity type from onboarding (default to LLC for demo)
-    const storedEntityType = localStorage.getItem('entityType') || 'llc';
+    // Get entity type from onboarding (default to single-member LLC for demo)
+    const storedEntityType = localStorage.getItem('entityType') || 'llc-single';
     setEntityType(storedEntityType);
     
     loadFilingData(storedEntityType);
     
     // Show helpful message
-    toast(`Showing tax forms for ${storedEntityType.toUpperCase()}. Change in Settings if needed.`, {
+    const entityNames = {
+      'llc-single': 'Single-Member LLC',
+      'llc-partnership': 'Multi-Member LLC',
+      'scorp': 'S Corporation',
+      'ccorp': 'C Corporation',
+      '501c3': '501(c)(3) Nonprofit'
+    };
+    
+    toast(`Showing tax forms for ${entityNames[storedEntityType] || storedEntityType}`, {
       duration: 3000,
       icon: '📋'
     });
@@ -352,43 +405,107 @@ export default function TaxFilingManager() {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center space-x-3">
-          <DocumentTextIcon className="h-8 w-8 text-primary-600" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Tax Filing Manager</h1>
-            <p className="text-gray-600">
-              Tax requirements for {requirements.entityName}
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <DocumentTextIcon className="h-8 w-8 text-primary-600" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Tax Filing Manager</h1>
+              <p className="text-gray-600">
+                Tax requirements for {requirements.entityName}
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-right">
+            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+              Find a CPA
+            </button>
+            <div className="text-xs text-gray-500 mt-1">We recommend professional help</div>
           </div>
         </div>
       </div>
 
-      {/* Entity Type Card */}
-      <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3 flex-1">
-            <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-blue-900 mb-2">
-                Your Entity Type: {requirements.entityName}
-              </h3>
-              <div className="text-sm text-blue-800 mb-3">
-                <strong>What This Means for Your Tax Filings:</strong>
-              </div>
-              <ul className="text-sm text-blue-700 space-y-1">
-                {requirements.specialConsiderations.slice(0, 3).map((item, idx) => (
-                  <li key={idx}>• {item}</li>
-                ))}
-              </ul>
+      {/* CPA Recommendation Banner */}
+      <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+              <span className="text-2xl">👨‍💼</span>
             </div>
           </div>
-          <button
-            onClick={() => window.location.href = '/settings'}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center gap-2"
-          >
-            <Cog6ToothIcon className="h-4 w-4" />
-            Change Entity
-          </button>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              💚 We Strongly Recommend Hiring a Licensed CPA
+            </h3>
+            <p className="text-sm text-gray-700 mb-3">
+              Tax laws are complex and change frequently. A good CPA will:
+            </p>
+            <ul className="text-sm text-gray-700 space-y-1 mb-4">
+              <li>✓ Ensure you're compliant with federal, state, and local requirements</li>
+              <li>✓ Find deductions and credits you might miss (often saves more than their fee!)</li>
+              <li>✓ Represent you in case of an audit</li>
+              <li>✓ Provide strategic tax planning advice</li>
+              <li>✓ File correctly the first time (avoiding penalties)</li>
+            </ul>
+            <div className="flex items-center gap-4">
+              <div className="text-sm">
+                <strong className="text-gray-900">Typical Cost:</strong>
+                <span className="text-gray-700 ml-2">
+                  {requirements.federalForms[0]?.estimatedCost || '$800-1,500/year'}
+                </span>
+              </div>
+              <div className="text-sm">
+                <strong className="text-gray-900">Worth It?</strong>
+                <span className="text-green-700 ml-2 font-semibold">
+                  Absolutely. Peace of mind is priceless.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Entity Type Selector */}
+      <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="flex items-start gap-4">
+          <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
+          <div className="flex-1">
+            <h3 className="font-semibold text-blue-900 mb-3">
+              Your Entity Type
+            </h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-blue-900 mb-2">
+                Select your business structure:
+              </label>
+              <select
+                value={entityType}
+                onChange={(e) => {
+                  const newType = e.target.value;
+                  setEntityType(newType);
+                  localStorage.setItem('entityType', newType);
+                  loadFilingData(newType);
+                  toast.success('Entity type updated! Tax forms refreshed.');
+                }}
+                className="w-full md:w-96 px-4 py-3 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white font-medium"
+              >
+                <option value="llc-single">Single-Member LLC (just you)</option>
+                <option value="llc-partnership">Multi-Member LLC (2+ members)</option>
+                <option value="scorp">S Corporation</option>
+                <option value="ccorp">C Corporation</option>
+                <option value="501c3">501(c)(3) Nonprofit</option>
+              </select>
+            </div>
+            
+            <div className="text-sm text-blue-800">
+              <strong>Key Tax Info for {requirements.entityName}:</strong>
+            </div>
+            <ul className="text-sm text-blue-700 space-y-1 mt-2">
+              {requirements.specialConsiderations.slice(0, 3).map((item, idx) => (
+                <li key={idx}>• {item}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -501,8 +618,11 @@ export default function TaxFilingManager() {
                 <div className="font-semibold text-green-900 mb-1">
                   Automated via Gusto
                 </div>
-                <div className="text-sm text-green-700">
+                <div className="text-sm text-green-700 mb-2">
                   All payroll tax filings are handled automatically by Gusto including deposits, quarterly returns, and annual forms.
+                </div>
+                <div className="text-xs text-green-800 italic">
+                  💡 Your CPA will appreciate this - Gusto handles all payroll tax complexity so they can focus on strategy.
                 </div>
               </div>
             </div>
@@ -512,12 +632,29 @@ export default function TaxFilingManager() {
             {requirements.payrollTaxes.map((tax, idx) => (
               <div key={idx} className="p-4 bg-gray-50 rounded-lg text-center">
                 <div className="text-sm font-medium text-gray-900">{tax}</div>
-                <div className="text-xs text-gray-600 mt-1">Auto-filed</div>
+                <div className="text-xs text-gray-600 mt-1">Auto-filed by Gusto</div>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {/* Bottom CTA */}
+      <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg p-8 text-white text-center">
+        <h3 className="text-2xl font-bold mb-3">Ready to File Your Taxes?</h3>
+        <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+          SchoolStack organizes your data and shows what you need, but we strongly recommend
+          working with a licensed CPA for actual tax preparation and filing. It's worth every penny!
+        </p>
+        <div className="flex justify-center gap-4">
+          <button className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-blue-50 font-semibold">
+            Find a CPA Near You
+          </button>
+          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold border-2 border-white">
+            Download Tax Package for CPA
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
