@@ -171,9 +171,6 @@ export default function DailyAttendance() {
       ? allStudents
       : allStudents.filter(s => s.program === selectedProgram);
   };
-  
-  const getFilteredStudentsOLD = () => {
-    const allStudentsOLD = [
       {
         id: 1,
         name: 'Emma Johnson',
