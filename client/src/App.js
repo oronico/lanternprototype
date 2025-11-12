@@ -43,6 +43,10 @@ import EnhancedOnboarding from './components/Onboarding/EnhancedOnboarding';
 import PaymentEngines from './components/Payments/PaymentEngines';
 import StaffManagement from './components/Staff/StaffManagement';
 import TaxFilingManager from './components/Tax/TaxFilingManager';
+import DailyAttendance from './components/Attendance/DailyAttendance';
+import GamifiedNudges from './components/Nudges/GamifiedNudges';
+import ClassroomAssignment from './components/Programs/ClassroomAssignment';
+import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 
 // Services
 import { initializeApp } from './services/api';
@@ -164,6 +168,10 @@ function AppContent() {
               <Route path="/payments/engines" element={<PaymentEngines />} />
               <Route path="/staff" element={<StaffManagement />} />
               <Route path="/tax" element={<TaxFilingManager />} />
+              <Route path="/attendance/daily" element={<DailyAttendance />} />
+              <Route path="/nudges/gamified" element={<GamifiedNudges />} />
+              <Route path="/programs/assignments" element={<ClassroomAssignment />} />
+              <Route path="/enterprise/network" element={<MultiSchoolDashboard />} />
               <Route path="/lease" element={<LeaseAnalyzer />} />
               <Route path="/lease-entry" element={<LeaseDataEntry onAnalyze={(data) => console.log('Analyzing:', data)} />} />
               <Route path="/lease/upload" element={<LeaseOCRUpload />} />

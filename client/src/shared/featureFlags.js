@@ -54,6 +54,14 @@ export const FEATURES = {
   // Enhanced Onboarding
   ENHANCED_ONBOARDING: 'enhancedOnboarding',
   
+  // Attendance & Gamification
+  DAILY_ATTENDANCE: 'dailyAttendance',
+  GAMIFIED_NUDGES: 'gamifiedNudges',
+  CLASSROOM_ASSIGNMENT: 'classroomAssignment',
+  
+  // Enterprise Features
+  MULTI_SCHOOL_DASHBOARD: 'multiSchoolDashboard',
+  
   // Experimental features (beta only)
   AI_FINANCIAL_ADVISOR: 'aiFinancialAdvisor',
   PREDICTIVE_ANALYTICS: 'predictiveAnalytics',
@@ -248,6 +256,34 @@ export const featureConfig = {
     rollout: 100,
     tier: 'all',
     description: 'Enhanced onboarding with entity type, EIN, and bank account requirements',
+  },
+  
+  [FEATURES.DAILY_ATTENDANCE]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'all',
+    description: 'Daily attendance capture by program with streak tracking and nudges',
+  },
+  
+  [FEATURES.GAMIFIED_NUDGES]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'all',
+    description: 'Noom/Duolingo-style streaks, progress bars, and positive nudges',
+  },
+  
+  [FEATURES.CLASSROOM_ASSIGNMENT]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'all',
+    description: 'Assign students to programs and teachers with schedule management',
+  },
+  
+  [FEATURES.MULTI_SCHOOL_DASHBOARD]: {
+    enabled: true,
+    rollout: 100,
+    tier: 'enterprise',
+    description: 'Aggregated dashboard for multi-school networks',
   },
   
   // Experimental features

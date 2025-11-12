@@ -13,7 +13,8 @@ import {
   BuildingOfficeIcon,
   SparklesIcon,
   UsersIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  BuildingOffice2Icon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -38,6 +39,8 @@ const navigationGroups = [
     color: 'purple',
     subItems: [
       { name: 'Command Center', href: '/back-office' },
+      { name: 'Daily Attendance', href: '/attendance/daily', badge: 'New' },
+      { name: 'Gamified Nudges', href: '/nudges/gamified', badge: 'New' },
       { name: 'Daily Guidance', href: '/nudges' },
       { name: 'Your Milestones', href: '/milestones' }
     ]
@@ -68,6 +71,7 @@ const navigationGroups = [
       { name: 'Enrolled Students', href: '/crm/enrolled', badge: 'New' },
       { name: 'Recruitment Pipeline', href: '/crm/recruitment', badge: 'New' },
       { name: 'Programs', href: '/programs' },
+      { name: 'Classroom Assignments', href: '/programs/assignments', badge: 'New' },
       { name: 'Family CRM (Old)', href: '/crm' },
       { name: 'Contracts', href: '/documents' }
     ]
@@ -130,12 +134,23 @@ const navigationGroups = [
       { name: 'School Settings', href: '/settings' },
       { name: 'Pricing & Plan', href: '/pricing' }
     ]
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    icon: BuildingOffice2Icon,
+    href: '/enterprise/network',
+    color: 'purple',
+    badge: 'Enterprise',
+    subItems: [
+      { name: 'Network Dashboard', href: '/enterprise/network', badge: 'Enterprise' }
+    ]
   }
 ];
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'people', 'tools']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'people', 'tools', 'enterprise']);
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
