@@ -58,15 +58,11 @@ const navigationGroups = [
     id: 'students',
     name: 'Students',
     icon: UserGroupIcon,
-    href: '/crm/enrolled',
+    href: '/students',
     color: 'blue',
     subItems: [
-      { name: 'Enrolled Students', href: '/crm/enrolled', badge: 'New' },
-      { name: 'Recruitment Pipeline', href: '/crm/recruitment', badge: 'New' },
-      { name: 'Programs', href: '/programs' },
-      { name: 'Classroom Assignments', href: '/programs/assignments', badge: 'New' },
-      { name: 'Family CRM (Old)', href: '/crm' },
-      { name: 'Contracts', href: '/documents' }
+      { name: 'Enrolled Students (SIS)', href: '/students' },
+      { name: 'Recruitment Pipeline', href: '/crm/recruitment' }
     ]
   },
   {
@@ -125,6 +121,7 @@ const navigationGroups = [
     color: 'gray',
     subItems: [
       { name: 'School Settings', href: '/settings' },
+      { name: 'Programs & Schedule', href: '/programs' },
       { name: 'Pricing & Plan', href: '/pricing' }
     ]
   },

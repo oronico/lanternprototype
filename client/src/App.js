@@ -50,6 +50,7 @@ import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
 import UnifiedPayments from './components/Money/UnifiedPayments';
 import UnifiedBookkeeping from './components/Money/UnifiedBookkeeping';
+import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
 
 // Services
 import { initializeApp } from './services/api';
@@ -167,6 +168,7 @@ function AppContent() {
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
+              <Route path="/students" element={<EnrolledStudentsSIS />} />
               <Route path="/crm/recruitment" element={<RecruitmentPipeline />} />
               <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
               <Route path="/payments/engines" element={<PaymentEngines />} />
