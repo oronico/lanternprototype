@@ -8,7 +8,8 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ArrowPathIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  LinkIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { useEventEmit } from '../../shared/hooks/useEventBus';
