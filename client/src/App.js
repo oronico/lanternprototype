@@ -50,6 +50,8 @@ import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
 import UnifiedPayments from './components/Money/UnifiedPayments';
 import UnifiedBookkeeping from './components/Money/UnifiedBookkeeping';
+import BudgetToActual from './components/Money/BudgetToActual';
+import FiveYearProforma from './components/Money/FiveYearProforma';
 import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
 
 // Services
@@ -156,6 +158,8 @@ function AppContent() {
               <Route path="/back-office" element={<ChiefOfStaffDashboard />} />
               <Route path="/cash-reality" element={<CashRealityDashboard />} />
               <Route path="/budget-vs-cash" element={<BudgetVsCash />} />
+              <Route path="/budget-actual" element={<BudgetToActual />} />
+              <Route path="/proforma" element={<FiveYearProforma />} />
               <Route path="/nudges" element={<NudgeCenter />} />
               <Route path="/milestones" element={<MilestoneTracker />} />
               <Route path="/bookkeeping" element={<UnifiedBookkeeping />} />
