@@ -107,8 +107,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Rest of dashboard content */}
-      {false && scorecard?.overallScore >= 55 ? (
+      {/* Operational Metrics Section Below */}
         <div className="mb-8 p-6 bg-gradient-to-br from-warning-400 via-warning-500 to-warning-600 rounded-2xl text-white shadow-strong">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
