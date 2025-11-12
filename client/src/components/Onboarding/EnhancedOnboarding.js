@@ -51,7 +51,7 @@ const ENTITY_TYPES = [
     value: '501c3',
     name: '501(c)(3) Nonprofit',
     description: 'Tax-exempt, mission-driven, can receive donations',
-    taxForms: ['990', '990-EZ', or '990-N'],
+    taxForms: ['990', '990-EZ', '990-N'],
     advantages: ['Tax-exempt', 'Grant eligible', 'Donation deductibility'],
     considerations: ['No private profit', 'Board required', 'IRS compliance']
   }
