@@ -13,13 +13,15 @@ import {
   CakeIcon,
   BellIcon,
   RocketLaunchIcon,
-  ArrowTrendingUpIcon
+  ArrowTrendingUpIcon,
+  ClipboardDocumentCheckIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { useEventBus } from '../../shared/hooks/useEventBus';
 import { EVENTS } from '../../shared/eventBus';
 import Confetti from 'react-confetti';
 import toast from 'react-hot-toast';
+import ActionCenter from './ActionCenter';
 
 /**
  * Unified Command Center
@@ -35,7 +37,7 @@ import toast from 'react-hot-toast';
 
 export default function UnifiedCommandCenter() {
   const [showCelebration, setShowCelebration] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview'); // overview, nudges, goals, milestones
+  const [activeTab, setActiveTab] = useState('actions'); // actions, nudges, goals, milestones
   
   // Streaks (Duolingo-style)
   const [streaks, setStreaks] = useState({
@@ -268,15 +270,26 @@ export default function UnifiedCommandCenter() {
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
           <button
-            onClick={() => setActiveTab('overview')}
+            onClick={() => setActiveTab('actions')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'overview'
+              activeTab === 'actions'
+                ? 'border-primary-500 text-primary-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <ClipboardDocumentCheckIcon className="h-5 w-5 inline mr-2" />
+            Action Items
+          </button>
+          <button
+            onClick={() => setActiveTab('nudges')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'nudges'
                 ? 'border-primary-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
             <BellIcon className="h-5 w-5 inline mr-2" />
-            Today's Nudges
+            Nudges & Wins
           </button>
           <button
             onClick={() => setActiveTab('goals')}
@@ -303,8 +316,13 @@ export default function UnifiedCommandCenter() {
         </nav>
       </div>
 
-      {/* Today's Nudges Tab */}
-      {activeTab === 'overview' && (
+      {/* Action Items Tab */}
+      {activeTab === 'actions' && (
+        <ActionCenter />
+      )}
+
+      {/* Nudges & Wins Tab */}
+      {activeTab === 'nudges' && (
         <div className="space-y-6">
           {/* Urgent Nudges */}
           {urgentNudges.length > 0 && (
