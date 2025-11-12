@@ -16,6 +16,7 @@ import {
   ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
+import { DEMO_STUDENTS, ENROLLMENT, ATTENDANCE } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 
 /**
@@ -54,7 +55,12 @@ export default function EnrolledStudentsSIS() {
   }, []);
 
   const loadStudentData = () => {
-    // Demo data - MongoDB-ready structure
+    // Load from centralized data source
+    setStudents(DEMO_STUDENTS);
+  };
+
+  const loadStudentDataOLD = () => {
+    // OLD DEMO DATA - Replaced with centralized data
     const demoStudents = [
       {
         _id: '1',
