@@ -17,6 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { DEMO_STUDENTS, ENROLLMENT, ATTENDANCE } from '../../data/centralizedMetrics';
+import AddStudentModal from './AddStudentModal';
 import toast from 'react-hot-toast';
 
 /**
@@ -399,7 +400,12 @@ export default function EnrolledStudentsSIS() {
 
   const viewStudentDetails = (student) => {
     setSelectedStudent(student);
-    // Would open detail modal
+    toast('Student details modal - coming soon!');
+  };
+
+  const handleAddStudent = (newStudent) => {
+    setStudents(prev => [...prev, newStudent]);
+    toast.success('Student added! (In production, this would save to database)');
   };
 
   // Group by classroom
@@ -841,6 +847,13 @@ export default function EnrolledStudentsSIS() {
           </div>
         </div>
       )}
+
+      {/* Add Student Modal */}
+      <AddStudentModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAdd={handleAddStudent}
+      />
     </div>
   );
 }
