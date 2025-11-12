@@ -342,23 +342,6 @@ export const DAILY_SNAPSHOT = {
   healthScore: FINANCIAL.healthScore
 };
 
-// EXPORT ALL
-export {
-  DEMO_STUDENTS,
-  PROGRAMS,
-  TEACHERS,
-  ENROLLMENT,
-  ATTENDANCE,
-  FINANCIAL,
-  STAFF,
-  FACILITY,
-  OPERATIONS,
-  PROGRAM_METRICS,
-  PAYMENT_ENGINES,
-  GAMIFICATION,
-  DAILY_SNAPSHOT
-};
-
 // Helper function to format currency
 export const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
