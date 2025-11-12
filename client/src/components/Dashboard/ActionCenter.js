@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { useEventBus, useEventEmit } from '../../shared/hooks/useEventBus';
+import { generateNudges, DEMO_STUDENTS } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 
 /**
@@ -40,7 +41,10 @@ const ACTION_TYPES = {
   PAYMENT: 'payment',
   CELEBRATION: 'celebration',
   DOCUMENT: 'document',
-  GENERAL: 'general'
+  GENERAL: 'general',
+  CONTRACT: 'contract',
+  ENROLLMENT: 'enrollment',
+  FINANCIAL: 'financial'
 };
 
 const PRIORITY = {
@@ -48,6 +52,35 @@ const PRIORITY = {
   HIGH: 'high',
   MEDIUM: 'medium',
   LOW: 'low'
+};
+
+// Helper functions
+const determineActions = (nudge) => {
+  if (nudge.type === 'contract') return ['email', 'sendContract'];
+  if (nudge.type === 'attendance') return ['call', 'text', 'email'];
+  if (nudge.type === 'payment') return ['call', 'text', 'email'];
+  return ['email'];
+};
+
+const getSource = (type) => {
+  const sources = {
+    'contract': 'Document Compliance',
+    'attendance': 'Daily Attendance',
+    'payment': 'Payment Tracking',
+    'enrollment': 'Recruitment',
+    'financial': 'Financial Dashboard'
+  };
+  return sources[type] || 'System';
+};
+
+const getPriorityColor = (priority) => {
+  const colors = {
+    'urgent': 'red',
+    'high': 'orange',
+    'medium': 'yellow',
+    'low': 'gray'
+  };
+  return colors[priority] || 'gray'
 };
 
 export default function ActionCenter() {
@@ -61,25 +94,57 @@ export default function ActionCenter() {
   }, []);
 
   const loadActions = () => {
-    // Aggregate actions from all sources
-    const allActions = [
-      // From Attendance
-      {
-        id: 'att_1',
-        type: ACTION_TYPES.ATTENDANCE,
-        priority: PRIORITY.HIGH,
-        title: 'Call Ethan Brown\'s Family',
-        description: '2 absences in last 2 weeks',
+    // Generate actions from centralized data
+    const generatedNudges = generateNudges();
+    
+    // Convert to action format
+    const allActions = generatedNudges.map((nudge, index) => {
+      const icons = {
+        'contract': DocumentTextIcon,
+        'attendance': ExclamationCircleIcon,
+        'payment': BanknotesIcon,
+        'enrollment': UserGroupIcon,
+        'financial': BanknotesIcon,
+        'celebration': CalendarIcon
+      };
+      
+      return {
+        id: `${nudge.type}_${index}`,
+        type: nudge.type,
+        priority: nudge.priority,
+        title: nudge.title,
+        description: nudge.description || '',
         dueDate: 'Today',
-        family: 'Brown',
-        student: 'Ethan Brown',
-        phone: '555-0501',
-        email: 'amanda@email.com',
-        actions: ['call', 'text', 'email'],
+        family: nudge.family || '',
+        student: nudge.student || '',
+        phone: nudge.phone || '',
+        email: nudge.email || '',
+        actions: determineActions(nudge),
         completed: false,
-        source: 'Daily Attendance',
-        icon: ExclamationCircleIcon,
-        color: 'orange'
+        source: getSource(nudge.type),
+        icon: icons[nudge.type] || ExclamationCircleIcon,
+        color: getPriorityColor(nudge.priority),
+        actionData: nudge
+      };
+    });
+    
+    // Add recruitment pipeline actions manually for now
+    const recruitmentActions = [
+      {
+        id: 'rec_1',
+        type: ACTION_TYPES.RECRUITMENT,
+        priority: PRIORITY.HIGH,
+        title: 'Schedule Tour - Johnson Family',
+        description: 'New lead from Facebook, very interested',
+        dueDate: 'Today',
+        family: 'Johnson',
+        phone: '555-0101',
+        email: 'sarah@email.com',
+        actions: ['text', 'email', 'schedule'],
+        completed: false,
+        source: 'Recruitment Pipeline',
+        icon: CalendarIcon,
+        color: 'blue'
       },
       
       // From Recruitment Pipeline
