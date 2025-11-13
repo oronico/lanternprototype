@@ -111,19 +111,20 @@ const navigationGroups = [
       { name: 'Staff Directory', href: '/staff' }
     ]
   },
-  ...(needsGovernance ? [{
-    id: 'governance',
-    name: 'Governance',
-    icon: ScaleIcon,
-    href: '/governance',
-    color: 'purple',
-    badge: entityType === '501c3' ? 'Nonprofit' : 'Corp',
-    subItems: [
-      { name: 'Board of Directors', href: '/governance' },
-      { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
-      { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
-    ]
-  }] : []),
+  // Governance section commented out temporarily for demo
+  // Will add back after fixing localStorage SSR issue
+  // {
+  //   id: 'governance',
+  //   name: 'Governance',
+  //   icon: ScaleIcon,
+  //   href: '/governance',
+  //   color: 'purple',
+  //   subItems: [
+  //     { name: 'Board of Directors', href: '/governance' },
+  //     { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
+  //     { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
+  //   ]
+  // },
   {
     id: 'tools',
     name: 'AI Tools',
@@ -160,9 +161,9 @@ const navigationGroups = [
   }
 ];
 
-// Define outside component to avoid re-declaring
-const entityType = typeof window !== 'undefined' ? localStorage.getItem('entityType') || 'llc-single' : 'llc-single';
-const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
+// Temporarily disabled - causing SSR issues
+// const entityType = typeof window !== 'undefined' ? localStorage.getItem('entityType') || 'llc-single' : 'llc-single';
+// const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
 
 const Sidebar = () => {
   const location = useLocation();
