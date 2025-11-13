@@ -45,7 +45,7 @@ export default function SimpleDashboard() {
           </div>
         </div>
         
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-5 gap-6">
           <div className="bg-white bg-opacity-10 backdrop-blur rounded-lg p-4">
             <div className="text-xs text-primary-100 mb-1">Enrollment</div>
             <div className="text-2xl font-bold">{ENROLLMENT.current}/{ENROLLMENT.target}</div>
@@ -53,9 +53,15 @@ export default function SimpleDashboard() {
           </div>
           
           <div className="bg-white bg-opacity-10 backdrop-blur rounded-lg p-4">
-            <div className="text-xs text-primary-100 mb-1">Cash Position</div>
+            <div className="text-xs text-primary-100 mb-1">Operating Cash</div>
             <div className="text-2xl font-bold">{FINANCIAL.daysCash} days</div>
-            <div className="text-xs text-primary-200">Operating cash: ${(FINANCIAL.operatingCash / 1000).toFixed(0)}k</div>
+            <div className="text-xs text-primary-200">${(FINANCIAL.operatingCash / 1000).toFixed(0)}k checking</div>
+          </div>
+          
+          <div className="bg-white bg-opacity-10 backdrop-blur rounded-lg p-4">
+            <div className="text-xs text-primary-100 mb-1">Savings Reserve</div>
+            <div className="text-2xl font-bold">${(FINANCIAL.savingsCash / 1000).toFixed(1)}k</div>
+            <div className="text-xs text-primary-200">Emergency fund 💰</div>
           </div>
           
           <div className="bg-white bg-opacity-10 backdrop-blur rounded-lg p-4">
@@ -68,6 +74,61 @@ export default function SimpleDashboard() {
             <div className="text-xs text-primary-100 mb-1">Collections</div>
             <div className="text-2xl font-bold">{OPERATIONS.onTimePayment}%</div>
             <div className="text-xs text-primary-200">On-time payments</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Savings Builder - Gamified Encouragement */}
+      <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🏦</span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Build Your Emergency Reserve! 💚
+            </h3>
+            <p className="text-sm text-gray-700 mb-3">
+              You've saved <strong>${FINANCIAL.savingsCash.toLocaleString()}</strong>! 
+              Financial experts recommend 3-6 months of expenses as an emergency fund.
+            </p>
+            
+            <div className="mb-3">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-700">Progress to 3-Month Reserve:</span>
+                <span className="font-bold text-green-700">
+                  ${FINANCIAL.savingsCash.toLocaleString()} of ${(FINANCIAL.monthlyExpenses * 3).toLocaleString()}
+                </span>
+              </div>
+              <div className="w-full bg-green-200 rounded-full h-4">
+                <div 
+                  className="bg-green-600 h-4 rounded-full transition-all flex items-center justify-end pr-2"
+                  style={{ width: `${Math.min((FINANCIAL.savingsCash / (FINANCIAL.monthlyExpenses * 3)) * 100, 100)}%` }}
+                >
+                  <span className="text-xs text-white font-bold">
+                    {Math.round((FINANCIAL.savingsCash / (FINANCIAL.monthlyExpenses * 3)) * 100)}%
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                Save just <strong>${Math.round((FINANCIAL.monthlyExpenses * 3 - FINANCIAL.savingsCash) / 12).toLocaleString()}/month</strong> for a year to reach your 3-month goal!
+              </div>
+              <button 
+                onClick={() => window.location.href = '/bookkeeping'}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm"
+              >
+                Open High-Yield Savings
+              </button>
+            </div>
+            
+            <div className="mt-3 text-xs text-green-800 italic">
+              💡 Partner banks offer 4-5% APY on business savings - your money works for you!
+            </div>
           </div>
         </div>
       </div>
