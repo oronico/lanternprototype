@@ -531,7 +531,7 @@ export default function MultiSchoolDashboard() {
                 </div>
               </div>
 
-              {school.alerts > 0 && (
+              {selectedSchool.alerts > 0 && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                   <div className="font-medium text-red-900 mb-2">⚠️ {selectedSchool.alerts} Alerts</div>
                   <div className="text-sm text-red-700">

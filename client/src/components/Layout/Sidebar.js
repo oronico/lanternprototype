@@ -160,13 +160,13 @@ const navigationGroups = [
   }
 ];
 
+// Define outside component to avoid re-declaring
+const entityType = typeof window !== 'undefined' ? localStorage.getItem('entityType') || 'llc-single' : 'llc-single';
+const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
+
 const Sidebar = () => {
   const location = useLocation();
   const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
-  
-  // Check entity type for conditional features
-  const entityType = localStorage.getItem('entityType') || 'llc-single';
-  const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
