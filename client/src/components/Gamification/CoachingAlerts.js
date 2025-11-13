@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SparklesIcon,
   HeartIcon,
-  TrendingUpIcon,
+  ArrowTrendingUpIcon,
   PhoneIcon
 } from '@heroicons/react/24/outline';
 
@@ -28,7 +28,7 @@ export const COACHING_ALERTS = {
     message: (current, target, growth) => `You've grown to ${current} students! That's ${growth}% growth! Keep this momentum and you'll hit your ${target} student goal. You're doing great!`,
     action: "View Recruitment",
     color: "purple",
-    icon: TrendingUpIcon,
+    icon: ArrowTrendingUpIcon,
     tone: "motivating"
   },
   
