@@ -264,6 +264,14 @@ export default function MultiSchoolDashboard() {
     }
   };
 
+  const [selectedSchool, setSelectedSchool] = useState(null);
+  const [showSchoolModal, setShowSchoolModal] = useState(false);
+
+  const viewSchoolDetails = (school) => {
+    setSelectedSchool(school);
+    setShowSchoolModal(true);
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
@@ -272,8 +280,8 @@ export default function MultiSchoolDashboard() {
           <div className="flex items-center space-x-3">
             <BuildingOffice2Icon className="h-8 w-8 text-primary-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Network Overview</h1>
-              <p className="text-gray-600">All schools in your network at a glance</p>
+              <h1 className="text-2xl font-bold text-gray-900">Network Dashboard</h1>
+              <p className="text-gray-600">{schools.length} schools in your network</p>
             </div>
           </div>
           
@@ -356,43 +364,193 @@ export default function MultiSchoolDashboard() {
         </div>
       )}
 
-      {/* School Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {schools.map(school => {
-          const statusColor = getStatusColor(school.status);
-          const statusLabel = getStatusLabel(school.status);
-          
-          return (
-            <div key={school.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
-              {/* School Header */}
-              <div className={`bg-gradient-to-r from-${statusColor}-500 to-${statusColor}-600 px-6 py-4 text-white rounded-t-lg`}
-                   style={{
-                     background: school.status === 'excellent' ? 'linear-gradient(to right, #10b981, #059669)' :
-                                school.status === 'healthy' ? 'linear-gradient(to right, #3b82f6, #2563eb)' :
-                                school.status === 'growing' ? 'linear-gradient(to right, #a855f7, #9333ea)' :
-                                'linear-gradient(to right, #ef4444, #dc2626)'
-                   }}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">{school.name}</h3>
-                    <div className="text-sm opacity-90 flex items-center gap-2">
-                      <MapPinIcon className="h-4 w-4" />
-                      {school.location} • {school.yearsOpen} years
+      {/* Schools Table - Scales to 10+ Schools */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="min-w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">School</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Students</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Revenue</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cash</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Health</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {schools.map(school => {
+              const statusLabel = getStatusLabel(school.status);
+              
+              return (
+                <tr 
+                  key={school.id} 
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => viewSchoolDetails(school)}
+                >
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900">{school.name}</div>
+                    <div className="text-sm text-gray-500">{school.location}</div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <div className="font-medium text-gray-900">{school.enrollment.current}</div>
+                    <div className="text-xs text-gray-500">{school.enrollment.utilization}% full</div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="font-medium text-green-600">
+                      ${(school.financial.monthlyRevenue / 1000).toFixed(0)}k
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs opacity-75 mb-1">Status</div>
-                    <div className="px-3 py-1 bg-white bg-opacity-20 rounded-full text-xs font-medium">
+                    <div className="text-xs text-gray-500">per month</div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <div className={`font-medium ${
+                      school.financial.daysCash >= 30 ? 'text-green-600' :
+                      school.financial.daysCash >= 20 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {school.financial.daysCash}
+                    </div>
+                    <div className="text-xs text-gray-500">days</div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <div className={`font-medium ${
+                      school.attendance.rate >= 95 ? 'text-green-600' :
+                      school.attendance.rate >= 90 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {school.attendance.rate}%
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <div className={`text-lg font-bold ${
+                      school.financial.healthScore >= 85 ? 'text-green-600' :
+                      school.financial.healthScore >= 70 ? 'text-blue-600' :
+                      school.financial.healthScore >= 55 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {school.financial.healthScore}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      school.status === 'excellent' ? 'bg-green-100 text-green-800' :
+                      school.status === 'healthy' ? 'bg-blue-100 text-blue-800' :
+                      school.status === 'growing' ? 'bg-purple-100 text-purple-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
                       {statusLabel}
-                    </div>
+                    </span>
+                    {school.alerts > 0 && (
+                      <div className="text-xs text-red-600 mt-1">{school.alerts} alerts</div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        viewSchoolDetails(school);
+                      }}
+                      className="text-primary-600 hover:text-primary-800 font-medium text-sm"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* School Detail Modal */}
+      {showSchoolModal && selectedSchool && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">{selectedSchool.name}</h2>
+                <div className="text-sm text-gray-600">{selectedSchool.location}</div>
+              </div>
+              <button 
+                onClick={() => setShowSchoolModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-blue-50 rounded-lg p-4 text-center">
+                  <div className="text-sm text-blue-700">Students</div>
+                  <div className="text-2xl font-bold text-blue-900">
+                    {selectedSchool.enrollment.current}/{selectedSchool.enrollment.capacity}
+                  </div>
+                  <div className="text-xs text-blue-600">{selectedSchool.enrollment.utilization}% full</div>
+                </div>
+                
+                <div className="bg-green-50 rounded-lg p-4 text-center">
+                  <div className="text-sm text-green-700">Monthly Revenue</div>
+                  <div className="text-2xl font-bold text-green-900">
+                    ${(selectedSchool.financial.monthlyRevenue / 1000).toFixed(0)}k
+                  </div>
+                  <div className="text-xs text-green-600">{selectedSchool.financial.healthScore} health score</div>
+                </div>
+                
+                <div className="bg-purple-50 rounded-lg p-4 text-center">
+                  <div className="text-sm text-purple-700">Days Cash</div>
+                  <div className="text-2xl font-bold text-purple-900">
+                    {selectedSchool.financial.daysCash}
+                  </div>
+                  <div className="text-xs text-purple-600">Goal: 30+ days</div>
+                </div>
+              </div>
+
+              {/* Detailed Stats */}
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-3">School Details</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-600">Attendance Rate:</span>
+                    <span className="font-medium">{selectedSchool.attendance.rate}%</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-600">Staff Count:</span>
+                    <span className="font-medium">{selectedSchool.staff.total}</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-600">Waitlist:</span>
+                    <span className="font-medium">{selectedSchool.enrollment.waitlist} families</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b">
+                    <span className="text-gray-600">YTD Growth:</span>
+                    <span className="font-medium text-green-600">+{selectedSchool.enrollment.ytdGrowth}%</span>
                   </div>
                 </div>
               </div>
 
-              {/* School Metrics */}
-              <div className="p-6">
-                {/* Enrollment */}
-                <div className="mb-6">
+              {school.alerts > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="font-medium text-red-900 mb-2">⚠️ {selectedSchool.alerts} Alerts</div>
+                  <div className="text-sm text-red-700">
+                    This school needs attention. Review enrollment, cash flow, or attendance.
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={() => window.location.href = '/dashboard'}
+                className="w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
+              >
+                Switch to This School
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
                   <div className="flex items-center justify-between mb-2">
                     <div className="text-sm font-medium text-gray-700">Enrollment</div>
                     <div className="text-sm font-bold text-gray-900">

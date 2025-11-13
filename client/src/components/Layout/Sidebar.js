@@ -15,7 +15,8 @@ import {
   UsersIcon,
   DocumentTextIcon,
   BuildingOffice2Icon,
-  ScaleIcon
+  ScaleIcon,
+  FolderIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -73,8 +74,20 @@ const navigationGroups = [
     subItems: [
       { name: 'Key Metrics', href: '/operations/metrics' },
       { name: 'Financial Health', href: '/health' },
-      { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' },
-      { name: 'Document Repository', href: '/documents/repository', badge: 'Pro' }
+      { name: 'Tax Filings', href: '/tax' },
+      { name: 'Year-End Financials', href: '/reports/year-end', badge: 'Pro' },
+      { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' }
+    ]
+  },
+  {
+    id: 'documents',
+    name: 'Documents',
+    icon: FolderIcon,
+    href: '/documents',
+    color: 'yellow',
+    subItems: [
+      { name: 'Document Library', href: '/documents' },
+      { name: 'Upload Documents', href: '/documents?action=upload' }
     ]
   },
   {
@@ -96,8 +109,7 @@ const navigationGroups = [
     href: '/staff',
     color: 'indigo',
     subItems: [
-      { name: 'Staff Directory', href: '/staff' },
-      { name: 'Tax Filings', href: '/tax' }
+      { name: 'Staff Directory', href: '/staff' }
     ]
   },
   ...(needsGovernance ? [{
@@ -151,7 +163,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'people', 'tools', 'enterprise']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
   
   // Check entity type for conditional features
   const entityType = localStorage.getItem('entityType') || 'llc-single';

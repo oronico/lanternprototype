@@ -57,6 +57,8 @@ import BudgetToActual from './components/Money/BudgetToActual';
 import FiveYearProforma from './components/Money/FiveYearProforma';
 import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
 import BoardManagement from './components/Governance/BoardManagement';
+import YearEndFinancials from './components/Reports/YearEndFinancials';
+import DocumentLibrary from './components/Documents/DocumentLibrary';
 
 // Services
 import { initializeApp } from './services/api';
@@ -169,6 +171,8 @@ function AppContent() {
               <Route path="/milestones" element={<MilestoneTracker />} />
               <Route path="/bookkeeping" element={<UnifiedBookkeeping />} />
               <Route path="/reports/bank-ready" element={<BankReadyReports />} />
+              <Route path="/reports/year-end" element={<YearEndFinancials />} />
+              <Route path="/documents" element={<DocumentLibrary />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/programs" element={<ProgramManagement />} />
