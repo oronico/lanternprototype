@@ -276,7 +276,7 @@ export default function DocumentLibrary() {
   };
 
   const expiringDocs = documents.filter(d => d.status === 'expiring-soon');
-  const selectedCategory = DOCUMENT_CATEGORIES.find(c => c.id === selectedCategory);
+  const currentCategory = DOCUMENT_CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
