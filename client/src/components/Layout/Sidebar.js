@@ -50,7 +50,8 @@ const navigationGroups = [
       { name: 'Payments & Reconciliation', href: '/payments' },
       { name: 'Payroll & Staff Costs', href: '/payroll', badge: 'Pro' },
       { name: 'Bookkeeping & Accounts', href: '/bookkeeping', badge: 'Pro' },
-      { name: 'Cash Flow Forecast', href: '/cash-reality' }
+      { name: 'Cash Flow Forecast', href: '/cash-reality' },
+      { name: 'Financial Health', href: '/health' }
     ]
   },
   {
@@ -69,11 +70,9 @@ const navigationGroups = [
     id: 'reports',
     name: 'Reports',
     icon: ChartBarIcon,
-    href: '/operations/metrics',
+    href: '/reports/bank-ready',
     color: 'indigo',
     subItems: [
-      { name: 'Key Metrics', href: '/operations/metrics' },
-      { name: 'Financial Health', href: '/health' },
       { name: 'Tax Filings', href: '/tax' },
       { name: 'Year-End Financials', href: '/reports/year-end', badge: 'Pro' },
       { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' }
