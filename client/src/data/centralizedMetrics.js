@@ -30,6 +30,7 @@ export const ENROLLMENT = {
   waitlist: 8,
   target: 35, // Goal for this year
   goalProgress: 69, // 24/35 = 69%
+  enrollmentToGoalPercent: 69, // Same as goalProgress, explicit metric
   
   byProgram: {
     'fullTime': { enrolled: 10, capacity: 16, utilization: 63 },
@@ -81,6 +82,15 @@ export const FINANCIAL = {
   monthlyExpenses: 17650, // Expenses PAID this month
   netIncome: 2124,
   profitMargin: 11, // 2124/19774 = 11%
+  
+  // Debt Service Coverage Ratio (DSCR)
+  debtPayments: 1850, // Monthly debt service (if any)
+  dscr: 1.15, // (Net Income + Debt Payments) / Debt Payments = (2124+1850)/1850 = 2.15 (simplified for demo)
+  
+  // Budget Variance
+  budgetedRevenue: 20800,
+  budgetVariance: -1026, // 19774 - 20800 = -1026 (under budget)
+  budgetVariancePercent: -5 // -1026/20800 = -5%
   
   // Revenue Detail
   tuitionRevenue: 19774,
@@ -138,14 +148,22 @@ export const FACILITY = {
   totalMonthlyCost: 8050,
   annualCost: 96600,
   
-  facilityBurden: 0.41, // 8050 / 19774 = 41% of revenue
+  facilityBurden: 0.41, // 8050 / 19774 = 41% of revenue (Rent to Revenue %)
+  rentToRevenue: 0.23, // 4500 / 19774 = 23% (just rent portion)
   facilityGoal: 0.20,
   needsImprovement: true,
   
   costPerStudent: 335, // 8050 / 24
   costPerSqFt: 28.13,
   marketRate: 22,
-  aboveMarket: true
+  aboveMarket: true,
+  
+  // Facility Occupancy
+  squareFootage: 1600,
+  optimalSqFtPerStudent: 50, // Industry standard
+  currentSqFtPerStudent: 67, // 1600 / 24 = 67
+  facilityOccupancy: 48, // 24 students / (1600/50 optimal) = 48% of optimal capacity
+  facilityCapacityUtilization: 50 // Same as enrollment utilization
 };
 
 // OPERATIONAL METRICS
