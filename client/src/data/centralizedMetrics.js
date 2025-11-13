@@ -90,7 +90,7 @@ export const FINANCIAL = {
   // Budget Variance
   budgetedRevenue: 20800,
   budgetVariance: -1026, // 19774 - 20800 = -1026 (under budget)
-  budgetVariancePercent: -5 // -1026/20800 = -5%
+  budgetVariancePercent: -5, // -1026/20800 = -5%
   
   // Revenue Detail
   tuitionRevenue: 19774,
