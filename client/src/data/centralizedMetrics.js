@@ -77,6 +77,13 @@ export const FINANCIAL = {
   cashGoal: 30,
   cashReserveProgress: 73, // 22/30 = 73%
   
+  // Savings Reserve (Critical for sustainability!)
+  savingsTarget: 52950, // 3 months of expenses (17650 × 3)
+  savingsProgress: 16, // 8500 / 52950 = 16%
+  monthsOfExpensesCovered: 0.48, // 8500 / 17650 = 0.48 months
+  savingsGoalMonths: 3, // Minimum 3 months, ideal 6 months
+  idealSavingsTarget: 105900, // 6 months (17650 × 6)
+  
   // Monthly P&L (Cash Basis - revenue when received, expenses when paid)
   monthlyRevenue: 19774, // Sum of all student tuition RECEIVED
   monthlyExpenses: 17650, // Expenses PAID this month
