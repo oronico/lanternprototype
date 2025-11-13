@@ -200,7 +200,8 @@ function AppContent() {
               <Route path="/facility" element={<FacilityManagement />} />
               <Route path="/ai-assistant" element={<AIAssistant />} />
               <Route path="/pricing" element={<PricingPlans />} />
-              <Route path="/documents" element={<DocumentManager />} />
+              <Route path="/documents" element={<DocumentLibrary />} />
+              <Route path="/documents-old" element={<DocumentManager />} />
               <Route path="/accounts" element={<FinancialAccounts />} />
               <Route path="/financial-controls-guide" element={<FinancialControlsGuide />} />
               <Route path="/settings" element={<SchoolSettings />} />
