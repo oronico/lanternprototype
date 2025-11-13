@@ -52,6 +52,7 @@ import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
 import UnifiedPayments from './components/Money/UnifiedPayments';
 import UnifiedBookkeeping from './components/Money/UnifiedBookkeeping';
+import UnifiedPayroll from './components/Money/UnifiedPayroll';
 import BudgetToActual from './components/Money/BudgetToActual';
 import FiveYearProforma from './components/Money/FiveYearProforma';
 import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
@@ -171,6 +172,7 @@ function AppContent() {
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/programs" element={<ProgramManagement />} />
               <Route path="/payments" element={<UnifiedPayments />} />
+              <Route path="/payroll" element={<UnifiedPayroll />} />
               <Route path="/payments/reconciliation" element={<PaymentReconciliation />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
               <Route path="/health" element={<FinancialHealth />} />

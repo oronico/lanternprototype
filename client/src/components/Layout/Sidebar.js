@@ -46,9 +46,9 @@ const navigationGroups = [
     color: 'green',
     subItems: [
       { name: 'Payments & Reconciliation', href: '/payments' },
+      { name: 'Payroll & Staff Costs', href: '/payroll', badge: 'Pro' },
       { name: 'Bookkeeping & Accounts', href: '/bookkeeping', badge: 'Pro' },
       { name: 'Cash Flow Forecast', href: '/cash-reality' }
-      // Budget vs Actual and Proforma hidden for now - need refinement
     ]
   },
   {
@@ -95,9 +95,8 @@ const navigationGroups = [
     href: '/staff',
     color: 'indigo',
     subItems: [
-      { name: 'Staff Management', href: '/staff', badge: 'New' },
-      { name: 'Payroll (Gusto)', href: '/staff', badge: 'Pro' },
-      { name: 'Tax Filings', href: '/tax', badge: 'New' }
+      { name: 'Staff Directory', href: '/staff' },
+      { name: 'Tax Filings', href: '/tax' }
     ]
   },
   {
