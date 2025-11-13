@@ -299,11 +299,19 @@ export default function TaxFilingManager() {
   useEffect(() => {
     analytics.trackPageView('tax-filing-manager');
     
-    // Get entity type from onboarding (default to single-member LLC for demo)
-    const storedEntityType = localStorage.getItem('entityType') || 'llc-single';
-    setEntityType(storedEntityType);
+    // Get entity type from localStorage, default to llc-single for demo
+    const storedEntityType = localStorage.getItem('entityType');
     
-    loadFilingData(storedEntityType);
+    // Always default to llc-single if not set (works without onboarding)
+    const defaultType = storedEntityType || 'llc-single';
+    setEntityType(defaultType);
+    
+    // Save default if not set
+    if (!storedEntityType) {
+      localStorage.setItem('entityType', 'llc-single');
+    }
+    
+    loadFilingData(defaultType);
     
     // Show helpful message
     const entityNames = {
@@ -377,29 +385,8 @@ export default function TaxFilingManager() {
     }
   };
 
-  const requirements = TAX_REQUIREMENTS[entityType];
-
-  if (!requirements) {
-    return (
-      <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <InformationCircleIcon className="mx-auto h-12 w-12 text-yellow-600 mb-4" />
-          <h3 className="text-lg font-semibold text-yellow-900 mb-2">
-            Entity Type Not Set
-          </h3>
-          <p className="text-yellow-800 mb-4">
-            Please complete onboarding to set your entity type for customized tax guidance.
-          </p>
-          <button
-            onClick={() => window.location.href = '/settings'}
-            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
-          >
-            Go to Settings
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Always have requirements (defaults to llc-single)
+  const requirements = TAX_REQUIREMENTS[entityType] || TAX_REQUIREMENTS['llc-single'];
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
