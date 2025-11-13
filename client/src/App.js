@@ -59,6 +59,7 @@ import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
 import BoardManagement from './components/Governance/BoardManagement';
 import YearEndFinancials from './components/Reports/YearEndFinancials';
 import DocumentLibrary from './components/Documents/DocumentLibrary';
+import ComprehensiveMetrics from './components/Reports/ComprehensiveMetrics';
 
 // Services
 import { initializeApp } from './services/api';
@@ -175,6 +176,7 @@ function AppContent() {
               <Route path="/documents" element={<DocumentLibrary />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
+              <Route path="/metrics" element={<ComprehensiveMetrics />} />
               <Route path="/programs" element={<ProgramManagement />} />
               <Route path="/payments" element={<UnifiedPayments />} />
               <Route path="/payroll" element={<UnifiedPayroll />} />

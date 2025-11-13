@@ -168,7 +168,7 @@ export default function SimpleDashboard() {
 
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <a 
           href="/command-center"
           className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow border border-gray-200 hover:border-primary-500"
@@ -207,6 +207,20 @@ export default function SimpleDashboard() {
           </p>
           <div className="text-green-600 font-medium flex items-center gap-2">
             Go to Payments
+            <ArrowRightIcon className="h-4 w-4" />
+          </div>
+        </a>
+
+        <a 
+          href="/metrics"
+          className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow border border-gray-200 hover:border-indigo-500"
+        >
+          <h4 className="font-semibold text-gray-900 mb-2">Key Metrics</h4>
+          <p className="text-sm text-gray-600 mb-4">
+            View all comprehensive metrics by category
+          </p>
+          <div className="text-indigo-600 font-medium flex items-center gap-2">
+            View All Metrics
             <ArrowRightIcon className="h-4 w-4" />
           </div>
         </a>
