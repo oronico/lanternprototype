@@ -56,6 +56,7 @@ import UnifiedPayroll from './components/Money/UnifiedPayroll';
 import BudgetToActual from './components/Money/BudgetToActual';
 import FiveYearProforma from './components/Money/FiveYearProforma';
 import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
+import BoardManagement from './components/Governance/BoardManagement';
 
 // Services
 import { initializeApp } from './services/api';
@@ -184,6 +185,7 @@ function AppContent() {
               <Route path="/payments/engines" element={<PaymentEngines />} />
               <Route path="/staff" element={<StaffManagement />} />
               <Route path="/tax" element={<TaxFilingManager />} />
+              <Route path="/governance" element={<BoardManagement />} />
               <Route path="/attendance/daily" element={<DailyAttendance />} />
               <Route path="/nudges/gamified" element={<GamifiedNudges />} />
               <Route path="/programs/assignments" element={<ClassroomAssignment />} />

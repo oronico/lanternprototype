@@ -14,7 +14,8 @@ import {
   SparklesIcon,
   UsersIcon,
   DocumentTextIcon,
-  BuildingOffice2Icon
+  BuildingOffice2Icon,
+  ScaleIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -99,6 +100,19 @@ const navigationGroups = [
       { name: 'Tax Filings', href: '/tax' }
     ]
   },
+  ...(needsGovernance ? [{
+    id: 'governance',
+    name: 'Governance',
+    icon: ScaleIcon,
+    href: '/governance',
+    color: 'purple',
+    badge: entityType === '501c3' ? 'Nonprofit' : 'Corp',
+    subItems: [
+      { name: 'Board of Directors', href: '/governance' },
+      { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
+      { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
+    ]
+  }] : []),
   {
     id: 'tools',
     name: 'AI Tools',
@@ -138,6 +152,10 @@ const navigationGroups = [
 const Sidebar = () => {
   const location = useLocation();
   const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'facility', 'people', 'tools', 'enterprise']);
+  
+  // Check entity type for conditional features
+  const entityType = localStorage.getItem('entityType') || 'llc-single';
+  const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
