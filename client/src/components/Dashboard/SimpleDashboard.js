@@ -7,6 +7,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { ENROLLMENT, FINANCIAL, ATTENDANCE, OPERATIONS, STAFF, FACILITY } from '../../data/centralizedMetrics';
+import { CoachingAlert } from '../Gamification/CoachingAlerts';
 
 /**
  * Simple Dashboard - Clean, Fast, No API Dependencies
@@ -70,6 +71,27 @@ export default function SimpleDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Coaching Alerts - Gamified! */}
+      {FINANCIAL.daysCash < 30 && (
+        <div className="mb-8">
+          <CoachingAlert 
+            type="LOW_CASH"
+            data={[FINANCIAL.daysCash]}
+            onAction={() => window.location.href = '/payments'}
+          />
+        </div>
+      )}
+
+      {ENROLLMENT.current < ENROLLMENT.target && (
+        <div className="mb-8">
+          <CoachingAlert 
+            type="BELOW_ENROLLMENT"
+            data={[ENROLLMENT.current, ENROLLMENT.target, ENROLLMENT.ytdGrowth]}
+            onAction={() => window.location.href = '/crm/recruitment'}
+          />
+        </div>
+      )}
 
       {/* Metrics by Category */}
       <div className="mb-8">
