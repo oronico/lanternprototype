@@ -59,6 +59,7 @@ import BoardManagement from './components/Governance/BoardManagement';
 import YearEndFinancials from './components/Reports/YearEndFinancials';
 import DocumentLibrary from './components/Documents/DocumentLibrary';
 import ComprehensiveMetrics from './components/Reports/ComprehensiveMetrics';
+import BusinessHealthDashboard from './components/Reports/BusinessHealthDashboard';
 
 // Services
 import { initializeApp } from './services/api';
@@ -181,7 +182,8 @@ function AppContent() {
               <Route path="/payroll" element={<UnifiedPayroll />} />
               <Route path="/payments/reconciliation" element={<PaymentReconciliation />} />
               <Route path="/calculator" element={<FlexibleTuitionEngine />} />
-              <Route path="/health" element={<FinancialHealth />} />
+              <Route path="/health" element={<BusinessHealthDashboard />} />
+              <Route path="/health-old" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/students" element={<EnrolledStudentsSIS />} />
               <Route path="/crm/recruitment" element={<CleanRecruitmentPipeline />} />
