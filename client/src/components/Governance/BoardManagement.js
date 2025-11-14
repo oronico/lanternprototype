@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   UserGroupIcon,
   PlusIcon,
@@ -41,7 +42,8 @@ const BOARD_POSITIONS = [
 ];
 
 export default function BoardManagement() {
-  const [activeTab, setActiveTab] = useState('directory'); // directory, meetings, bylaws, compliance
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState('directory'); // directory, meetings, bylaws
   const [boardMembers, setBoardMembers] = useState([]);
   const [meetings, setMeetings] = useState([]);
   const [entityType, setEntityType] = useState('');
@@ -53,15 +55,19 @@ export default function BoardManagement() {
     const storedType = localStorage.getItem('entityType') || '501c3';
     setEntityType(storedType);
     
-    // Check URL for tab parameter
-    const urlParams = new URLSearchParams(window.location.search);
+    loadDemoData();
+  }, []);
+
+  // Watch for URL changes and update active tab
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
     const tabParam = urlParams.get('tab');
     if (tabParam) {
       setActiveTab(tabParam);
+    } else {
+      setActiveTab('directory'); // Default tab
     }
-    
-    loadDemoData();
-  }, []);
+  }, [location.search]); // Re-run when URL query changes
 
   const loadDemoData = () => {
     // Demo board members
