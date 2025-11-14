@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   HomeIcon,
@@ -111,20 +111,6 @@ const navigationGroups = [
       { name: 'Staff Directory', href: '/staff' }
     ]
   },
-  // Governance section commented out temporarily for demo
-  // Will add back after fixing localStorage SSR issue
-  // {
-  //   id: 'governance',
-  //   name: 'Governance',
-  //   icon: ScaleIcon,
-  //   href: '/governance',
-  //   color: 'purple',
-  //   subItems: [
-  //     { name: 'Board of Directors', href: '/governance' },
-  //     { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
-  //     { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
-  //   ]
-  // },
   {
     id: 'tools',
     name: 'AI Tools',
@@ -161,13 +147,22 @@ const navigationGroups = [
   }
 ];
 
-// Temporarily disabled - causing SSR issues
-// const entityType = typeof window !== 'undefined' ? localStorage.getItem('entityType') || 'llc-single' : 'llc-single';
-// const needsGovernance = entityType === '501c3' || entityType === 'ccorp';
-
 const Sidebar = () => {
   const location = useLocation();
   const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
+  
+  // Check entity type safely (inside component, not at module level)
+  const [entityType, setEntityType] = useState('llc-single');
+  const [needsGovernance, setNeedsGovernance] = useState(false);
+  
+  useEffect(() => {
+    // Only access localStorage in browser, not during SSR
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('entityType') || 'llc-single';
+      setEntityType(stored);
+      setNeedsGovernance(stored === '501c3' || stored === 'ccorp');
+    }
+  }, []);
 
   const toggleGroup = (groupId) => {
     setExpandedGroups(prev => 
@@ -185,6 +180,25 @@ const Sidebar = () => {
   const isItemActive = (href) => {
     return location.pathname === href;
   };
+
+  // Build navigation with conditional governance
+  const navigation = [
+    ...navigationGroups.slice(0, 7), // Everything up to People & HR
+    ...(needsGovernance ? [{
+      id: 'governance',
+      name: 'Governance',
+      icon: ScaleIcon,
+      href: '/governance',
+      color: 'purple',
+      badge: entityType === '501c3' ? 'Nonprofit' : 'Corp',
+      subItems: [
+        { name: 'Board of Directors', href: '/governance' },
+        { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
+        { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
+      ]
+    }] : []),
+    ...navigationGroups.slice(7) // Rest of navigation
+  ];
 
   return (
     <div className="h-screen flex flex-col bg-white border-r border-gray-200 shadow-soft">
@@ -206,7 +220,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <div className="flex-1 flex flex-col overflow-y-auto pt-4 pb-4">
         <nav className="flex-1 px-3 space-y-1">
-          {navigationGroups.map((group) => {
+          {navigation.map((group) => {
             const isActive = isGroupActive(group);
             const isExpanded = expandedGroups.includes(group.id);
             const hasSubItems = group.subItems && group.subItems.length > 0;
