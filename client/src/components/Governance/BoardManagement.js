@@ -53,6 +53,13 @@ export default function BoardManagement() {
     const storedType = localStorage.getItem('entityType') || '501c3';
     setEntityType(storedType);
     
+    // Check URL for tab parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+    
     loadDemoData();
   }, []);
 

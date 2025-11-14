@@ -178,6 +178,11 @@ const Sidebar = () => {
   };
 
   const isItemActive = (href) => {
+    // Handle both exact path match and query parameter routes
+    if (href.includes('?')) {
+      const [path, query] = href.split('?');
+      return location.pathname === path && location.search.includes(query);
+    }
     return location.pathname === href;
   };
 
