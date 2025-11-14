@@ -3,7 +3,6 @@ import {
   UserGroupIcon,
   BuildingOfficeIcon,
   TrophyIcon,
-  TargetIcon,
   PlusIcon,
   XMarkIcon,
   CheckCircleIcon,
@@ -399,7 +398,7 @@ const FundraisingCRM = () => {
               <p className="text-sm text-white/80">Annual Goal</p>
               <h3 className="text-3xl font-bold">{formatCurrency(annualGoal)}</h3>
             </div>
-            <TargetIcon className="h-10 w-10 text-white/70" />
+            <ArrowTrendingUpIcon className="h-10 w-10 text-white/70" />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
