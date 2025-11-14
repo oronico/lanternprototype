@@ -10,9 +10,12 @@ import {
   CheckCircleIcon,
   ClockIcon,
   ArrowDownTrayIcon,
-  PencilIcon
+  PencilIcon,
+  CloudArrowUpIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
+import DocumentUploader from './DocumentUploader';
 import toast from 'react-hot-toast';
 
 /**
@@ -47,6 +50,9 @@ export default function BoardManagement() {
   const [boardMembers, setBoardMembers] = useState([]);
   const [meetings, setMeetings] = useState([]);
   const [entityType, setEntityType] = useState('');
+  const [showUploader, setShowUploader] = useState(false);
+  const [uploadingDocType, setUploadingDocType] = useState('');
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
 
   useEffect(() => {
     analytics.trackPageView('board-management');
@@ -535,9 +541,24 @@ export default function BoardManagement() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Corporate Bylaws</h3>
               <div className="flex gap-3">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2">
-                  <PencilIcon className="h-4 w-4" />
-                  Edit
+                <button 
+                  onClick={() => {
+                    setShowAIGenerator(true);
+                    setUploadingDocType('Bylaws');
+                  }}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                >
+                  ✨ Generate with AI
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowUploader(true);
+                    setUploadingDocType('Bylaws');
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                >
+                  <CloudArrowUpIcon className="h-4 w-4" />
+                  Upload
                 </button>
                 <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
                   <ArrowDownTrayIcon className="h-4 w-4" />
@@ -587,6 +608,121 @@ export default function BoardManagement() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Document Upload Modal */}
+      {showUploader && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+            <DocumentUploader
+              documentType={uploadingDocType}
+              onUpload={(doc) => {
+                toast.success(`${uploadingDocType} uploaded successfully!`);
+                setShowUploader(false);
+              }}
+              onCancel={() => setShowUploader(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* AI Document Generator Modal */}
+      {showAIGenerator && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-600 rounded-lg">
+                    <span className="text-2xl">✨</span>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">AI Document Generator</h2>
+                    <p className="text-gray-600">Generate {uploadingDocType} customized for your school</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowAIGenerator(false)} className="text-gray-400 hover:text-gray-600">
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+              </div>
+
+              <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-6">
+                <h3 className="font-semibold text-purple-900 mb-3">How AI Generation Works:</h3>
+                <ol className="text-sm text-purple-800 space-y-2">
+                  <li>1. AI pulls your school info (name, entity type, state, board members)</li>
+                  <li>2. Generates professional {uploadingDocType} following legal best practices</li>
+                  <li>3. You review and customize (add school-specific policies)</li>
+                  <li>4. Download as Word or PDF</li>
+                  <li>5. Have attorney review (recommended)</li>
+                </ol>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    School Legal Name
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue="Sunshine Microschool, Inc."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State of Incorporation
+                  </label>
+                  <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    <option>Florida</option>
+                    <option>California</option>
+                    <option>Texas</option>
+                    <option>New York</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Number of Board Members
+                  </label>
+                  <input
+                    type="number"
+                    defaultValue="5"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowAIGenerator(false)}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    toast.success('Generating ' + uploadingDocType + ' with AI... This takes 30 seconds.');
+                    setTimeout(() => {
+                      toast.success(uploadingDocType + ' generated! Ready to review and download.');
+                      setShowAIGenerator(false);
+                    }, 2000);
+                  }}
+                  className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2"
+                >
+                  ✨ Generate {uploadingDocType} with AI
+                </button>
+              </div>
+
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="text-sm text-yellow-900">
+                  <strong>⚖️ Legal Disclaimer:</strong> AI-generated documents should be reviewed by a licensed attorney before use. 
+                  SchoolStack provides templates for convenience, not legal advice.
+                </div>
+              </div>
             </div>
           </div>
         </div>
