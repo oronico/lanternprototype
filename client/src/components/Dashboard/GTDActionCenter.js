@@ -238,7 +238,7 @@ export default function GTDActionCenter() {
   const financialSuggestions = actions.filter(a => a.type === 'financial' && !a.completed);
   
   const totalActions = actions.filter(a => !a.completed).length;
-  const completedActions = actions.filter(a => a.completed).length;
+  const completedCount = actions.filter(a => a.completed).length;
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
