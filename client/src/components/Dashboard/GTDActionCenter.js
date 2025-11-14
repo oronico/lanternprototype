@@ -30,7 +30,7 @@ import Confetti from 'react-confetti';
 
 export default function GTDActionCenter() {
   const [actions, setActions] = useState([]);
-  const [completedActions, setCompletedActions] = useState([]);
+  const [archivedActions, setArchivedActions] = useState([]);
   const [completedToday, setCompletedToday] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
@@ -50,7 +50,7 @@ export default function GTDActionCenter() {
 
   const loadCompletedActions = () => {
     const archived = JSON.parse(localStorage.getItem('completedActions') || '[]');
-    setCompletedActions(archived);
+    setArchivedActions(archived);
   };
 
   const loadActions = () => {
@@ -198,8 +198,8 @@ export default function GTDActionCenter() {
       completedDate: new Date().toLocaleDateString()
     };
     
-    const newArchived = [archivedAction, ...completedActions].slice(0, 50); // Keep last 50
-    setCompletedActions(newArchived);
+    const newArchived = [archivedAction, ...archivedActions].slice(0, 50); // Keep last 50
+    setArchivedActions(newArchived);
     localStorage.setItem('completedActions', JSON.stringify(newArchived));
     
     // Track completion
@@ -260,7 +260,7 @@ export default function GTDActionCenter() {
               onClick={() => setShowArchive(!showArchive)}
               className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
             >
-              {showArchive ? 'Hide' : 'Show'} Completed ({completedActions.length})
+              {showArchive ? 'Hide' : 'Show'} Completed ({archivedActions.length})
             </button>
             <div className="text-right">
               <div className="text-3xl font-bold text-primary-600">{completedToday}</div>
@@ -510,11 +510,11 @@ export default function GTDActionCenter() {
       )}
 
       {/* Completed Actions Archive */}
-      {showArchive && completedActions.length > 0 && (
+      {showArchive && archivedActions.length > 0 && (
         <div className="mt-8 border-t pt-8">
           <h3 className="text-lg font-bold text-gray-900 mb-4">Recently Completed 🎉</h3>
           <div className="space-y-2">
-            {completedActions.slice(0, 10).map((action, idx) => (
+            {archivedActions.slice(0, 10).map((action, idx) => (
               <div key={idx} className="bg-gray-50 rounded-lg p-4 flex items-center gap-4 opacity-60">
                 <CheckCircleIcon className="h-5 w-5 text-green-600 flex-shrink-0" />
                 <div className="flex-1">
@@ -524,9 +524,9 @@ export default function GTDActionCenter() {
               </div>
             ))}
           </div>
-          {completedActions.length > 10 && (
+          {archivedActions.length > 10 && (
             <div className="text-center mt-4 text-sm text-gray-500">
-              ...and {completedActions.length - 10} more completed actions
+              ...and {archivedActions.length - 10} more completed actions
             </div>
           )}
         </div>
