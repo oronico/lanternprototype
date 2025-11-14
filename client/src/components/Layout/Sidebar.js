@@ -16,7 +16,8 @@ import {
   DocumentTextIcon,
   BuildingOffice2Icon,
   ScaleIcon,
-  FolderIcon
+  FolderIcon,
+  CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -195,9 +196,24 @@ const Sidebar = () => {
     return location.pathname === href;
   };
 
+  const computedNavigationGroups = navigationGroups.map((group) => ({
+    ...group,
+    subItems: group.subItems ? [...group.subItems] : undefined
+  }));
+
+  if (entityType === '501c3') {
+    computedNavigationGroups.splice(3, 0, {
+      id: 'fundraising',
+      name: 'Fundraising',
+      icon: CurrencyDollarIcon,
+      href: '/crm/fundraising',
+      color: 'pink'
+    });
+  }
+
   // Build navigation with conditional governance
   const navigation = [
-    ...navigationGroups.slice(0, 7), // Everything up to People & HR
+    ...computedNavigationGroups.slice(0, 7), // Everything up to People & HR
     ...(needsGovernance ? [{
       id: 'governance',
       name: 'Governance',
@@ -207,7 +223,7 @@ const Sidebar = () => {
       badge: entityType === '501c3' ? 'Nonprofit' : 'Corp'
       // No subItems - page has its own tab navigation!
     }] : []),
-    ...navigationGroups.slice(7) // Rest of navigation
+    ...computedNavigationGroups.slice(7) // Rest of navigation
   ];
 
   return (

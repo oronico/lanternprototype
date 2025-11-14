@@ -60,6 +60,50 @@ const mockUser = {
   permissions: ['dashboard', 'payments', 'enrollment', 'calculator', 'health', 'lease']
 };
 
+const fundraisingStageWeights = {
+  prospect: 0.15,
+  nurture: 0.3,
+  pursue: 0.45,
+  apply: 0.65,
+  closed_won: 1,
+  closed_lost: 0
+};
+
+let mockFundraisingState = mockData.fundraising
+  ? JSON.parse(JSON.stringify(mockData.fundraising))
+  : { annualGoal: 0, opportunities: [], documents: [], bookkeepingSync: [] };
+
+const computeMockFundraisingSummary = () => {
+  const securedRestricted = mockFundraisingState.opportunities
+    .filter(op => op.stage === 'closed_won' && op.awardType === 'restricted')
+    .reduce((sum, op) => sum + (op.amountAwarded || 0), 0);
+
+  const securedUnrestricted = mockFundraisingState.opportunities
+    .filter(op => op.stage === 'closed_won' && op.awardType === 'unrestricted')
+    .reduce((sum, op) => sum + (op.amountAwarded || 0), 0);
+
+  const pipelineTotal = mockFundraisingState.opportunities
+    .filter(op => !['closed_won', 'closed_lost'].includes(op.stage))
+    .reduce((sum, op) => sum + (op.askAmount || 0), 0);
+
+  const weightedForecast = mockFundraisingState.opportunities.reduce((sum, op) => {
+    const weight = fundraisingStageWeights[op.stage] ?? 0;
+    return sum + (op.askAmount || 0) * weight;
+  }, 0);
+
+  const wonCount = mockFundraisingState.opportunities.filter(op => op.stage === 'closed_won').length;
+  const closedCount = mockFundraisingState.opportunities.filter(op => ['closed_won', 'closed_lost'].includes(op.stage)).length;
+
+  return {
+    annualGoal: mockFundraisingState.annualGoal,
+    securedRestricted,
+    securedUnrestricted,
+    pipelineTotal,
+    weightedForecast,
+    winRate: closedCount ? Math.round((wonCount / closedCount) * 100) : 0
+  };
+};
+
 // API services with fallback to mock data
 export const authAPI = {
   login: async (email, password) => {
@@ -339,6 +383,81 @@ export const leaseAPI = {
     }
     return api.get('/lease/market-data', { params });
   },
+};
+
+export const fundraisingAPI = {
+  getOpportunities: () => {
+    if (USE_MOCK_DATA) {
+      return Promise.resolve({
+        data: {
+          ...mockFundraisingState,
+          summary: computeMockFundraisingSummary()
+        }
+      });
+    }
+    return api.get('/fundraising/opportunities');
+  },
+  createOpportunity: (payload) => {
+    if (USE_MOCK_DATA) {
+      const newOpportunity = {
+        id: `opp_${Date.now()}`,
+        ...payload,
+        askAmount: Number(payload.askAmount) || 0,
+        amountAwarded: payload.stage === 'closed_won'
+          ? Number(payload.amountAwarded || payload.askAmount || 0)
+          : 0,
+        lastTouch: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      mockFundraisingState.opportunities = [newOpportunity, ...mockFundraisingState.opportunities];
+      return Promise.resolve({
+        data: {
+          opportunity: newOpportunity,
+          summary: computeMockFundraisingSummary()
+        }
+      });
+    }
+    return api.post('/fundraising/opportunities', payload);
+  },
+  updateOpportunity: (id, updates) => {
+    if (USE_MOCK_DATA) {
+      const idx = mockFundraisingState.opportunities.findIndex(op => op.id === id);
+      if (idx === -1) {
+        return Promise.reject(new Error('Opportunity not found'));
+      }
+      mockFundraisingState.opportunities[idx] = {
+        ...mockFundraisingState.opportunities[idx],
+        ...updates,
+        askAmount: updates.askAmount !== undefined
+          ? Number(updates.askAmount)
+          : mockFundraisingState.opportunities[idx].askAmount,
+        amountAwarded: updates.amountAwarded !== undefined
+          ? Number(updates.amountAwarded)
+          : mockFundraisingState.opportunities[idx].amountAwarded,
+        updatedAt: new Date().toISOString()
+      };
+      return Promise.resolve({
+        data: {
+          opportunity: mockFundraisingState.opportunities[idx],
+          summary: computeMockFundraisingSummary()
+        }
+      });
+    }
+    return api.put(`/fundraising/opportunities/${id}`, updates);
+  },
+  updateGoal: (goal) => {
+    if (USE_MOCK_DATA) {
+      mockFundraisingState.annualGoal = Number(goal) || mockFundraisingState.annualGoal;
+      return Promise.resolve({
+        data: {
+          annualGoal: mockFundraisingState.annualGoal,
+          summary: computeMockFundraisingSummary()
+        }
+      });
+    }
+    return api.put('/fundraising/goal', { goal });
+  }
 };
 
 export const aiAPI = {

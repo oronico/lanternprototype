@@ -177,5 +177,114 @@ export const mockData = {
       currentLease: { propertyAddress: '123 Education Way', baseRent: 3500, totalMonthlyRent: 4500 },
       riskAnalysis: { overallRisk: 'high', riskFactors: [] }
     }
+  },
+  fundraising: {
+    annualGoal: 150000,
+    opportunities: [
+      {
+        id: 'opp_001',
+        name: 'STEM Innovation Grant',
+        organizationType: 'foundation',
+        pursuitType: 'grant',
+        awardType: 'restricted',
+        stage: 'apply',
+        askAmount: 75000,
+        amountAwarded: 0,
+        contact: { name: 'Sarah Patel', organization: 'Bright Futures Foundation', email: 'spatel@bff.org', phone: '555-4821' },
+        nextStep: 'Submit financials + board roster',
+        dueDate: '2024-11-30',
+        lastTouch: '2024-10-05',
+        notes: 'Requires audited financials for FY23',
+        eventName: '',
+        pursuitTheme: 'STEM Labs for Girls',
+        createdAt: '2024-07-12',
+        updatedAt: '2024-10-05'
+      },
+      {
+        id: 'opp_002',
+        name: 'Winter Giving Circle',
+        organizationType: 'individual',
+        pursuitType: 'request',
+        awardType: 'unrestricted',
+        stage: 'nurture',
+        askAmount: 15000,
+        amountAwarded: 0,
+        contact: { name: 'Marcus Rivera', organization: 'Parent Giving Circle', email: 'marcus@givingcircle.io', phone: '555-2114' },
+        nextStep: 'Invite to campus breakfast 10/25',
+        dueDate: '2024-12-15',
+        lastTouch: '2024-10-02',
+        notes: 'Interested in literacy outcomes',
+        eventName: '',
+        pursuitTheme: 'Parent Annual Fund',
+        createdAt: '2024-08-01',
+        updatedAt: '2024-10-02'
+      },
+      {
+        id: 'opp_003',
+        name: 'Innovators Gala 2024',
+        organizationType: 'corporation',
+        pursuitType: 'event',
+        awardType: 'restricted',
+        stage: 'pursue',
+        askAmount: 40000,
+        amountAwarded: 0,
+        contact: { name: 'Lena Wu', organization: 'TechNova', email: 'lena.wu@technova.com', phone: '555-9912' },
+        nextStep: 'Confirm table sponsorship level',
+        dueDate: '2024-10-25',
+        lastTouch: '2024-10-06',
+        notes: 'Will sponsor STEM showcase if naming rights available',
+        eventName: 'Innovators Gala',
+        pursuitTheme: 'Corporate STEM Showcase',
+        createdAt: '2024-09-01',
+        updatedAt: '2024-10-06'
+      },
+      {
+        id: 'opp_004',
+        name: 'Learning Recovery Fund',
+        organizationType: 'foundation',
+        pursuitType: 'grant',
+        awardType: 'restricted',
+        stage: 'closed_won',
+        askAmount: 50000,
+        amountAwarded: 50000,
+        contact: { name: 'Dana Cole', organization: 'Rise Together Fund', email: 'dcole@risetogether.org', phone: '555-7710' },
+        nextStep: 'Submit quarterly impact report 01/15',
+        dueDate: '2024-09-01',
+        lastTouch: '2024-09-05',
+        notes: 'Supports intervention tutors. First installment received.',
+        eventName: '',
+        pursuitTheme: 'Academic Recovery',
+        createdAt: '2024-04-15',
+        updatedAt: '2024-09-05'
+      },
+      {
+        id: 'opp_005',
+        name: 'Community Impact Pitch',
+        organizationType: 'corporation',
+        pursuitType: 'request',
+        awardType: 'unrestricted',
+        stage: 'closed_lost',
+        askAmount: 25000,
+        amountAwarded: 0,
+        contact: { name: 'Erin Blake', organization: 'MetroBank', email: 'erin.blake@metrobank.com', phone: '555-8844' },
+        nextStep: 'Capture feedback for FY25 cycle',
+        dueDate: '2024-08-15',
+        lastTouch: '2024-08-20',
+        notes: 'Great relationship, invited to apply next year.',
+        eventName: '',
+        pursuitTheme: 'Community Innovation Pitch',
+        createdAt: '2024-03-22',
+        updatedAt: '2024-08-20'
+      }
+    ],
+    documents: [
+      { id: 'doc_001', opportunityId: 'opp_004', name: 'Award Letter - Learning Recovery Fund', type: 'award_letter', status: 'stored', lastUpdated: '2024-09-05', url: 'https://schoolstack.ai/docs/learning-recovery-award.pdf', required: true },
+      { id: 'doc_002', opportunityId: 'opp_001', name: '990-EZ FY23', type: 'irs_form', status: 'awaiting_upload', lastUpdated: '2024-10-01', url: '', required: true },
+      { id: 'doc_003', opportunityId: 'opp_003', name: 'Sponsorship Agreement Draft', type: 'contract', status: 'in_review', lastUpdated: '2024-10-07', url: '', required: false }
+    ],
+    bookkeepingSync: [
+      { id: 'sync_001', opportunityId: 'opp_004', description: 'Learning Recovery Fund installment', account: '4230 · Restricted Grants', amount: 50000, status: 'ready_to_sync', lastSynced: '2024-09-08' },
+      { id: 'sync_002', opportunityId: 'opp_003', description: 'Innovators Gala pledges', account: '4250 · Events Revenue', amount: 40000, status: 'pending_amount', lastSynced: null }
+    ]
   }
 };

@@ -39,6 +39,7 @@ import FacilityManagement from './components/Facility/FacilityManagement';
 import LeaseOCRUpload from './components/Facility/LeaseOCRUpload';
 import CleanRecruitmentPipeline from './components/CRM/CleanRecruitmentPipeline';
 import EnrollmentDashboard from './components/CRM/EnrollmentDashboard';
+import FundraisingCRM from './components/CRM/FundraisingCRM';
 import EnhancedOnboarding from './components/Onboarding/EnhancedOnboarding';
 import PaymentEngines from './components/Payments/PaymentEngines';
 import StaffManagement from './components/Staff/StaffManagement';
@@ -188,6 +189,8 @@ function AppContent() {
               <Route path="/students" element={<EnrolledStudentsSIS />} />
               <Route path="/crm/recruitment" element={<CleanRecruitmentPipeline />} />
               <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
+              <Route path="/fundraising" element={<FundraisingCRM />} />
+              <Route path="/crm/fundraising" element={<FundraisingCRM />} />
               <Route path="/payments/engines" element={<PaymentEngines />} />
               <Route path="/staff" element={<StaffManagement />} />
               <Route path="/tax" element={<TaxFilingManager />} />

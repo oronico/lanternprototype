@@ -85,6 +85,7 @@ const onboardingRoutes = require('./routes/onboarding');
 const nudgesRoutes = require('./routes/nudges');
 const milestonesRoutes = require('./routes/milestones');
 const featuresRoutes = require('./routes/features');
+const fundraisingRoutes = require('./routes/fundraising');
 
 // Routes with Security Classifications
 app.use('/api/auth', authRoutes);
@@ -163,6 +164,12 @@ app.use('/api/milestones',
   security.classifyData(securityConfig.dataClassification.INTERNAL),
   security.auditAccess('milestones'),
   milestonesRoutes
+);
+app.use('/api/fundraising',
+  security.classifyData(securityConfig.dataClassification.CONFIDENTIAL),
+  security.auditAccess('fundraising'),
+  security.protectFinancialData,
+  fundraisingRoutes
 );
 app.use('/api/features',
   security.classifyData(securityConfig.dataClassification.INTERNAL),
