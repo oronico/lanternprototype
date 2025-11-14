@@ -43,7 +43,7 @@ const navigationGroups = [
   },
   {
     id: 'money',
-    name: 'Money',
+    name: 'Financials',
     icon: BanknotesIcon,
     href: '/payments',
     color: 'green',
@@ -120,7 +120,8 @@ const navigationGroups = [
     color: 'purple',
     subItems: [
       { name: 'Pricing Calculator', href: '/calculator' },
-      { name: 'AI Assistant', href: '/ai-assistant' }
+      { name: 'AI Assistant', href: '/ai-assistant' },
+      { name: 'Sandbox Command Center', href: '/sandbox/command-center', badge: 'Beta' }
     ]
   },
   {

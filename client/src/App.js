@@ -61,6 +61,7 @@ import YearEndFinancials from './components/Reports/YearEndFinancials';
 import DocumentLibrary from './components/Documents/DocumentLibrary';
 import ComprehensiveMetrics from './components/Reports/ComprehensiveMetrics';
 import BusinessHealthDashboard from './components/Reports/BusinessHealthDashboard';
+import SimplifiedCommandCenter from './components/Sandbox/SimplifiedCommandCenter';
 
 // Services
 import { initializeApp } from './services/api';
@@ -211,6 +212,7 @@ function AppContent() {
               <Route path="/financial-controls-guide" element={<FinancialControlsGuide />} />
               <Route path="/settings" element={<SchoolSettings />} />
               <Route path="/crm" element={<FamilyCRM />} />
+              <Route path="/sandbox/command-center" element={<SimplifiedCommandCenter />} />
               
               {/* Admin routes (development only) */}
               {process.env.NODE_ENV === 'development' && (
