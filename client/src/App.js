@@ -48,6 +48,7 @@ import GamifiedNudges from './components/Nudges/GamifiedNudges';
 import ClassroomAssignment from './components/Programs/ClassroomAssignment';
 import MultiSchoolDashboard from './components/Enterprise/MultiSchoolDashboard';
 import UnifiedCommandCenter from './components/Dashboard/UnifiedCommandCenter';
+import GTDActionCenter from './components/Dashboard/GTDActionCenter';
 import UnifiedPayments from './components/Money/UnifiedPayments';
 import UnifiedBookkeeping from './components/Money/UnifiedBookkeeping';
 import UnifiedPayroll from './components/Money/UnifiedPayroll';
@@ -159,7 +160,8 @@ function AppContent() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<SimpleDashboard />} />
-              <Route path="/command-center" element={<UnifiedCommandCenter />} />
+              <Route path="/command-center" element={<GTDActionCenter />} />
+              <Route path="/command-center-old" element={<UnifiedCommandCenter />} />
               <Route path="/back-office" element={<ChiefOfStaffDashboard />} />
               <Route path="/cash-reality" element={<CashRealityDashboard />} />
               <Route path="/budget-vs-cash" element={<BudgetVsCash />} />
