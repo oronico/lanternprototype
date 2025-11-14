@@ -181,7 +181,16 @@ const Sidebar = () => {
     // Handle both exact path match and query parameter routes
     if (href.includes('?')) {
       const [path, query] = href.split('?');
-      return location.pathname === path && location.search.includes(query);
+      const hrefParams = new URLSearchParams(query);
+      const currentParams = new URLSearchParams(location.search);
+      
+      // Check if path matches AND all href params are in current URL
+      if (location.pathname !== path) return false;
+      
+      for (const [key, value] of hrefParams.entries()) {
+        if (currentParams.get(key) !== value) return false;
+      }
+      return true;
     }
     return location.pathname === href;
   };
