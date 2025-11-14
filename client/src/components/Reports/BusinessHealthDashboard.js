@@ -318,7 +318,7 @@ export default function BusinessHealthDashboard() {
             <div className={`text-3xl font-bold mb-1 ${getStatusColor(ENROLLMENT.attritionRate <= 10 ? 'good' : ENROLLMENT.attritionRate <= 15 ? 'warning' : 'alarm')}`}>
               {ENROLLMENT.attritionRate}%
             </div>
-            <div className="text-xs text-gray-600">Target: <10%</div>
+            <div className="text-xs text-gray-600">Target: {'<'}10%</div>
             <div className="mt-2 inline-flex px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
               On Track
             </div>
