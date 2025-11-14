@@ -184,7 +184,6 @@ function AppContent() {
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/students" element={<EnrolledStudentsSIS />} />
               <Route path="/crm/recruitment" element={<CleanRecruitmentPipeline />} />
-              <Route path="/crm/recruitment-old" element={<RecruitmentPipeline />} />
               <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
               <Route path="/payments/engines" element={<PaymentEngines />} />
               <Route path="/staff" element={<StaffManagement />} />
