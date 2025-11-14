@@ -596,7 +596,7 @@ export default function EnrolledStudentsSIS() {
             <select
               value={filterProgram}
               onChange={(e) => setFilterProgram(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">All Programs</option>
               {programs.map(p => <option key={p} value={p}>{p}</option>)}
@@ -605,7 +605,7 @@ export default function EnrolledStudentsSIS() {
             <select
               value={filterTeacher}
               onChange={(e) => setFilterTeacher(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">All Teachers</option>
               {teachers.map(t => <option key={t} value={t}>{t}</option>)}
@@ -613,8 +613,9 @@ export default function EnrolledStudentsSIS() {
           </div>
 
           {/* Sortable Table */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div className="bg-white rounded-lg shadow">
+            <div className="table-scroll">
+              <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th 
@@ -713,7 +714,8 @@ export default function EnrolledStudentsSIS() {
                   );
                 })}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
 
           <div className="mt-4 text-sm text-gray-600">
@@ -775,8 +777,9 @@ export default function EnrolledStudentsSIS() {
       {/* Contracts View */}
       {activeView === 'contracts' && (
         <div>
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full">
+          <div className="bg-white rounded-lg shadow">
+            <div className="table-scroll">
+              <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
@@ -834,7 +837,7 @@ export default function EnrolledStudentsSIS() {
                             Complete
                           </span>
                         ) : (
-                          <button className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                          <button className="touch-target px-3 py-2 bg-red-600 text-white text-xs rounded hover:bg-red-700">
                             Send Reminder
                           </button>
                         )}
@@ -843,7 +846,8 @@ export default function EnrolledStudentsSIS() {
                   );
                 })}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         </div>
       )}

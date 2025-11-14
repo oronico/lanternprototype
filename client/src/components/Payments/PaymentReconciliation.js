@@ -241,7 +241,7 @@ const PaymentReconciliation = () => {
       )}
 
       {/* Filters */}
-      <div className="flex items-center space-x-3">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setFilter('all')}
           className={`px-4 py-2 rounded-lg font-medium transition-all ${
@@ -277,8 +277,8 @@ const PaymentReconciliation = () => {
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-md">
+        <div className="table-scroll">
           <table className="min-w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -385,19 +385,19 @@ const PaymentReconciliation = () => {
                       {payment.attributionStatus === 'needs-review' ? (
                         <button
                           onClick={() => setSelectedPayment(payment)}
-                          className="px-3 py-1 bg-yellow-600 text-white rounded-lg text-xs font-medium hover:bg-yellow-700"
+                          className="touch-target px-3 py-2 bg-yellow-600 text-white rounded-lg text-xs font-medium hover:bg-yellow-700"
                         >
                           Review & Allocate
                         </button>
                       ) : payment.status !== 'allocated' ? (
                         <button
                           onClick={() => approveAttribution(payment.id)}
-                          className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700"
+                          className="touch-target px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700"
                         >
                           Approve
                         </button>
                       ) : (
-                        <button className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium cursor-default">
+                        <button className="touch-target px-3 py-2 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium cursor-default">
                           ✓ Complete
                         </button>
                       )}

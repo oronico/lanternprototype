@@ -469,7 +469,7 @@ const PricingPlans = () => {
           💰 What We Replace (And How Much You Save)
         </h3>
         
-        <div className="overflow-x-auto">
+        <div className="table-scroll">
           <table className="min-w-full">
             <thead>
               <tr className="border-b-2 border-gray-200">

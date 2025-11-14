@@ -341,8 +341,9 @@ export default function BoardManagement() {
           {/* Officers */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Officers</h3>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full">
+            <div className="bg-white rounded-lg shadow">
+              <div className="table-scroll">
+                <table className="min-w-full">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
@@ -388,7 +389,8 @@ export default function BoardManagement() {
                     );
                   })}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -396,8 +398,9 @@ export default function BoardManagement() {
           {regularMembers.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Board Members</h3>
-              <div className="bg-white rounded-lg shadow overflow-hidden">
-                <table className="min-w-full">
+              <div className="bg-white rounded-lg shadow">
+                <div className="table-scroll">
+                  <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
@@ -430,7 +433,8 @@ export default function BoardManagement() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                  </table>
+                </div>
               </div>
             </div>
           )}

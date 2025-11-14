@@ -314,8 +314,9 @@ export default function UnifiedPayroll() {
       {/* History Tab */}
       {activeTab === 'history' && (
         <div>
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full">
+          <div className="bg-white rounded-lg shadow">
+            <div className="table-scroll">
+              <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
@@ -341,7 +342,8 @@ export default function UnifiedPayroll() {
                   <td className="px-6 py-4 text-sm text-right">2</td>
                 </tr>
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         </div>
       )}

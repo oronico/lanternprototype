@@ -402,8 +402,8 @@ const DocumentRepository = () => {
       </div>
 
       {/* Documents Table */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-md">
+        <div className="table-scroll">
           <table className="min-w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>

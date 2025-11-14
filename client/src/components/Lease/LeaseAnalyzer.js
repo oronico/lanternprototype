@@ -569,7 +569,7 @@ const LeaseAnalyzer = () => {
           {/* Escalation Schedule */}
           <div className="bg-white rounded-lg shadow p-6">
             <h4 className="font-semibold text-gray-900 mb-4">📈 Rent Escalation Schedule</h4>
-            <div className="overflow-x-auto">
+            <div className="table-scroll">
               <table className="min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200">

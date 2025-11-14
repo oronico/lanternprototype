@@ -34,7 +34,7 @@ export default function SimpleDashboard() {
 
       {/* Performance Snapshot - Top of Page */}
       <div className="mb-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl shadow-lg p-8 text-white">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold mb-1">Performance Snapshot</h2>
             <p className="text-primary-100">Your key metrics at a glance</p>
@@ -45,7 +45,7 @@ export default function SimpleDashboard() {
           </div>
         </div>
         
-        <div className="grid grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 lg:gap-6">
           <div className="bg-white bg-opacity-10 backdrop-blur rounded-lg p-4">
             <div className="text-xs text-primary-100 mb-1">Enrollment</div>
             <div className="text-2xl font-bold">{ENROLLMENT.current}/{ENROLLMENT.target}</div>
@@ -80,7 +80,7 @@ export default function SimpleDashboard() {
 
       {/* Savings Builder - Gamified Encouragement */}
       <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start">
           <div className="flex-shrink-0">
             <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
               <span className="text-2xl">🏦</span>
@@ -114,13 +114,13 @@ export default function SimpleDashboard() {
               </div>
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="text-sm text-gray-600">
                 Save just <strong>${Math.round((FINANCIAL.monthlyExpenses * 3 - FINANCIAL.savingsCash) / 12).toLocaleString()}/month</strong> for a year to reach your 3-month goal!
               </div>
               <button 
                 onClick={() => window.location.href = '/bookkeeping'}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm"
+                className="touch-target w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm text-center"
               >
                 Open High-Yield Savings
               </button>
@@ -166,7 +166,7 @@ export default function SimpleDashboard() {
             </div>
             <h4 className="text-lg font-bold text-gray-900">Students & Enrollment</h4>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
               <div className="text-xs text-gray-600 mb-1">Enrolled</div>
               <div className="text-2xl font-bold text-blue-600">{ENROLLMENT.current}</div>
@@ -198,7 +198,7 @@ export default function SimpleDashboard() {
             </div>
             <h4 className="text-lg font-bold text-gray-900">Money & Finance</h4>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
               <div className="text-xs text-gray-600 mb-1">Operating Cash</div>
               <div className="text-2xl font-bold text-green-600">${(FINANCIAL.operatingCash / 1000).toFixed(1)}k</div>
@@ -230,7 +230,7 @@ export default function SimpleDashboard() {
             </div>
             <h4 className="text-lg font-bold text-gray-900">Operations & Compliance</h4>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
               <div className="text-xs text-gray-600 mb-1">Contracts Signed</div>
               <div className="text-2xl font-bold text-indigo-600">{OPERATIONS.contractCoverage}%</div>

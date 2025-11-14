@@ -428,8 +428,9 @@ export default function UnifiedBookkeeping() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full">
+          <div className="bg-white rounded-lg shadow">
+            <div className="table-scroll">
+              <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
@@ -469,7 +470,7 @@ export default function UnifiedBookkeeping() {
                           Categorized
                         </span>
                       ) : (
-                        <button className="px-3 py-1 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">
+                        <button className="touch-target px-3 py-2 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">
                           Review
                         </button>
                       )}
@@ -477,7 +478,8 @@ export default function UnifiedBookkeeping() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         </div>
       )}

@@ -444,7 +444,7 @@ const PricingCalculator = () => {
           {/* Competitive Landscape */}
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Local Competitive Landscape</h3>
-            <div className="overflow-x-auto">
+            <div className="table-scroll">
               <table className="min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200">

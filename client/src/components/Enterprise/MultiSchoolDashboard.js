@@ -276,8 +276,8 @@ export default function MultiSchoolDashboard() {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3 w-full">
             <BuildingOffice2Icon className="h-8 w-8 text-primary-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Network Dashboard</h1>
@@ -285,11 +285,11 @@ export default function MultiSchoolDashboard() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
             <select
               value={timeframe}
               onChange={(e) => setTimeframe(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="touch-target w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="week">This Week</option>
               <option value="month">This Month</option>
@@ -297,7 +297,7 @@ export default function MultiSchoolDashboard() {
               <option value="year">This Year</option>
             </select>
             
-            <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">
+            <span className="touch-target w-full sm:w-auto px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full text-center">
               Enterprise
             </span>
           </div>
@@ -305,7 +305,7 @@ export default function MultiSchoolDashboard() {
       </div>
 
       {/* Network-Wide Metrics */}
-      <div className="mb-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+      <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
         <div className="bg-white rounded-lg shadow p-4">
           <div className="text-xs text-gray-600 mb-1">Schools</div>
           <div className="text-2xl font-bold text-gray-900">{networkTotals.schools}</div>
@@ -350,7 +350,7 @@ export default function MultiSchoolDashboard() {
       {/* Alerts Summary */}
       {networkTotals.totalAlerts > 0 && (
         <div className="mb-8 bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />
             <div>
               <div className="font-semibold text-red-900">
@@ -365,22 +365,23 @@ export default function MultiSchoolDashboard() {
       )}
 
       {/* Schools Table - Scales to 10+ Schools */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">School</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Students</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Revenue</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cash</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Health</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {schools.map(school => {
+      <div className="bg-white rounded-lg shadow">
+        <div className="table-scroll">
+          <table className="min-w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">School</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Students</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Revenue</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Cash</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Health</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {schools.map(school => {
               const statusLabel = getStatusLabel(school.status);
               
               return (
@@ -451,7 +452,7 @@ export default function MultiSchoolDashboard() {
                         e.stopPropagation();
                         viewSchoolDetails(school);
                       }}
-                      className="text-primary-600 hover:text-primary-800 font-medium text-sm"
+                      className="touch-target inline-flex items-center justify-center px-3 py-2 text-primary-600 hover:text-primary-800 font-medium text-sm"
                     >
                       View Details
                     </button>
@@ -459,8 +460,9 @@ export default function MultiSchoolDashboard() {
                 </tr>
               );
             })}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* School Detail Modal */}
@@ -482,7 +484,7 @@ export default function MultiSchoolDashboard() {
             
             <div className="p-6 space-y-6">
               {/* Metrics Grid */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-blue-50 rounded-lg p-4 text-center">
                   <div className="text-sm text-blue-700">Students</div>
                   <div className="text-2xl font-bold text-blue-900">
@@ -511,7 +513,7 @@ export default function MultiSchoolDashboard() {
               {/* Detailed Stats */}
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">School Details</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div className="flex justify-between py-2 border-b">
                     <span className="text-gray-600">Attendance Rate:</span>
                     <span className="font-medium">{selectedSchool.attendance.rate}%</span>
@@ -542,7 +544,7 @@ export default function MultiSchoolDashboard() {
 
               <button
                 onClick={() => window.location.href = '/dashboard'}
-                className="w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
+                className="touch-target w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
               >
                 Switch to This School
               </button>

@@ -282,8 +282,8 @@ export default function DocumentLibrary() {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3 w-full">
             <FolderIcon className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Document Library</h1>
@@ -291,15 +291,18 @@ export default function DocumentLibrary() {
             </div>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <button
               onClick={() => setShowPackageModal(true)}
-              className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 flex items-center gap-2"
+              className="touch-target w-full sm:w-auto px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 flex items-center justify-center gap-2"
             >
               <ArchiveBoxIcon className="h-5 w-5" />
               Create Package ({selectedDocs.length})
             </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+            <button
+              onClick={() => document.getElementById('document-upload')?.click()}
+              className="touch-target w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+            >
               <CloudArrowUpIcon className="h-5 w-5" />
               Upload Document
             </button>
@@ -307,10 +310,12 @@ export default function DocumentLibrary() {
         </div>
       </div>
 
+      <input id="document-upload" type="file" className="hidden" />
+
       {/* Expiring Documents Alert */}
       {expiringDocs.length > 0 && (
         <div className="mb-8 bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-lg">
-          <div className="flex items-start gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
             <ExclamationTriangleIcon className="h-6 w-6 text-orange-600 flex-shrink-0" />
             <div>
               <div className="font-semibold text-orange-900 mb-1">
@@ -325,7 +330,7 @@ export default function DocumentLibrary() {
       )}
 
       {/* Quick Package Buttons */}
-      <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {DOCUMENT_PACKAGES.map(pkg => (
           <button
             key={pkg.id}
@@ -345,7 +350,7 @@ export default function DocumentLibrary() {
       </div>
 
       {/* Search and Filter */}
-      <div className="mb-6 flex gap-4">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row">
         <div className="flex-1 relative">
           <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
           <input
@@ -360,7 +365,7 @@ export default function DocumentLibrary() {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          className="touch-target w-full lg:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
         >
           <option value="all">All Categories</option>
           {DOCUMENT_CATEGORIES.map(cat => (
@@ -392,89 +397,91 @@ export default function DocumentLibrary() {
                 </div>
 
                 {/* Documents Table */}
-                <table className="min-w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="w-12 px-6 py-3">
-                        <input
-                          type="checkbox"
-                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedDocs(prev => [...new Set([...prev, ...categoryDocs.map(d => d.id)])]);
-                            } else {
-                              setSelectedDocs(prev => prev.filter(id => !categoryDocs.find(d => d.id === id)));
-                            }
-                          }}
-                        />
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Uploaded</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expires</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {categoryDocs.map(doc => (
-                      <tr key={doc.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4">
+                <div className="table-scroll">
+                  <table className="min-w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="w-12 px-6 py-3">
                           <input
                             type="checkbox"
-                            checked={selectedDocs.includes(doc.id)}
-                            onChange={() => toggleDocument(doc.id)}
                             className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedDocs(prev => [...new Set([...prev, ...categoryDocs.map(d => d.id)])]);
+                              } else {
+                                setSelectedDocs(prev => prev.filter(id => !categoryDocs.find(d => d.id === id)));
+                              }
+                            }}
                           />
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <DocumentTextIcon className="h-5 w-5 text-gray-400" />
-                            <div>
-                              <div className="font-medium text-gray-900">{doc.name}</div>
-                              <div className="text-xs text-gray-500">{doc.fileSize}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{doc.type}</td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{doc.uploaded}</td>
-                        <td className="px-6 py-4">
-                          {doc.expires ? (
-                            <div>
-                              <div className="text-sm text-gray-900">{doc.expires}</div>
-                              {doc.daysUntilExpiry && doc.daysUntilExpiry < 120 && (
-                                <div className="text-xs text-orange-600">{doc.daysUntilExpiry} days</div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            doc.status === 'current' ? 'bg-green-100 text-green-800' :
-                            doc.status === 'expiring-soon' ? 'bg-orange-100 text-orange-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
-                            {doc.status === 'current' ? 'Current' :
-                             doc.status === 'expiring-soon' ? 'Expiring Soon' :
-                             'Expired'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <div className="flex justify-center gap-2">
-                            <button className="text-sm text-primary-600 hover:text-primary-800">
-                              View
-                            </button>
-                            <button className="text-sm text-gray-600 hover:text-gray-800">
-                              Download
-                            </button>
-                          </div>
-                        </td>
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Uploaded</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expires</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {categoryDocs.map(doc => (
+                        <tr key={doc.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <input
+                              type="checkbox"
+                              checked={selectedDocs.includes(doc.id)}
+                              onChange={() => toggleDocument(doc.id)}
+                              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                            />
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <DocumentTextIcon className="h-5 w-5 text-gray-400" />
+                              <div>
+                                <div className="font-medium text-gray-900">{doc.name}</div>
+                                <div className="text-xs text-gray-500">{doc.fileSize}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-600">{doc.type}</td>
+                          <td className="px-6 py-4 text-sm text-gray-600">{doc.uploaded}</td>
+                          <td className="px-6 py-4">
+                            {doc.expires ? (
+                              <div>
+                                <div className="text-sm text-gray-900">{doc.expires}</div>
+                                {doc.daysUntilExpiry && doc.daysUntilExpiry < 120 && (
+                                  <div className="text-xs text-orange-600">{doc.daysUntilExpiry} days</div>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-sm text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              doc.status === 'current' ? 'bg-green-100 text-green-800' :
+                              doc.status === 'expiring-soon' ? 'bg-orange-100 text-orange-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {doc.status === 'current' ? 'Current' :
+                               doc.status === 'expiring-soon' ? 'Expiring Soon' :
+                               'Expired'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex justify-center gap-2">
+                              <button className="touch-target px-3 py-2 text-sm text-primary-600 hover:text-primary-800">
+                                View
+                              </button>
+                              <button className="touch-target px-3 py-2 text-sm text-gray-600 hover:text-gray-800">
+                                Download
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             );
           })}

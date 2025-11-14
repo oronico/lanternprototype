@@ -213,12 +213,12 @@ const DocumentManager = () => {
       </div>
 
       {/* Contract List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">Contract Pipeline & E-Signature Tracking</h3>
         </div>
         
-        <div className="overflow-x-auto">
+        <div className="table-scroll">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

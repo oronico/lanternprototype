@@ -266,7 +266,7 @@ export default function UnifiedPayments() {
       {activeTab === 'transactions' && (
         <div>
           {/* Filters */}
-          <div className="mb-4 flex gap-4">
+          <div className="mb-4 flex flex-col gap-4 sm:flex-row">
             <div className="flex-1 relative">
               <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
@@ -281,7 +281,7 @@ export default function UnifiedPayments() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              className="touch-target w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -290,8 +290,9 @@ export default function UnifiedPayments() {
           </div>
 
           {/* Transaction Table */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full">
+          <div className="bg-white rounded-lg shadow">
+            <div className="table-scroll">
+              <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
@@ -335,7 +336,7 @@ export default function UnifiedPayments() {
                       {!txn.reconciled && (
                         <button
                           onClick={() => handleReconcile(txn.id)}
-                          className="text-sm text-primary-600 hover:text-primary-800 font-medium"
+                          className="touch-target px-3 py-2 text-sm text-primary-600 hover:text-primary-800 font-medium"
                         >
                           Reconcile
                         </button>
@@ -344,7 +345,8 @@ export default function UnifiedPayments() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
         </div>
       )}

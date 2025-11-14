@@ -327,7 +327,7 @@ const AutomatedBookkeeping = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="table-scroll">
           <table className="min-w-full">
             <thead>
               <tr className="border-b border-gray-200">

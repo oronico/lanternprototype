@@ -509,7 +509,7 @@ export default function LeaseOCRUpload({ onComplete }) {
               {/* Financial Projection */}
               <div className="pt-6 border-t">
                 <h4 className="font-medium text-gray-900 mb-3">3-Year Financial Projection</h4>
-                <div className="overflow-x-auto">
+                <div className="table-scroll">
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="border-b">
