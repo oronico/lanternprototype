@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   PhoneIcon,
   CheckCircleIcon,
@@ -8,10 +8,11 @@ import {
   ClipboardDocumentCheckIcon,
   XMarkIcon,
   FireIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
-import { generateNudges } from '../../data/centralizedMetrics';
+import { generateNudges, ATTENDANCE, FINANCIAL, ENROLLMENT } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 
@@ -34,6 +35,8 @@ export default function GTDActionCenter() {
   const [completedToday, setCompletedToday] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
+  const [nudges, setNudges] = useState([]);
+  const [featuredNudges, setFeaturedNudges] = useState([]);
 
   useEffect(() => {
     analytics.trackPageView('gtd-action-center');
@@ -54,8 +57,13 @@ export default function GTDActionCenter() {
   };
 
   const loadActions = () => {
-    const generatedNudges = generateNudges();
-    
+    const generatedNudges = generateNudges().map((nudge, index) => ({
+      ...nudge,
+      actionId: `nudge_${index}`
+    }));
+    setNudges(generatedNudges);
+    setFeaturedNudges(generatedNudges.slice(0, 4));
+
     // Organize into GTD categories
     const allActions = [
       // To Call
@@ -178,13 +186,47 @@ export default function GTDActionCenter() {
         completed: false
       }
     ];
+
+    const nudgeActions = generatedNudges.map((nudge) => ({
+      id: nudge.actionId,
+      type: mapNudgeToActionType(nudge),
+      title: nudge.title,
+      description: nudge.description || buildNudgeDescription(nudge),
+      phone: nudge.phone,
+      email: nudge.email,
+      priority: nudge.priority === 'urgent' ? 'high' : 'medium',
+      completed: false,
+      source: nudge.type,
+      amount: nudge.amount
+    }));
     
-    setActions(allActions);
+    setActions([...nudgeActions, ...allActions]);
+  };
+
+  const mapNudgeToActionType = (nudge) => {
+    if (nudge.type === 'attendance' || nudge.action === 'Call') return 'call';
+    if (nudge.type === 'payment') return 'call';
+    if (nudge.type === 'contract') return 'email';
+    if (nudge.type === 'financial') return 'financial';
+    return 'todo';
+  };
+
+  const buildNudgeDescription = (nudge) => {
+    if (nudge.type === 'financial') {
+      return `Improve ${nudge.title.toLowerCase()} by checking cash + expenses`;
+    }
+    if (nudge.type === 'enrollment') {
+      return `Keep the pipeline warm: ${nudge.description || 'Reach out today.'}`;
+    }
+    return nudge.description || 'Let’s take action together.';
   };
 
   const handleComplete = (actionId) => {
     const completedAction = actions.find(a => a.id === actionId);
     if (!completedAction) return;
+
+    setNudges(prev => prev.filter(n => n.actionId !== actionId));
+    setFeaturedNudges(prev => prev.filter(n => n.actionId !== actionId));
     
     // Mark as completed
     setActions(prev => prev.map(a => 
@@ -239,6 +281,115 @@ export default function GTDActionCenter() {
   
   const totalActions = actions.filter(a => !a.completed).length;
   const completedCount = actions.filter(a => a.completed).length;
+
+  const milestonePath = useMemo(() => ([
+    {
+      id: 'attendance',
+      title: 'Attendance & family texts',
+      current: `${ATTENDANCE.todayRate}%`,
+      target: `Goal ${ATTENDANCE.goal}%`,
+      progress: Math.min((ATTENDANCE.todayRate / ATTENDANCE.goal) * 100, 120),
+      status: ATTENDANCE.todayRate >= ATTENDANCE.goal ? 'celebrate' : 'focus',
+      description: '2-minute check-in keeps every family in the loop.',
+      href: '/attendance/daily',
+      accent: 'from-blue-500 to-cyan-500'
+    },
+    {
+      id: 'cash',
+      title: 'Days of cash on hand',
+      current: `${FINANCIAL.daysCash} days`,
+      target: 'Goal 30 days',
+      progress: Math.min((FINANCIAL.daysCash / FINANCIAL.cashGoal) * 100, 120),
+      status: FINANCIAL.daysCash >= FINANCIAL.cashGoal ? 'celebrate' : 'focus',
+      description: 'Document income & expenses weekly to build reserves.',
+      href: '/bookkeeping',
+      accent: 'from-emerald-500 to-green-500'
+    },
+    {
+      id: 'enrollment',
+      title: 'Enrollment to goal',
+      current: `${ENROLLMENT.goalProgress}%`,
+      target: `${ENROLLMENT.target - ENROLLMENT.current} seats to go`,
+      progress: ENROLLMENT.goalProgress,
+      status: ENROLLMENT.goalProgress >= 100 ? 'celebrate' : 'focus',
+      description: 'Nurture the pipeline + capture tuition contracts.',
+      href: '/crm/recruitment',
+      accent: 'from-purple-500 to-pink-500'
+    }
+  ]), []);
+
+  const rhythmMoments = [
+    {
+      title: 'Daily Attendance + Warm Notes',
+      description: 'Submit attendance, text any families who need cheerleading.',
+      href: '/attendance/daily',
+      color: 'blue'
+    },
+    {
+      title: 'Weekly Money Minute',
+      description: 'Reconcile payments, categorize expenses, celebrate progress.',
+      href: '/bookkeeping',
+      color: 'emerald'
+    },
+    {
+      title: 'Fundraising Wins',
+      description: 'Log calls + update pipeline so audit-ready records stay synced.',
+      href: '/crm/fundraising',
+      color: 'purple'
+    },
+    {
+      title: 'Document Library',
+      description: 'Upload leases, certificates, handbooks before lenders ask.',
+      href: '/documents',
+      color: 'amber'
+    }
+  ];
+
+  const rhythmColorClasses = {
+    blue: 'text-blue-700 bg-blue-50',
+    emerald: 'text-emerald-700 bg-emerald-50',
+    purple: 'text-purple-700 bg-purple-50',
+    amber: 'text-amber-700 bg-amber-50'
+  };
+
+  const opportunityIdeas = [
+    {
+      area: 'Business Health Dashboard',
+      idea: 'Highlight “coach tips” next to every yellow/red metric so leaders see the why + the next best step.',
+      link: '/health'
+    },
+    {
+      area: 'Unified Payments',
+      idea: 'After reconciling, surface a “You just protected tuition cash flow!” celebration badge to reinforce the habit.',
+      link: '/payments'
+    },
+    {
+      area: 'Document Library',
+      idea: 'Bundle compliance packets (fire, insurance, bylaws) with one tap so grant + lender requests feel effortless.',
+      link: '/documents'
+    },
+    {
+      area: 'Fundraising CRM',
+      idea: 'Add encouragement when restricted vs. unrestricted gifts stay balanced; pair alerts with storytelling prompts.',
+      link: '/crm/fundraising'
+    }
+  ];
+
+  const handleNudgeAction = (nudge, channel) => {
+    if (channel === 'call' && nudge.phone) {
+      window.location.href = `tel:${nudge.phone}`;
+      toast.success(`Calling ${nudge.title}`);
+      return;
+    }
+    if (channel === 'email' && nudge.email) {
+      const subject = encodeURIComponent(nudge.title);
+      const body = encodeURIComponent(nudge.description || 'Appreciate your partnership!');
+      window.location.href = `mailto:${nudge.email}?subject=${subject}&body=${body}`;
+      toast.success('Drafting a note!');
+      return;
+    }
+    toast('Logged for follow-up inside Command Center.');
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -328,6 +479,143 @@ export default function GTDActionCenter() {
           </div>
         </div>
       )}
+
+      {/* Guided Nudges */}
+      {featuredNudges.length > 0 && (
+        <div className="mb-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-yellow-500/20 rounded-lg">
+              <SparklesIcon className="h-5 w-5 text-yellow-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Guided Nudges</h2>
+              <p className="text-sm text-gray-600">Friendly prompts that pair urgency with encouragement.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {featuredNudges.map((nudge) => (
+              <div key={nudge.actionId} className="bg-white border border-yellow-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm uppercase tracking-wide text-gray-500">{nudge.type}</p>
+                    <h3 className="font-semibold text-gray-900">{nudge.title}</h3>
+                    {nudge.description && (
+                      <p className="text-sm text-gray-600 mt-1">{nudge.description}</p>
+                    )}
+                  </div>
+                  <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${
+                    nudge.priority === 'urgent'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {nudge.priority}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {nudge.phone && (
+                    <button
+                      onClick={() => handleNudgeAction(nudge, 'call')}
+                      className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1"
+                    >
+                      <PhoneIcon className="h-4 w-4" />
+                      Call Family
+                    </button>
+                  )}
+                  {nudge.email && (
+                    <button
+                      onClick={() => handleNudgeAction(nudge, 'email')}
+                      className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-1"
+                    >
+                      <EnvelopeIcon className="h-4 w-4" />
+                      Email
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleComplete(nudge.actionId)}
+                    className="px-3 py-1.5 text-xs bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 flex items-center gap-1"
+                  >
+                    <CheckCircleIcon className="h-4 w-4" />
+                    Log as Done
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Milestone Path */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-primary-100 rounded-lg">
+            <ClipboardDocumentCheckIcon className="h-5 w-5 text-primary-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Milestone Path</h2>
+            <p className="text-sm text-gray-600">Weekly habits that build operational + financial excellence.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {milestonePath.map((step) => (
+            <div key={step.id} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-500">{step.target}</p>
+                  <h3 className="text-base font-semibold text-gray-900">{step.title}</h3>
+                </div>
+                <span className={`text-xs font-semibold ${
+                  step.status === 'celebrate' ? 'text-emerald-600' : 'text-orange-600'
+                }`}>
+                  {step.current}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">{step.description}</p>
+              <div className="h-2 bg-gray-100 rounded-full mb-4 overflow-hidden">
+                <div
+                  className={`h-full rounded-full bg-gradient-to-r ${step.accent}`}
+                  style={{ width: `${Math.min(step.progress, 120)}%` }}
+                ></div>
+              </div>
+              <button
+                onClick={() => window.location.href = step.href}
+                className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1"
+              >
+                Jump in
+                <ArrowRightIcon className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Rhythm Moments */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gray-900/5 rounded-lg">
+            <SparklesIcon className="h-5 w-5 text-gray-800" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Operational Rhythm</h2>
+            <p className="text-sm text-gray-600">Daily + weekly beats across the rest of the platform.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {rhythmMoments.map((moment) => (
+            <div key={moment.title} className="bg-white border border-gray-100 rounded-xl p-5 flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">{moment.title}</h3>
+                <p className="text-sm text-gray-600">{moment.description}</p>
+              </div>
+              <button
+                onClick={() => window.location.href = moment.href}
+                className={`ml-4 px-3 py-1.5 text-xs font-semibold rounded-lg ${rhythmColorClasses[moment.color] || 'text-gray-700 bg-gray-50'}`}
+              >
+                Open
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* To Call */}
       {toCalls.length > 0 && (
@@ -531,6 +819,35 @@ export default function GTDActionCenter() {
           )}
         </div>
       )}
+
+      {/* Opportunity Radar */}
+      <div className="mt-12">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-primary-50 rounded-lg">
+            <LightBulbIcon className="h-5 w-5 text-primary-600" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Vision Opportunities Across the App</h2>
+            <p className="text-sm text-gray-600">Where else we can weave warmth, nudges, and coaching.</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {opportunityIdeas.map((idea) => (
+            <div key={idea.area} className="bg-white border border-gray-100 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-gray-900">{idea.area}</h3>
+                <button
+                  onClick={() => window.location.href = idea.link}
+                  className="text-xs text-primary-600 hover:text-primary-700"
+                >
+                  View
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">{idea.idea}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
