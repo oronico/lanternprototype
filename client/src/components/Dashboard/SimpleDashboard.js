@@ -154,15 +154,17 @@ export default function SimpleDashboard() {
         </div>
       )}
 
-      {/* Metrics by Category */}
+      {/* Metrics by Category - Improved Design */}
       <div className="mb-8">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Metrics by Category</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Your School at a Glance</h3>
         
         {/* Students & Enrollment */}
-        <div className="mb-6">
-          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            <UserGroupIcon className="h-5 w-5 text-blue-500" />
-            Students & Enrollment
+        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-blue-600 rounded-lg">
+              <UserGroupIcon className="h-6 w-6 text-white" />
+            </div>
+            <h4 className="text-lg font-bold text-gray-900">Students & Enrollment</h4>
           </div>
           <div className="grid grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
@@ -189,10 +191,12 @@ export default function SimpleDashboard() {
         </div>
 
         {/* Money & Finance */}
-        <div className="mb-6">
-          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            <BanknotesIcon className="h-5 w-5 text-green-500" />
-            Money & Finance
+        <div className="mb-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-green-600 rounded-lg">
+              <BanknotesIcon className="h-6 w-6 text-white" />
+            </div>
+            <h4 className="text-lg font-bold text-gray-900">Money & Finance</h4>
           </div>
           <div className="grid grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
@@ -219,10 +223,12 @@ export default function SimpleDashboard() {
         </div>
 
         {/* Operations */}
-        <div>
-          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            <ChartBarIcon className="h-5 w-5 text-indigo-500" />
-            Operations & Compliance
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-indigo-600 rounded-lg">
+              <ChartBarIcon className="h-6 w-6 text-white" />
+            </div>
+            <h4 className="text-lg font-bold text-gray-900">Operations & Compliance</h4>
           </div>
           <div className="grid grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4">
