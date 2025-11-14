@@ -204,12 +204,8 @@ const Sidebar = () => {
       icon: ScaleIcon,
       href: '/governance',
       color: 'purple',
-      badge: entityType === '501c3' ? 'Nonprofit' : 'Corp',
-      subItems: [
-        { name: 'Board of Directors', href: '/governance' },
-        { name: 'Meetings & Minutes', href: '/governance?tab=meetings' },
-        { name: 'Bylaws & Policies', href: '/governance?tab=bylaws' }
-      ]
+      badge: entityType === '501c3' ? 'Nonprofit' : 'Corp'
+      // No subItems - page has its own tab navigation!
     }] : []),
     ...navigationGroups.slice(7) // Rest of navigation
   ];
