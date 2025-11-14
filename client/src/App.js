@@ -37,7 +37,6 @@ import ProgramManagement from './components/Programs/ProgramManagement';
 import FeatureAdmin from './components/Admin/FeatureAdmin';
 import FacilityManagement from './components/Facility/FacilityManagement';
 import LeaseOCRUpload from './components/Facility/LeaseOCRUpload';
-import RecruitmentPipeline from './components/CRM/RecruitmentPipeline';
 import CleanRecruitmentPipeline from './components/CRM/CleanRecruitmentPipeline';
 import EnrollmentDashboard from './components/CRM/EnrollmentDashboard';
 import EnhancedOnboarding from './components/Onboarding/EnhancedOnboarding';
