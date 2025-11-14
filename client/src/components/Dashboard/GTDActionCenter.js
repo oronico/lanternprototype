@@ -6,7 +6,9 @@ import {
   CalendarIcon,
   LightBulbIcon,
   ClipboardDocumentCheckIcon,
-  XMarkIcon
+  XMarkIcon,
+  FireIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { generateNudges } from '../../data/centralizedMetrics';
@@ -28,12 +30,15 @@ import Confetti from 'react-confetti';
 
 export default function GTDActionCenter() {
   const [actions, setActions] = useState([]);
+  const [completedActions, setCompletedActions] = useState([]);
   const [completedToday, setCompletedToday] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showArchive, setShowArchive] = useState(false);
 
   useEffect(() => {
     analytics.trackPageView('gtd-action-center');
     loadActions();
+    loadCompletedActions();
     
     // Load completed count for today
     const today = new Date().toDateString();
@@ -42,6 +47,11 @@ export default function GTDActionCenter() {
       setCompletedToday(parseInt(savedCompleted));
     }
   }, []);
+
+  const loadCompletedActions = () => {
+    const archived = JSON.parse(localStorage.getItem('completedActions') || '[]');
+    setCompletedActions(archived);
+  };
 
   const loadActions = () => {
     const generatedNudges = generateNudges();
@@ -173,9 +183,24 @@ export default function GTDActionCenter() {
   };
 
   const handleComplete = (actionId) => {
+    const completedAction = actions.find(a => a.id === actionId);
+    if (!completedAction) return;
+    
+    // Mark as completed
     setActions(prev => prev.map(a => 
       a.id === actionId ? { ...a, completed: true } : a
     ));
+    
+    // Archive the completed action
+    const archivedAction = {
+      ...completedAction,
+      completedAt: new Date().toISOString(),
+      completedDate: new Date().toLocaleDateString()
+    };
+    
+    const newArchived = [archivedAction, ...completedActions].slice(0, 50); // Keep last 50
+    setCompletedActions(newArchived);
+    localStorage.setItem('completedActions', JSON.stringify(newArchived));
     
     // Track completion
     const newCount = completedToday + 1;
@@ -185,7 +210,7 @@ export default function GTDActionCenter() {
     localStorage.setItem(`completed_${today}`, newCount.toString());
     
     analytics.trackFeatureUsage('gtdActionCenter', 'complete_action', {
-      actionType: actions.find(a => a.id === actionId)?.type
+      actionType: completedAction.type
     });
     
     toast.success('Nice work! ✅');
@@ -225,15 +250,62 @@ export default function GTDActionCenter() {
           <div className="flex items-center space-x-3">
             <ClipboardDocumentCheckIcon className="h-8 w-8 text-primary-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Your Action Dashboard</h1>
-              <p className="text-gray-600">Organized by action type - David Allen GTD method</p>
+              <h1 className="text-2xl font-bold text-gray-900">Command Center</h1>
+              <p className="text-gray-600">Your progress, goals, and actions</p>
             </div>
           </div>
           
-          <div className="text-right">
-            <div className="text-3xl font-bold text-primary-600">{completedToday}</div>
-            <div className="text-sm text-gray-600">completed today! 🎉</div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowArchive(!showArchive)}
+              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+            >
+              {showArchive ? 'Hide' : 'Show'} Completed ({completedActions.length})
+            </button>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-primary-600">{completedToday}</div>
+              <div className="text-sm text-gray-600">done today! 🎉</div>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Noom-Style Streaks - KEEP THESE! */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-lg shadow-lg p-6 text-white">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm opacity-90">Login Streak</span>
+            <FireIcon className="h-6 w-6" />
+          </div>
+          <div className="text-4xl font-bold mb-1">15</div>
+          <div className="text-sm opacity-90">days in a row! 🔥</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg shadow-lg p-6 text-white">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm opacity-90">Actions Completed</span>
+            <CheckCircleIcon className="h-6 w-6" />
+          </div>
+          <div className="text-4xl font-bold mb-1">{completedToday}</div>
+          <div className="text-sm opacity-90">today! ✅</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg shadow-lg p-6 text-white">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm opacity-90">Building Reserve</span>
+            <SparklesIcon className="h-6 w-6" />
+          </div>
+          <div className="text-4xl font-bold mb-1">22</div>
+          <div className="text-sm opacity-90">days cash 💪</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg p-6 text-white">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm opacity-90">Enrollment Progress</span>
+            <CalendarIcon className="h-6 w-6" />
+          </div>
+          <div className="text-4xl font-bold mb-1">69%</div>
+          <div className="text-sm opacity-90">to goal 🚀</div>
         </div>
       </div>
 
@@ -434,6 +506,29 @@ export default function GTDActionCenter() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">All Caught Up!</h2>
           <p className="text-gray-600">You've completed all your actions. Great work!</p>
           <p className="text-sm text-gray-500 mt-2">Check back tomorrow for new items</p>
+        </div>
+      )}
+
+      {/* Completed Actions Archive */}
+      {showArchive && completedActions.length > 0 && (
+        <div className="mt-8 border-t pt-8">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Recently Completed 🎉</h3>
+          <div className="space-y-2">
+            {completedActions.slice(0, 10).map((action, idx) => (
+              <div key={idx} className="bg-gray-50 rounded-lg p-4 flex items-center gap-4 opacity-60">
+                <CheckCircleIcon className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-900 line-through">{action.title}</div>
+                  <div className="text-xs text-gray-500">Completed {action.completedDate}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {completedActions.length > 10 && (
+            <div className="text-center mt-4 text-sm text-gray-500">
+              ...and {completedActions.length - 10} more completed actions
+            </div>
+          )}
         </div>
       )}
     </div>
