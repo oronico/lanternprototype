@@ -154,62 +154,96 @@ export default function SimpleDashboard() {
         </div>
       )}
 
-      {/* Today's Top Priorities */}
-      <div className="mb-8 bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Today's Priorities</h3>
-          <a href="/metrics" className="text-sm text-primary-600 hover:text-primary-800 font-medium">
-            View All Metrics →
-          </a>
-        </div>
+      {/* Metrics by Category */}
+      <div className="mb-8">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Metrics by Category</h3>
         
-        <div className="grid grid-cols-3 gap-6">
-          {/* Students Priority */}
-          <div>
-            <div className="text-xs font-semibold text-gray-600 mb-3">👥 Students</div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Enrolled:</span>
-                <span className="font-semibold text-gray-900">{ENROLLMENT.current}/{ENROLLMENT.target}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Attendance:</span>
-                <span className={`font-semibold ${ATTENDANCE.ytdRate >= 95 ? 'text-green-600' : 'text-gray-900'}`}>
-                  {ATTENDANCE.ytdRate}%
-                </span>
-              </div>
+        {/* Students & Enrollment */}
+        <div className="mb-6">
+          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <UserGroupIcon className="h-5 w-5 text-blue-500" />
+            Students & Enrollment
+          </div>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Enrolled</div>
+              <div className="text-2xl font-bold text-blue-600">{ENROLLMENT.current}</div>
+              <div className="text-xs text-gray-500">of {ENROLLMENT.target} goal</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Capacity</div>
+              <div className="text-2xl font-bold text-gray-900">{ENROLLMENT.utilization}%</div>
+              <div className="text-xs text-gray-500">{ENROLLMENT.current}/{ENROLLMENT.capacity}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Attendance</div>
+              <div className="text-2xl font-bold text-green-600">{ATTENDANCE.ytdRate}%</div>
+              <div className="text-xs text-gray-500">YTD average</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Retention</div>
+              <div className="text-2xl font-bold text-purple-600">{ENROLLMENT.retentionRate}%</div>
+              <div className="text-xs text-gray-500">students returned</div>
             </div>
           </div>
+        </div>
 
-          {/* Money Priority */}
-          <div>
-            <div className="text-xs font-semibold text-gray-600 mb-3">💰 Money</div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Cash Position:</span>
-                <span className="font-semibold text-gray-900">{FINANCIAL.daysCash} days</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Revenue:</span>
-                <span className="font-semibold text-gray-900">${(FINANCIAL.monthlyRevenue / 1000).toFixed(1)}k</span>
-              </div>
+        {/* Money & Finance */}
+        <div className="mb-6">
+          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <BanknotesIcon className="h-5 w-5 text-green-500" />
+            Money & Finance
+          </div>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Operating Cash</div>
+              <div className="text-2xl font-bold text-green-600">${(FINANCIAL.operatingCash / 1000).toFixed(1)}k</div>
+              <div className="text-xs text-gray-500">{FINANCIAL.daysCash} days</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Monthly Revenue</div>
+              <div className="text-2xl font-bold text-gray-900">${(FINANCIAL.monthlyRevenue / 1000).toFixed(1)}k</div>
+              <div className="text-xs text-gray-500">tuition income</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Monthly Expenses</div>
+              <div className="text-2xl font-bold text-gray-900">${(FINANCIAL.monthlyExpenses / 1000).toFixed(1)}k</div>
+              <div className="text-xs text-gray-500">total costs</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Net Income</div>
+              <div className="text-2xl font-bold text-green-600">${(FINANCIAL.netIncome / 1000).toFixed(1)}k</div>
+              <div className="text-xs text-gray-500">{FINANCIAL.profitMargin}% margin</div>
             </div>
           </div>
+        </div>
 
-          {/* Operations Priority */}
-          <div>
-            <div className="text-xs font-semibold text-gray-600 mb-3">⚙️ Operations</div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Contracts:</span>
-                <span className="font-semibold text-gray-900">{OPERATIONS.contractCoverage}%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Collections:</span>
-                <span className={`font-semibold ${OPERATIONS.onTimePayment >= 95 ? 'text-green-600' : 'text-gray-900'}`}>
-                  {OPERATIONS.onTimePayment}%
-                </span>
-              </div>
+        {/* Operations */}
+        <div>
+          <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <ChartBarIcon className="h-5 w-5 text-indigo-500" />
+            Operations & Compliance
+          </div>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Contracts Signed</div>
+              <div className="text-2xl font-bold text-indigo-600">{OPERATIONS.contractCoverage}%</div>
+              <div className="text-xs text-gray-500">{ENROLLMENT.current - OPERATIONS.missingContracts}/{ENROLLMENT.current}</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">On-Time Payments</div>
+              <div className="text-2xl font-bold text-green-600">{OPERATIONS.onTimePayment}%</div>
+              <div className="text-xs text-gray-500">{ENROLLMENT.current - 1}/{ENROLLMENT.current} families</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Staff</div>
+              <div className="text-2xl font-bold text-gray-900">{STAFF.total}</div>
+              <div className="text-xs text-gray-500">{STAFF.w2Employees}W-2 + {STAFF.contractors1099}1099</div>
+            </div>
+            <div className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">Facility Burden</div>
+              <div className="text-2xl font-bold text-orange-600">{Math.round(FACILITY.facilityBurden * 100)}%</div>
+              <div className="text-xs text-gray-500">of revenue</div>
             </div>
           </div>
         </div>
