@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 // Components
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
-import Dashboard from './components/Dashboard/Dashboard';
 import SimpleDashboard from './components/Dashboard/SimpleDashboard';
 import PaymentTracking from './components/Payments/PaymentTracking';
 import PaymentReconciliation from './components/Payments/PaymentReconciliation';
