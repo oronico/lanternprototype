@@ -12,7 +12,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
-import { generateNudges, ATTENDANCE, FINANCIAL, ENROLLMENT } from '../../data/centralizedMetrics';
+import { generateNudges, ATTENDANCE, FINANCIAL, ENROLLMENT, GAMIFICATION } from '../../data/centralizedMetrics';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 
@@ -37,6 +37,13 @@ export default function GTDActionCenter() {
   const [showArchive, setShowArchive] = useState(false);
   const [nudges, setNudges] = useState([]);
   const [featuredNudges, setFeaturedNudges] = useState([]);
+
+  const streaks = GAMIFICATION?.streaks || {
+    dailyLogin: 0,
+    attendanceTaken: 0,
+    enrollmentProgress: 0,
+    cashReserveBuilding: 0
+  };
 
   useEffect(() => {
     analytics.trackPageView('gtd-action-center');
