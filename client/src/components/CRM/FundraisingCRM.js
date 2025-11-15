@@ -1,119 +1,118 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  UserGroupIcon,
-  BuildingOfficeIcon,
+  HeartIcon,
   TrophyIcon,
   PlusIcon,
   XMarkIcon,
-  CheckCircleIcon,
-  CalendarIcon,
   ArrowTrendingUpIcon,
   SparklesIcon,
-  DocumentTextIcon,
   BanknotesIcon,
   ClockIcon,
-  ExclamationTriangleIcon,
-  MagnifyingGlassIcon,
-  ChartBarIcon,
-  HeartIcon,
   FireIcon,
   EnvelopeIcon,
   PhoneIcon,
+  DocumentArrowDownIcon,
+  BuildingOfficeIcon,
   GiftIcon,
-  DocumentArrowDownIcon
+  UserGroupIcon,
+  ChartBarIcon,
+  DocumentTextIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  CalendarIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 import { fundraisingAPI } from '../../services/api';
 
 /**
- * Comprehensive Fundraising Platform for Microschools
+ * Comprehensive Fundraising Platform
+ * Best-in-class features from DonorPerfect, Bloomerang, Submittable, Fluxx
  * 
- * Features:
- * - Grants (Foundations, Corporate, Government)
- * - Individual Donors (Major Gifts, Annual Fund)
- * - Corporate Sponsors
- * - Restricted & Unrestricted Gifts
- * - Donor Relationship Management
- * - Thank You Letters & Tax Receipts
- * - Stewardship & Touchpoint Tracking
- * - Gamification (Streaks, Milestones, Celebrations)
- * - Warm, Coaching Tone
+ * 4 Main Modules:
+ * 1. Grants (Foundation, Corporate, Government)
+ * 2. Individual Donors (Major Gifts, Annual Fund)
+ * 3. Corporate Sponsors
+ * 4. Events & Campaigns
  */
 
-// Pursuit stages for ALL fundraising (grants + donors)
-const PURSUIT_STAGES = [
-  { id: 'research', name: 'Research', description: 'Identifying potential', color: 'gray' },
-  { id: 'cultivate', name: 'Cultivate', description: 'Building relationship', color: 'blue' },
-  { id: 'solicit', name: 'Solicit', description: 'Making the ask', color: 'purple' },
-  { id: 'pending', name: 'Pending', description: 'Awaiting response', color: 'yellow' },
-  { id: 'closed_won', name: 'Won! 🎉', description: 'Gift secured', color: 'green' },
-  { id: 'closed_lost', name: 'Not Now', description: 'Declined or deferred', color: 'red' },
-  { id: 'stewardship', name: 'Stewardship', description: 'Ongoing gratitude & reporting', color: 'teal' }
+// Grant-specific stages
+const GRANT_STAGES = [
+  { id: 'research', name: 'Research', desc: 'Eligibility & alignment', color: 'gray' },
+  { id: 'loi', name: 'LOI', desc: 'Letter of Intent', color: 'blue' },
+  { id: 'invited', name: 'Invited', desc: 'Full proposal invited', color: 'indigo' },
+  { id: 'drafting', name: 'Drafting', desc: 'Writing application', color: 'purple' },
+  { id: 'submitted', name: 'Submitted', desc: 'Under review', color: 'yellow' },
+  { id: 'awarded', name: 'Awarded', desc: 'Grant won!', color: 'green' },
+  { id: 'declined', name: 'Declined', desc: 'Not funded', color: 'red' },
+  { id: 'reporting', name: 'Reporting', desc: 'Compliance', color: 'teal' }
 ];
 
-const STAGE_WEIGHTS = {
-  research: 0.10,
-  cultivate: 0.25,
-  solicit: 0.50,
-  pending: 0.70,
-  closed_won: 1.00,
-  closed_lost: 0,
-  stewardship: 1.00
-};
+// Donor cultivation stages
+const DONOR_STAGES = [
+  { id: 'prospect', name: 'Prospect', desc: 'Potential donor', color: 'gray' },
+  { id: 'cultivate', name: 'Cultivate', desc: 'Building relationship', color: 'blue' },
+  { id: 'ask', name: 'Ask Made', desc: 'Solicitation sent', color: 'purple' },
+  { id: 'committed', name: 'Committed', desc: 'Pledge secured', color: 'green' },
+  { id: 'stewarded', name: 'Stewarded', desc: 'Ongoing engagement', color: 'teal' },
+  { id: 'lapsed', name: 'Lapsed', desc: 'Not giving currently', color: 'red' }
+];
 
 const PURSUIT_TYPES = [
-  { value: 'foundation_grant', label: 'Foundation Grant', icon: BuildingOfficeIcon },
-  { value: 'corporate_grant', label: 'Corporate Grant', icon: BuildingOfficeIcon },
-  { value: 'government_grant', label: 'Government Grant', icon: BuildingOfficeIcon },
-  { value: 'individual_major', label: 'Individual Major Gift ($5k+)', icon: HeartIcon },
-  { value: 'individual_annual', label: 'Individual Annual Gift', icon: HeartIcon },
-  { value: 'corporate_sponsor', label: 'Corporate Sponsorship', icon: BanknotesIcon },
-  { value: 'event', label: 'Fundraising Event', icon: GiftIcon },
-  { value: 'campaign', label: 'Campaign Pledge', icon: TrophyIcon }
+  { value: 'foundation_grant', label: 'Foundation Grant', icon: BuildingOfficeIcon, category: 'grant' },
+  { value: 'corporate_grant', label: 'Corporate Grant', icon: BuildingOfficeIcon, category: 'grant' },
+  { value: 'government_grant', label: 'Government Grant', icon: BuildingOfficeIcon, category: 'grant' },
+  { value: 'individual_major', label: 'Individual Major Gift ($5k+)', icon: HeartIcon, category: 'donor' },
+  { value: 'individual_annual', label: 'Individual Annual Gift', icon: HeartIcon, category: 'donor' },
+  { value: 'corporate_sponsor', label: 'Corporate Sponsorship', icon: BanknotesIcon, category: 'corporate' },
+  { value: 'event', label: 'Fundraising Event', icon: GiftIcon, category: 'event' }
 ];
 
 const AWARD_TYPES = [
-  { value: 'restricted', label: 'Restricted', help: 'Specific use (e.g., playground, scholarships)' },
-  { value: 'unrestricted', label: 'Unrestricted', help: 'Operating support (any school need)' }
+  { value: 'restricted', label: 'Restricted', help: 'Specific use only' },
+  { value: 'unrestricted', label: 'Unrestricted', help: 'Operating support' }
 ];
 
-const EMPTY_FORM = {
-  // Core Info
+const EMPTY_OPPORTUNITY = {
   name: '',
   pursuitType: 'foundation_grant',
   awardType: 'restricted',
   stage: 'research',
-  
-  // Amounts
   askAmount: '',
   amountReceived: '',
   
-  // Contact/Donor Info
+  // Grant fields
+  funderName: '',
+  funderWebsite: '',
+  programOfficer: '',
+  loiDueDate: '',
+  proposalDueDate: '',
+  decisionDate: '',
+  reportDueDate: '',
+  eligibilityNotes: '',
+  
+  // Donor fields
   contactName: '',
   contactTitle: '',
   contactOrganization: '',
   contactEmail: '',
   contactPhone: '',
-  donorType: 'individual', // individual, foundation, corporation
+  mailingAddress: '',
+  recognitionName: '',
+  recognitionPreference: 'public',
   
-  // Timeline
-  askDate: '',
-  responseDate: '',
-  giftDate: '',
-  reportDueDate: '',
-  
-  // Details
+  // Shared
   purpose: '',
   restrictions: '',
-  recognitionPreference: 'public', // public, anonymous
   priority: 'medium',
   notes: '',
+  nextAction: '',
+  leadStaffMember: '',
   
   // Stewardship
   lastTouchDate: '',
   nextTouchDate: '',
-  touchpointCount: 0,
   thankYouSent: false,
   taxReceiptSent: false,
   
@@ -122,251 +121,179 @@ const EMPTY_FORM = {
   recurringFrequency: 'annual'
 };
 
-const DEFAULT_SUMMARY = {
-  annualGoal: 0,
-  securedRestricted: 0,
-  securedUnrestricted: 0,
-  totalReceived: 0,
-  pipelineTotal: 0,
-  weightedForecast: 0,
-  donorCount: 0,
-  averageGift: 0,
-  winRate: 0
-};
-
-const formatCurrency = (value) => {
-  if (!value && value !== 0) return '$0';
-  return `$${Number(value).toLocaleString()}`;
-};
-
-const daysUntil = (value) => {
-  if (!value) return null;
-  const date = new Date(value);
-  const days = Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  return days;
-};
-
 const FundraisingCRM = () => {
   const [entityType, setEntityType] = useState('llc-single');
-  const [view, setView] = useState('pipeline'); // pipeline, donors, analytics
+  const [view, setView] = useState('overview'); // overview, grants, donors, corporate, events, analytics
   const [annualGoal, setAnnualGoal] = useState(0);
   const [opportunities, setOpportunities] = useState([]);
-  const [summary, setSummary] = useState(DEFAULT_SUMMARY);
-  const [selectedStageFilter, setSelectedStageFilter] = useState('all');
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [summary, setSummary] = useState({
+    annualGoal: 0,
+    totalReceived: 0,
+    restrictedReceived: 0,
+    unrestrictedReceived: 0,
+    pipelineTotal: 0,
+    donorCount: 0,
+    grantCount: 0
+  });
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [newOpportunity, setNewOpportunity] = useState(EMPTY_OPPORTUNITY);
   const [showCelebration, setShowCelebration] = useState(false);
   const [loading, setLoading] = useState(true);
   const [goalDirty, setGoalDirty] = useState(false);
-  const [savingGoal, setSavingGoal] = useState(false);
-  const [creatingOpportunity, setCreatingOpportunity] = useState(false);
-  const [newOpportunity, setNewOpportunity] = useState(EMPTY_FORM);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedType = localStorage.getItem('entityType') || 'llc-single';
-      setEntityType(storedType);
+      const stored = localStorage.getItem('entityType') || 'llc-single';
+      setEntityType(stored);
     }
   }, []);
 
   useEffect(() => {
     if (entityType === '501c3') {
-      loadFundraisingData();
+      loadData();
     } else {
       setLoading(false);
     }
   }, [entityType]);
 
-  const loadFundraisingData = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
       const { data } = await fundraisingAPI.getOpportunities();
-      setAnnualGoal(data.annualGoal ?? data.summary?.annualGoal ?? 0);
+      setAnnualGoal(data.annualGoal ?? 0);
       setOpportunities(data.opportunities || []);
-      setSummary(data.summary || DEFAULT_SUMMARY);
+      setSummary(data.summary || summary);
     } catch (error) {
       console.error(error);
-      toast.error('Unable to load fundraising data');
+      toast.error('Unable to load data');
     } finally {
-      setGoalDirty(false);
       setLoading(false);
     }
   };
 
   const handleSaveGoal = async () => {
     try {
-      setSavingGoal(true);
       await fundraisingAPI.updateGoal(annualGoal);
       setGoalDirty(false);
-      toast.success('🎯 Annual goal updated!');
+      toast.success('🎯 Goal updated!');
     } catch (error) {
-      console.error(error);
-      toast.error('Unable to save goal');
-    } finally {
-      setSavingGoal(false);
+      toast.error('Unable to save');
     }
   };
 
-  const handleCreateOpportunity = async () => {
-    if (!newOpportunity.name || !newOpportunity.contactName) {
-      toast.error('Please fill in opportunity name and contact');
+  const handleCreate = async () => {
+    if (!newOpportunity.name) {
+      toast.error('Please enter a name');
       return;
     }
 
     try {
-      setCreatingOpportunity(true);
       const { data } = await fundraisingAPI.createOpportunity(newOpportunity);
       setOpportunities(prev => [data.opportunity, ...prev]);
       setSummary(data.summary);
       setShowAddModal(false);
-      setNewOpportunity(EMPTY_FORM);
-      toast.success('✨ Added to your pipeline!');
+      setNewOpportunity(EMPTY_OPPORTUNITY);
+      toast.success('✨ Added to pipeline!');
     } catch (error) {
-      console.error(error);
-      toast.error('Unable to create opportunity');
-    } finally {
-      setCreatingOpportunity(false);
+      toast.error('Unable to create');
     }
   };
 
-  const handleStageChange = async (opportunity, nextStage) => {
+  const handleStageChange = async (opp, nextStage) => {
     try {
-      const updates = { stage: nextStage };
-      const { data } = await fundraisingAPI.updateOpportunity(opportunity.id, updates);
-      setOpportunities(prev => prev.map(op => op.id === opportunity.id ? data.opportunity : op));
+      const { data } = await fundraisingAPI.updateOpportunity(opp.id, { stage: nextStage });
+      setOpportunities(prev => prev.map(o => o.id === opp.id ? data.opportunity : o));
       setSummary(data.summary);
       
-      // Celebrate wins!
-      if (nextStage === 'closed_won') {
+      if (nextStage === 'awarded' || nextStage === 'committed') {
         setShowCelebration(true);
         setTimeout(() => setShowCelebration(false), 5000);
-        toast.success(`🎉 Congratulations! ${opportunity.name} secured!`);
-      } else {
-        const stage = PURSUIT_STAGES.find(s => s.id === nextStage);
-        toast.success(`Moved to ${stage?.name}`);
+        toast.success(`🎉 ${opp.name} secured!`);
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Unable to update stage');
-    }
-  };
-
-  const generateThankYouLetter = (opportunity) => {
-    // In production, this would generate a PDF
-    toast.success(`📝 Thank you letter generated for ${opportunity.contactName}`);
-    // Mark as sent
-    handleUpdateOpportunity(opportunity.id, { thankYouSent: true });
-  };
-
-  const generateTaxReceipt = (opportunity) => {
-    // In production, this would generate an IRS-compliant receipt
-    toast.success(`📄 Tax receipt generated for ${opportunity.contactName}`);
-    // Mark as sent
-    handleUpdateOpportunity(opportunity.id, { taxReceiptSent: true });
-  };
-
-  const handleUpdateOpportunity = async (id, updates) => {
-    try {
-      const { data } = await fundraisingAPI.updateOpportunity(id, updates);
-      setOpportunities(prev => prev.map(op => op.id === id ? data.opportunity : op));
-      setSummary(data.summary);
-    } catch (error) {
-      console.error(error);
       toast.error('Unable to update');
     }
   };
 
-  const viewDetails = (opportunity) => {
-    setSelectedOpportunity(opportunity);
+  const viewDetails = (opp) => {
+    setSelectedOpportunity(opp);
     setShowDetailModal(true);
   };
 
-  // Filtered opportunities
-  const filteredOpportunities = useMemo(() => {
-    return opportunities.filter(op => {
-      const matchesStage = selectedStageFilter === 'all' || op.stage === selectedStageFilter;
-      const matchesType = selectedTypeFilter === 'all' || op.pursuitType === selectedTypeFilter;
-      const matchesSearch = !searchTerm || 
-        op.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        op.contactName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (op.contactOrganization && op.contactOrganization.toLowerCase().includes(searchTerm.toLowerCase()));
-      return matchesStage && matchesType && matchesSearch;
-    });
-  }, [opportunities, selectedStageFilter, selectedTypeFilter, searchTerm]);
+  const generateThankYou = (opp) => {
+    toast.success(`📝 Thank you letter for ${opp.contactName || opp.funderName}`);
+    handleUpdate(opp.id, { thankYouSent: true });
+  };
 
-  // Group by stage for pipeline view
-  const opportunitiesByStage = useMemo(() => {
-    const result = {};
-    PURSUIT_STAGES.forEach(stage => {
-      result[stage.id] = filteredOpportunities.filter(op => op.stage === stage.id);
-    });
-    return result;
-  }, [filteredOpportunities]);
+  const generateTaxReceipt = (opp) => {
+    toast.success(`📄 Tax receipt for ${opp.contactName || opp.funderName}`);
+    handleUpdate(opp.id, { taxReceiptSent: true });
+  };
 
-  // Donor list (Individual & Corporate gifts)
-  const donors = useMemo(() => {
-    const donorMap = {};
-    opportunities
-      .filter(op => ['individual_major', 'individual_annual', 'corporate_sponsor'].includes(op.pursuitType))
-      .forEach(op => {
-        const key = op.contactName;
-        if (!donorMap[key]) {
-          donorMap[key] = {
-            name: op.contactName,
-            organization: op.contactOrganization,
-            email: op.contactEmail,
-            phone: op.contactPhone,
-            gifts: [],
-            totalGiven: 0,
-            lastGiftDate: null
-          };
+  const handleUpdate = async (id, updates) => {
+    try {
+      const { data } = await fundraisingAPI.updateOpportunity(id, updates);
+      setOpportunities(prev => prev.map(o => o.id === id ? data.opportunity : o));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Segment by type
+  const grants = opportunities.filter(o => ['foundation_grant', 'corporate_grant', 'government_grant'].includes(o.pursuitType));
+  const individualDonors = opportunities.filter(o => ['individual_major', 'individual_annual'].includes(o.pursuitType));
+  const corporateSponsors = opportunities.filter(o => o.pursuitType === 'corporate_sponsor');
+  const events = opportunities.filter(o => o.pursuitType === 'event');
+
+  // Donor list with aggregation
+  const donorProfiles = useMemo(() => {
+    const map = {};
+    [...individualDonors, ...corporateSponsors].forEach(opp => {
+      const key = opp.contactName || opp.funderName;
+      if (!map[key]) {
+        map[key] = {
+          name: key,
+          organization: opp.contactOrganization,
+          email: opp.contactEmail,
+          phone: opp.contactPhone,
+          gifts: [],
+          totalGiven: 0,
+          lastGiftDate: null
+        };
+      }
+      if (opp.stage === 'awarded' || opp.stage === 'committed' || opp.stage === 'stewarded') {
+        map[key].gifts.push(opp);
+        map[key].totalGiven += Number(opp.amountReceived || 0);
+        if (opp.giftDate && (!map[key].lastGiftDate || opp.giftDate > map[key].lastGiftDate)) {
+          map[key].lastGiftDate = opp.giftDate;
         }
-        if (op.stage === 'closed_won' || op.stage === 'stewardship') {
-          donorMap[key].gifts.push(op);
-          donorMap[key].totalGiven += Number(op.amountReceived || 0);
-          if (op.giftDate && (!donorMap[key].lastGiftDate || op.giftDate > donorMap[key].lastGiftDate)) {
-            donorMap[key].lastGiftDate = op.giftDate;
-          }
-        }
-      });
-    return Object.values(donorMap).sort((a, b) => b.totalGiven - a.totalGiven);
-  }, [opportunities]);
+      }
+    });
+    return Object.values(map).sort((a, b) => b.totalGiven - a.totalGiven);
+  }, [individualDonors, corporateSponsors]);
 
-  // Gamification stats
-  const gamificationStats = useMemo(() => {
-    const thisMonth = new Date().getMonth();
-    const thisMonthWins = opportunities.filter(op => 
-      op.stage === 'closed_won' && 
-      op.giftDate && 
-      new Date(op.giftDate).getMonth() === thisMonth
-    );
-    
-    return {
-      monthlyWins: thisMonthWins.length,
-      monthlyTotal: thisMonthWins.reduce((sum, op) => sum + Number(op.amountReceived || 0), 0),
-      streak: 3, // Would calculate actual streak from data
-      milestone: summary.totalReceived >= annualGoal ? 'goal' : summary.totalReceived >= annualGoal * 0.75 ? '75' : summary.totalReceived >= annualGoal * 0.5 ? '50' : summary.totalReceived >= annualGoal * 0.25 ? '25' : 'start'
-    };
-  }, [opportunities, summary, annualGoal]);
+  // Gamification
+  const monthlyWins = opportunities.filter(o => 
+    (o.stage === 'awarded' || o.stage === 'committed') &&
+    o.giftDate && new Date(o.giftDate).getMonth() === new Date().getMonth()
+  ).length;
 
-  // Non-profit check
   if (entityType !== '501c3') {
     return (
-      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 shadow-sm">
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8">
           <div className="flex items-start gap-4">
             <SparklesIcon className="h-10 w-10 text-yellow-600" />
             <div>
               <h2 className="text-2xl font-bold text-yellow-900 mb-2">Fundraising is for 501(c)(3) schools</h2>
               <p className="text-sm text-yellow-800 mb-4">
-                Grant management, donor relationships, and gift tracking unlock when your entity type is set to nonprofit.
+                Grant management, donor relationships, and gift tracking unlock when entity type is nonprofit.
               </p>
               <button
                 onClick={() => { window.location.href = '/settings'; }}
-                className="touch-target px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 text-sm font-semibold"
+                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
               >
                 Update Entity Type
               </button>
@@ -378,77 +305,58 @@ const FundraisingCRM = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
       {showCelebration && <Confetti recycle={false} numberOfPieces={400} />}
       
-      {/* Header with Coaching Tone */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center space-x-3">
-            <HeartIcon className="h-8 w-8 text-primary-600" />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Fundraising & Donor Relationships</h1>
-              <p className="text-gray-600">Building partnerships that fuel your mission 💙</p>
-            </div>
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <HeartIcon className="h-8 w-8 text-primary-600" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Fundraising & Development</h1>
+            <p className="text-gray-600">Building partnerships that fuel your mission 💙</p>
           </div>
-          
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2 shadow-sm"
-          >
-            <PlusIcon className="h-5 w-5" />
-            Add Opportunity
-          </button>
         </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
+        >
+          <PlusIcon className="h-5 w-5" />
+          Add Opportunity
+        </button>
       </div>
 
-      {/* Gamification & Momentum Bar */}
-      <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-2xl p-6">
+      {/* Momentum & Gamification */}
+      <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-2xl p-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <FireIcon className="h-6 w-6 text-orange-600" />
               <div>
-                <div className="text-xs text-gray-600">Fundraising Streak</div>
-                <div className="text-2xl font-bold text-gray-900">{gamificationStats.streak} months</div>
+                <div className="text-xs text-gray-600">Streak</div>
+                <div className="text-2xl font-bold text-gray-900">3 mo.</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <TrophyIcon className="h-6 w-6 text-yellow-600" />
               <div>
                 <div className="text-xs text-gray-600">This Month</div>
-                <div className="text-2xl font-bold text-gray-900">{gamificationStats.monthlyWins} gifts</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <SparklesIcon className="h-6 w-6 text-purple-600" />
-              <div>
-                <div className="text-xs text-gray-600">Milestone</div>
-                <div className="text-sm font-bold text-purple-600">
-                  {gamificationStats.milestone === 'goal' ? '🎉 Goal Met!' :
-                   gamificationStats.milestone === '75' ? '75% There!' :
-                   gamificationStats.milestone === '50' ? 'Halfway!' :
-                   gamificationStats.milestone === '25' ? '25% Milestone' : 'Just Getting Started'}
-                </div>
+                <div className="text-2xl font-bold text-gray-900">{monthlyWins} wins</div>
               </div>
             </div>
           </div>
-          <div className="text-sm text-purple-900">
-            💪 Keep building those relationships—every ask matters!
+          <div className="text-sm text-purple-900 font-medium">
+            💪 Every relationship matters—you're building something special!
           </div>
         </div>
       </div>
 
-      {/* Annual Goal & Key Metrics */}
-      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {/* Annual Goal */}
+      {/* Annual Goal & Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl p-6 shadow-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowTrendingUpIcon className="h-5 w-5 text-primary-100" />
-            <span className="text-sm text-primary-100">Annual Goal</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-xs text-primary-100">$</span>
+          <div className="text-sm text-primary-100 mb-2">Annual Goal</div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-xs">$</span>
             <input
               type="number"
               value={annualGoal}
@@ -456,171 +364,141 @@ const FundraisingCRM = () => {
                 setAnnualGoal(Number(e.target.value));
                 setGoalDirty(true);
               }}
-              className="bg-transparent text-3xl font-bold text-white border-none focus:outline-none focus:ring-0 w-full"
+              className="bg-transparent text-3xl font-bold text-white border-none focus:outline-none w-full"
               placeholder="0"
             />
           </div>
           {goalDirty && (
-            <button
-              onClick={handleSaveGoal}
-              disabled={savingGoal}
-              className="mt-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold"
-            >
-              {savingGoal ? 'Saving...' : 'Save Goal'}
+            <button onClick={handleSaveGoal} className="mt-2 px-3 py-1 bg-white/20 rounded text-xs">
+              Save
             </button>
           )}
           <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
             <div
-              className="h-full bg-white rounded-full transition-all"
+              className="h-full bg-white rounded-full"
               style={{ width: `${Math.min((summary.totalReceived / annualGoal) * 100, 100)}%` }}
             />
           </div>
           <div className="mt-2 text-xs text-primary-100">
-            {formatCurrency(summary.totalReceived)} raised ({annualGoal > 0 ? Math.round((summary.totalReceived / annualGoal) * 100) : 0}%)
+            ${summary.totalReceived?.toLocaleString() || '0'} raised ({annualGoal > 0 ? Math.round((summary.totalReceived / annualGoal) * 100) : 0}%)
           </div>
         </div>
 
-        <MetricCard
-          icon={TrophyIcon}
-          label="Total Raised"
-          value={formatCurrency(summary.totalReceived)}
-          subtitle={`${summary.donorCount} donors`}
-          color="green"
-        />
-        <MetricCard
-          icon={ChartBarIcon}
-          label="Forecast"
-          value={formatCurrency(summary.weightedForecast)}
-          subtitle="Weighted pipeline"
-          color="blue"
-        />
-        <MetricCard
-          icon={ClockIcon}
-          label="In Pipeline"
-          value={formatCurrency(summary.pipelineTotal)}
-          subtitle={`${opportunities.filter(o => !['closed_won', 'closed_lost', 'stewardship'].includes(o.stage)).length} active`}
-          color="yellow"
-        />
-        <MetricCard
-          icon={HeartIcon}
-          label="Avg Gift"
-          value={formatCurrency(summary.averageGift)}
-          subtitle={`${summary.winRate || 0}% win rate`}
-          color="purple"
-        />
+        <MetricCard icon={TrophyIcon} label="Total Raised" value={`$${summary.totalReceived?.toLocaleString() || '0'}`} subtitle={`${summary.donorCount || 0} donors`} color="green" />
+        <MetricCard icon={BanknotesIcon} label="Restricted" value={`$${summary.restrictedReceived?.toLocaleString() || '0'}`} subtitle="Specific use" color="blue" />
+        <MetricCard icon={BanknotesIcon} label="Unrestricted" value={`$${summary.unrestrictedReceived?.toLocaleString() || '0'}`} subtitle="Operating" color="green" />
+        <MetricCard icon={ClockIcon} label="Pipeline" value={`$${summary.pipelineTotal?.toLocaleString() || '0'}`} subtitle={`${opportunities.length} active`} color="yellow" />
       </div>
 
-      {/* View Tabs */}
-      <div className="mb-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
-          <ViewTab active={view === 'pipeline'} onClick={() => setView('pipeline')} label="Pipeline" />
-          <ViewTab active={view === 'donors'} onClick={() => setView('donors')} label="Donors & Sponsors" badge={donors.length} />
-          <ViewTab active={view === 'analytics'} onClick={() => setView('analytics')} label="Analytics" />
+      {/* Navigation Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-6 overflow-x-auto">
+          <Tab active={view === 'overview'} onClick={() => setView('overview')} icon={ChartBarIcon} label="Overview" />
+          <Tab active={view === 'grants'} onClick={() => setView('grants')} icon={BuildingOfficeIcon} label="Grants" badge={grants.length} />
+          <Tab active={view === 'donors'} onClick={() => setView('donors')} icon={HeartIcon} label="Individual Donors" badge={individualDonors.length} />
+          <Tab active={view === 'corporate'} onClick={() => setView('corporate')} icon={BanknotesIcon} label="Corporate" badge={corporateSponsors.length} />
+          <Tab active={view === 'events'} onClick={() => setView('events')} icon={GiftIcon} label="Events" badge={events.length} />
         </nav>
       </div>
 
-      {/* Pipeline View (Vertical, No Horizontal Scroll) */}
-      {view === 'pipeline' && (
-        <PipelineView
-          opportunitiesByStage={opportunitiesByStage}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedStageFilter={selectedStageFilter}
-          setSelectedStageFilter={setSelectedStageFilter}
-          selectedTypeFilter={selectedTypeFilter}
-          setSelectedTypeFilter={setSelectedTypeFilter}
+      {/* Overview */}
+      {view === 'overview' && (
+        <OverviewView
+          grants={grants}
+          donors={donorProfiles}
+          corporateSponsors={corporateSponsors}
+          events={events}
+          summary={summary}
+          annualGoal={annualGoal}
+        />
+      )}
+
+      {/* Grants Module */}
+      {view === 'grants' && (
+        <GrantsView
+          grants={grants}
           onStageChange={handleStageChange}
           onViewDetails={viewDetails}
-          filteredOpportunities={filteredOpportunities}
         />
       )}
 
-      {/* Donors & Sponsors View */}
+      {/* Individual Donors Module */}
       {view === 'donors' && (
         <DonorsView
-          donors={donors}
-          onGenerateThankYou={generateThankYouLetter}
+          donors={donorProfiles}
+          onGenerateThankYou={generateThankYou}
           onGenerateTaxReceipt={generateTaxReceipt}
+        />
+      )}
+
+      {/* Corporate Sponsors Module */}
+      {view === 'corporate' && (
+        <CorporateView
+          sponsors={corporateSponsors}
           onViewDetails={viewDetails}
         />
       )}
 
-      {/* Analytics View */}
-      {view === 'analytics' && (
-        <AnalyticsView opportunities={opportunities} summary={summary} annualGoal={annualGoal} />
+      {/* Events Module */}
+      {view === 'events' && (
+        <EventsView events={events} onViewDetails={viewDetails} />
       )}
 
       {/* Add Opportunity Modal */}
       {showAddModal && (
         <AddOpportunityModal
-          newOpportunity={newOpportunity}
-          setNewOpportunity={setNewOpportunity}
+          opportunity={newOpportunity}
+          setOpportunity={setNewOpportunity}
           onClose={() => {
             setShowAddModal(false);
-            setNewOpportunity(EMPTY_FORM);
+            setNewOpportunity(EMPTY_OPPORTUNITY);
           }}
-          onCreate={handleCreateOpportunity}
-          creating={creatingOpportunity}
+          onCreate={handleCreate}
         />
       )}
 
       {/* Detail Modal */}
       {showDetailModal && selectedOpportunity && (
-        <OpportunityDetailModal
+        <DetailModal
           opportunity={selectedOpportunity}
           onClose={() => {
             setShowDetailModal(false);
             setSelectedOpportunity(null);
           }}
           onStageChange={handleStageChange}
-          onGenerateThankYou={generateThankYouLetter}
+          onGenerateThankYou={generateThankYou}
           onGenerateTaxReceipt={generateTaxReceipt}
+          onUpdate={handleUpdate}
         />
       )}
     </div>
   );
 };
 
-// View Tab Component
-const ViewTab = ({ active, onClick, label, badge }) => (
+const Tab = ({ active, onClick, icon: Icon, label, badge }) => (
   <button
     onClick={onClick}
-    className={`touch-target py-4 px-1 border-b-2 font-medium text-sm ${
-      active
-        ? 'border-primary-500 text-primary-600'
-        : 'border-transparent text-gray-500 hover:text-gray-700'
+    className={`touch-target py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap flex items-center gap-2 ${
+      active ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'
     }`}
   >
+    <Icon className="h-4 w-4" />
     {label}
-    {badge !== undefined && badge > 0 && (
-      <span className="ml-2 px-2 py-0.5 bg-primary-100 text-primary-800 rounded-full text-xs font-bold">
-        {badge}
-      </span>
-    )}
+    {badge > 0 && <span className="px-2 py-0.5 bg-primary-100 text-primary-800 rounded-full text-xs font-bold">{badge}</span>}
   </button>
 );
 
-// Metric Card Component
 const MetricCard = ({ icon: Icon, label, value, subtitle, color }) => {
-  const colorClasses = {
-    green: 'bg-green-50 border-green-200 text-green-700',
-    blue: 'bg-blue-50 border-blue-200 text-blue-700',
-    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    purple: 'bg-purple-50 border-purple-200 text-purple-700'
+  const colors = {
+    green: 'bg-green-50 border-green-200',
+    blue: 'bg-blue-50 border-blue-200',
+    yellow: 'bg-yellow-50 border-yellow-200'
   };
-
-  const iconColorClasses = {
-    green: 'text-green-600',
-    blue: 'text-blue-600',
-    yellow: 'text-yellow-600',
-    purple: 'text-purple-600'
-  };
-
   return (
-    <div className={`rounded-2xl border-2 p-6 ${colorClasses[color]}`}>
+    <div className={`rounded-2xl border-2 p-6 ${colors[color]}`}>
       <div className="flex items-center gap-2 mb-2">
-        <Icon className={`h-5 w-5 ${iconColorClasses[color]}`} />
-        <span className="text-xs font-medium">{label}</span>
+        <Icon className="h-5 w-5 text-gray-600" />
+        <span className="text-xs font-medium text-gray-600">{label}</span>
       </div>
       <div className="text-2xl font-bold text-gray-900">{value}</div>
       <div className="text-xs text-gray-600 mt-1">{subtitle}</div>
@@ -628,601 +506,415 @@ const MetricCard = ({ icon: Icon, label, value, subtitle, color }) => {
   );
 };
 
-// Pipeline View Component (VERTICAL LAYOUT - NO HORIZONTAL SCROLL)
-const PipelineView = ({ opportunitiesByStage, searchTerm, setSearchTerm, selectedStageFilter, setSelectedStageFilter, selectedTypeFilter, setSelectedTypeFilter, onStageChange, onViewDetails, filteredOpportunities }) => (
-  <div className="space-y-6">
-    {/* Filters */}
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col md:flex-row gap-4">
-      <div className="flex-1 relative">
-        <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search opportunities, contacts, organizations..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="touch-target w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-        />
-      </div>
-      <select
-        value={selectedStageFilter}
-        onChange={(e) => setSelectedStageFilter(e.target.value)}
-        className="touch-target px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-      >
-        <option value="all">All Stages</option>
-        {PURSUIT_STAGES.map(stage => (
-          <option key={stage.id} value={stage.id}>{stage.name}</option>
-        ))}
-      </select>
-      <select
-        value={selectedTypeFilter}
-        onChange={(e) => setSelectedTypeFilter(e.target.value)}
-        className="touch-target px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-      >
-        <option value="all">All Types</option>
-        {PURSUIT_TYPES.map(type => (
-          <option key={type.value} value={type.value}>{type.label}</option>
-        ))}
-      </select>
-    </div>
+// Overview View
+const OverviewView = ({ grants, donors, corporateSponsors, events, summary, annualGoal }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <QuickAccessCard
+      icon={BuildingOfficeIcon}
+      title="Grants"
+      count={grants.length}
+      description="Foundation, corporate, government"
+      color="blue"
+    />
+    <QuickAccessCard
+      icon={HeartIcon}
+      title="Individual Donors"
+      count={donors.length}
+      description="Major gifts & annual fund"
+      color="purple"
+    />
+    <QuickAccessCard
+      icon={BanknotesIcon}
+      title="Corporate Sponsors"
+      count={corporateSponsors.length}
+      description="Business partnerships"
+      color="teal"
+    />
+    <QuickAccessCard
+      icon={GiftIcon}
+      title="Events"
+      count={events.length}
+      description="Galas, auctions, campaigns"
+      color="yellow"
+    />
+  </div>
+);
 
-    {/* Pipeline Stages - VERTICAL LAYOUT */}
+const QuickAccessCard = ({ icon: Icon, title, count, description, color }) => {
+  const colors = {
+    blue: 'from-blue-500 to-blue-600',
+    purple: 'from-purple-500 to-purple-600',
+    teal: 'from-teal-500 to-teal-600',
+    yellow: 'from-yellow-500 to-yellow-600'
+  };
+  return (
+    <div className="bg-white rounded-xl shadow border border-gray-200 p-6 hover:shadow-lg transition">
+      <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${colors[color]} mb-4`}>
+        <Icon className="h-6 w-6 text-white" />
+      </div>
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      <div className="text-3xl font-bold text-gray-900 my-2">{count}</div>
+      <p className="text-sm text-gray-600">{description}</p>
+    </div>
+  );
+};
+
+// Grants View
+const GrantsView = ({ grants, onStageChange, onViewDetails }) => {
+  const grantsByStage = {};
+  GRANT_STAGES.forEach(stage => {
+    grantsByStage[stage.id] = grants.filter(g => g.stage === stage.id);
+  });
+
+  return (
     <div className="space-y-4">
-      {PURSUIT_STAGES.map(stage => {
-        const opportunities = opportunitiesByStage[stage.id] || [];
-        const total = opportunities.reduce((sum, op) => sum + (Number(op.askAmount) || Number(op.amountReceived) || 0), 0);
+      {GRANT_STAGES.map(stage => {
+        const stageGrants = grantsByStage[stage.id] || [];
+        const total = stageGrants.reduce((sum, g) => sum + (Number(g.askAmount) || 0), 0);
 
         return (
-          <div key={stage.id} className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
-            {/* Stage Header */}
-            <div className={`bg-${stage.color}-50 border-b-2 border-${stage.color}-200 px-6 py-4`}>
+          <div key={stage.id} className="bg-white rounded-xl shadow border border-gray-200">
+            <div className={`bg-${stage.color}-50 border-b border-${stage.color}-200 px-6 py-4`}>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">{stage.name}</h3>
-                  <p className="text-sm text-gray-600">{stage.description}</p>
+                  <p className="text-sm text-gray-600">{stage.desc}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-900">{opportunities.length}</div>
-                  <div className="text-xs text-gray-600">{formatCurrency(total)}</div>
+                  <div className="text-xl font-bold">{stageGrants.length}</div>
+                  <div className="text-xs text-gray-600">${total.toLocaleString()}</div>
                 </div>
               </div>
             </div>
-
-            {/* Opportunities in Stage */}
-            {opportunities.length === 0 ? (
-              <div className="p-8 text-center text-gray-400 text-sm">
-                No opportunities in this stage yet
-              </div>
+            {stageGrants.length === 0 ? (
+              <div className="p-6 text-center text-sm text-gray-400">No grants</div>
             ) : (
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {opportunities.map(op => (
-                  <OpportunityCard
-                    key={op.id}
-                    opportunity={op}
-                    stage={stage}
-                    onViewDetails={onViewDetails}
-                  />
-                ))}
+                {stageGrants.map(g => <OpportunityCard key={g.id} opp={g} onClick={onViewDetails} />)}
               </div>
             )}
           </div>
         );
       })}
     </div>
-
-    {filteredOpportunities.length === 0 && (
-      <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-        <SparklesIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
-        <p className="text-gray-600">No opportunities match your filters.</p>
-        <p className="text-sm text-gray-500 mt-1">Try adjusting your search or add a new opportunity!</p>
-      </div>
-    )}
-  </div>
-);
-
-// Opportunity Card Component
-const OpportunityCard = ({ opportunity, stage, onViewDetails }) => {
-  const pursuitType = PURSUIT_TYPES.find(t => t.pursuitType === opportunity.pursuitType);
-  const TypeIcon = pursuitType?.icon || HeartIcon;
-  const deadline = opportunity.askDate || opportunity.responseDate;
-  const daysLeft = deadline ? daysUntil(deadline) : null;
-  const isUrgent = daysLeft !== null && daysLeft <= 7 && daysLeft >= 0;
-
-  return (
-    <div
-      className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-      onClick={() => onViewDetails(opportunity)}
-    >
-      <div className="flex items-start justify-between mb-2">
-        <div className="flex-1">
-          <div className="font-semibold text-gray-900 text-sm mb-1 line-clamp-1">{opportunity.name}</div>
-          <div className="text-xs text-gray-600 line-clamp-1">{opportunity.contactName}</div>
-          {opportunity.contactOrganization && (
-            <div className="text-xs text-gray-500 line-clamp-1">{opportunity.contactOrganization}</div>
-          )}
-        </div>
-        <TypeIcon className="h-5 w-5 text-gray-400 flex-shrink-0 ml-2" />
-      </div>
-
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-base font-bold text-primary-600">
-          {formatCurrency(opportunity.amountReceived || opportunity.askAmount)}
-        </span>
-        {opportunity.awardType && (
-          <span className={`px-2 py-0.5 text-xs font-medium rounded ${
-            opportunity.awardType === 'unrestricted'
-              ? 'bg-green-100 text-green-800'
-              : 'bg-blue-100 text-blue-800'
-          }`}>
-            {opportunity.awardType === 'unrestricted' ? 'Unrestricted' : 'Restricted'}
-          </span>
-        )}
-      </div>
-
-      {deadline && (
-        <div className={`flex items-center gap-1 text-xs ${
-          isUrgent ? 'text-red-600 font-semibold' : 'text-gray-600'
-        }`}>
-          <ClockIcon className="h-3 w-3" />
-          {daysLeft !== null && daysLeft >= 0 ? `${daysLeft} days` : 'Overdue'}
-        </div>
-      )}
-
-      {opportunity.priority === 'high' && (
-        <div className="mt-2 text-xs font-semibold text-red-600 flex items-center gap-1">
-          <ExclamationTriangleIcon className="h-3 w-3" />
-          High Priority
-        </div>
-      )}
-    </div>
   );
 };
 
-// Donors View Component
-const DonorsView = ({ donors, onGenerateThankYou, onGenerateTaxReceipt, onViewDetails }) => (
-  <div className="space-y-4">
-    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-      <div className="flex items-start gap-2">
-        <HeartIcon className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <h3 className="font-semibold text-purple-900">Your Donor Community</h3>
-          <p className="text-sm text-purple-800">Individual and corporate partners who believe in your mission 💙</p>
-        </div>
-      </div>
-    </div>
-
-    {donors.length === 0 ? (
-      <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-        <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
-        <p className="text-gray-600">No donors yet. Start building relationships!</p>
-      </div>
-    ) : (
-      <div className="bg-white rounded-lg shadow">
-        <div className="table-scroll">
-          <table className="min-w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Donor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Given</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Gift</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"># of Gifts</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {donors.map((donor, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{donor.name}</div>
-                    {donor.organization && <div className="text-xs text-gray-500">{donor.organization}</div>}
-                    {donor.email && (
-                      <a href={`mailto:${donor.email}`} className="text-xs text-primary-600 hover:text-primary-800">
-                        {donor.email}
-                      </a>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-base font-bold text-green-600">
-                    {formatCurrency(donor.totalGiven)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {donor.lastGiftDate ? new Date(donor.lastGiftDate).toLocaleDateString() : '—'}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                    {donor.gifts.length}
-                  </td>
-                  <td className="px-6 py-4 space-x-2">
-                    {donor.gifts[0] && (
-                      <>
-                        <button
-                          onClick={() => onGenerateThankYou(donor.gifts[0])}
-                          className="touch-target px-3 py-1.5 text-xs font-semibold border border-purple-200 text-purple-700 rounded-lg hover:bg-purple-50"
-                          title="Generate thank you letter"
-                        >
-                          Thank You
-                        </button>
-                        <button
-                          onClick={() => onGenerateTaxReceipt(donor.gifts[0])}
-                          className="touch-target px-3 py-1.5 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-50"
-                          title="Generate tax receipt"
-                        >
-                          Tax Receipt
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-  </div>
-);
-
-// Analytics View Component
-const AnalyticsView = ({ opportunities, summary, annualGoal }) => {
-  const byType = {};
-  const byAwardType = { restricted: 0, unrestricted: 0 };
-
-  opportunities.forEach(op => {
-    if (!byType[op.pursuitType]) byType[op.pursuitType] = { count: 0, total: 0 };
-    byType[op.pursuitType].count++;
-    byType[op.pursuitType].total += Number(op.askAmount || op.amountReceived || 0);
-
-    if ((op.stage === 'closed_won' || op.stage === 'stewardship') && op.amountReceived) {
-      if (op.awardType === 'restricted') {
-        byAwardType.restricted += Number(op.amountReceived);
-      } else {
-        byAwardType.unrestricted += Number(op.amountReceived);
-      }
-    }
-  });
-
-  return (
-    <div className="space-y-6">
-      {/* Goal Progress */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Annual Goal Progress</h3>
-        <div className="h-8 bg-gray-200 rounded-full overflow-hidden mb-2">
-          <div
-            className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all"
-            style={{ width: `${Math.min((summary.totalReceived / annualGoal) * 100, 100)}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">{formatCurrency(summary.totalReceived)} raised</span>
-          <span className="text-gray-600">{formatCurrency(annualGoal)} goal</span>
-        </div>
-      </div>
-
-      {/* Restricted vs. Unrestricted */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Type</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="text-sm text-blue-600 mb-1">Restricted</div>
-            <div className="text-2xl font-bold text-blue-700">{formatCurrency(byAwardType.restricted)}</div>
-            <div className="text-xs text-gray-600 mt-1">Specific use only</div>
-          </div>
-          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="text-sm text-green-600 mb-1">Unrestricted</div>
-            <div className="text-2xl font-bold text-green-700">{formatCurrency(byAwardType.unrestricted)}</div>
-            <div className="text-xs text-gray-600 mt-1">Operating support</div>
-          </div>
-        </div>
-      </div>
-
-      {/* By Type */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">By Type</h3>
-        <div className="space-y-3">
-          {Object.entries(byType).map(([type, data]) => (
-            <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <div className="font-medium text-gray-900">
-                  {PURSUIT_TYPES.find(t => t.value === type)?.label || type}
-                </div>
-                <div className="text-xs text-gray-500">{data.count} opportunit{data.count !== 1 ? 'ies' : 'y'}</div>
-              </div>
-              <div className="text-lg font-bold text-gray-900">{formatCurrency(data.total)}</div>
-            </div>
+// Donors View
+const DonorsView = ({ donors, onGenerateThankYou, onGenerateTaxReceipt }) => (
+  <div className="bg-white rounded-lg shadow">
+    <div className="table-scroll">
+      <table className="min-w-full">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Donor</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Given</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Gift</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"># Gifts</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {donors.map((d, i) => (
+            <tr key={i} className="hover:bg-gray-50">
+              <td className="px-6 py-4">
+                <div className="font-medium text-gray-900">{d.name}</div>
+                {d.email && <a href={`mailto:${d.email}`} className="text-xs text-primary-600">{d.email}</a>}
+              </td>
+              <td className="px-6 py-4 text-base font-bold text-green-600">${d.totalGiven?.toLocaleString() || '0'}</td>
+              <td className="px-6 py-4 text-sm">{d.lastGiftDate ? new Date(d.lastGiftDate).toLocaleDateString() : '—'}</td>
+              <td className="px-6 py-4 text-sm font-semibold">{d.gifts?.length || 0}</td>
+              <td className="px-6 py-4 space-x-2">
+                <button onClick={() => onGenerateThankYou(d.gifts?.[0])} className="touch-target px-3 py-1.5 text-xs font-semibold border border-purple-200 text-purple-700 rounded-lg">Thank You</button>
+                <button onClick={() => onGenerateTaxReceipt(d.gifts?.[0])} className="touch-target px-3 py-1.5 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg">Tax Receipt</button>
+              </td>
+            </tr>
           ))}
-        </div>
-      </div>
+        </tbody>
+      </table>
     </div>
-  );
-};
+  </div>
+);
 
-// Add Opportunity Modal Component
-const AddOpportunityModal = ({ newOpportunity, setNewOpportunity, onClose, onCreate, creating }) => (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Add Fundraising Opportunity</h2>
-          <p className="text-sm text-gray-600">Track grants, donors, and sponsors</p>
+// Corporate View
+const CorporateView = ({ sponsors, onViewDetails }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {sponsors.map(s => <OpportunityCard key={s.id} opp={s} onClick={onViewDetails} />)}
+  </div>
+);
+
+// Events View
+const EventsView = ({ events, onViewDetails }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {events.map(e => <OpportunityCard key={e.id} opp={e} onClick={onViewDetails} />)}
+  </div>
+);
+
+const OpportunityCard = ({ opp, onClick }) => (
+  <div onClick={() => onClick(opp)} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+    <div className="font-semibold text-gray-900 mb-1">{opp.name}</div>
+    <div className="text-xs text-gray-600 mb-3">{opp.funderName || opp.contactOrganization || opp.contactName}</div>
+    <div className="text-base font-bold text-primary-600">${opp.askAmount?.toLocaleString() || '0'}</div>
+  </div>
+);
+
+// Add Modal - COMPREHENSIVE FORM
+const AddOpportunityModal = ({ opportunity, setOpportunity, onClose, onCreate }) => {
+  const isGrant = ['foundation_grant', 'corporate_grant', 'government_grant'].includes(opportunity.pursuitType);
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Add Fundraising Opportunity</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded"><XMarkIcon className="h-6 w-6" /></button>
         </div>
-        <button onClick={onClose} className="touch-target p-2 hover:bg-gray-100 rounded-lg">
-          <XMarkIcon className="h-6 w-6 text-gray-400" />
-        </button>
-      </div>
 
-      <div className="space-y-4">
-        {/* Opportunity Name */}
+        {/* Type Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Opportunity Name *</label>
+          <label className="block text-sm font-medium mb-1">Type *</label>
+          <select
+            value={opportunity.pursuitType}
+            onChange={(e) => setOpportunity(prev => ({ ...prev, pursuitType: e.target.value }))}
+            className="w-full px-4 py-2 border rounded-lg"
+          >
+            {PURSUIT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+          </select>
+        </div>
+
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium mb-1">{isGrant ? 'Grant Name' : 'Donor/Sponsor Name'} *</label>
           <input
             type="text"
-            value={newOpportunity.name}
-            onChange={(e) => setNewOpportunity(prev => ({ ...prev, name: e.target.value }))}
-            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            placeholder="e.g., Smith Family Gift, Knight Foundation Grant"
+            value={opportunity.name}
+            onChange={(e) => setOpportunity(prev => ({ ...prev, name: e.target.value }))}
+            className="w-full px-4 py-2 border rounded-lg"
+            placeholder={isGrant ? "Knight Foundation STEM Grant" : "John & Mary Smith"}
           />
         </div>
 
-        {/* Type & Award Type */}
+        {/* Grant-Specific Fields */}
+        {isGrant && (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Funder Name *</label>
+                <input
+                  type="text"
+                  value={opportunity.funderName}
+                  onChange={(e) => setOpportunity(prev => ({ ...prev, funderName: e.target.value }))}
+                  className="w-full px-4 py-2 border rounded-lg"
+                  placeholder="Knight Foundation"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Program Officer</label>
+                <input
+                  type="text"
+                  value={opportunity.programOfficer}
+                  onChange={(e) => setOpportunity(prev => ({ ...prev, programOfficer: e.target.value }))}
+                  className="w-full px-4 py-2 border rounded-lg"
+                  placeholder="Jane Doe"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">LOI Due Date</label>
+                <input type="date" value={opportunity.loiDueDate} onChange={(e) => setOpportunity(prev => ({ ...prev, loiDueDate: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Proposal Due Date</label>
+                <input type="date" value={opportunity.proposalDueDate} onChange={(e) => setOpportunity(prev => ({ ...prev, proposalDueDate: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Eligibility Notes</label>
+              <textarea value={opportunity.eligibilityNotes} onChange={(e) => setOpportunity(prev => ({ ...prev, eligibilityNotes: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" rows={2} placeholder="Requirements, restrictions, focus areas..." />
+            </div>
+          </>
+        )}
+
+        {/* Donor-Specific Fields */}
+        {!isGrant && (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Contact Name *</label>
+                <input type="text" value={opportunity.contactName} onChange={(e) => setOpportunity(prev => ({ ...prev, contactName: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Organization</label>
+                <input type="text" value={opportunity.contactOrganization} onChange={(e) => setOpportunity(prev => ({ ...prev, contactOrganization: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Email</label>
+                <input type="email" value={opportunity.contactEmail} onChange={(e) => setOpportunity(prev => ({ ...prev, contactEmail: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Phone</label>
+                <input type="tel" value={opportunity.contactPhone} onChange={(e) => setOpportunity(prev => ({ ...prev, contactPhone: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Shared Fields */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-            <select
-              value={newOpportunity.pursuitType}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, pursuitType: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              {PURSUIT_TYPES.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
-              ))}
+            <label className="block text-sm font-medium mb-1">Ask Amount</label>
+            <input type="number" value={opportunity.askAmount} onChange={(e) => setOpportunity(prev => ({ ...prev, askAmount: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" placeholder="50000" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Award Type</label>
+            <select value={opportunity.awardType} onChange={(e) => setOpportunity(prev => ({ ...prev, awardType: e.target.value }))} className="w-full px-4 py-2 border rounded-lg">
+              {AWARD_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Award Type</label>
-            <select
-              value={newOpportunity.awardType}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, awardType: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              {AWARD_TYPES.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
-              ))}
-            </select>
-          </div>
         </div>
 
-        {/* Contact Name & Organization */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name *</label>
-            <input
-              type="text"
-              value={newOpportunity.contactName}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactName: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              placeholder="John Smith"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Organization (Optional)</label>
-            <input
-              type="text"
-              value={newOpportunity.contactOrganization}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactOrganization: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              placeholder="Knight Foundation"
-            />
-          </div>
-        </div>
-
-        {/* Contact Email & Phone */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              value={newOpportunity.contactEmail}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactEmail: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              placeholder="contact@email.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-            <input
-              type="tel"
-              value={newOpportunity.contactPhone}
-              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactPhone: e.target.value }))}
-              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-              placeholder="(555) 123-4567"
-            />
-          </div>
-        </div>
-
-        {/* Ask Amount */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Ask Amount</label>
-          <input
-            type="number"
-            value={newOpportunity.askAmount}
-            onChange={(e) => setNewOpportunity(prev => ({ ...prev, askAmount: e.target.value }))}
-            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            placeholder="50000"
-          />
+          <label className="block text-sm font-medium mb-1">Purpose / Use of Funds</label>
+          <textarea value={opportunity.purpose} onChange={(e) => setOpportunity(prev => ({ ...prev, purpose: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" rows={3} placeholder="Playground equipment, scholarships, operating support..." />
         </div>
 
-        {/* Purpose */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Purpose / Use of Funds</label>
-          <textarea
-            value={newOpportunity.purpose}
-            onChange={(e) => setNewOpportunity(prev => ({ ...prev, purpose: e.target.value }))}
-            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            rows={3}
-            placeholder="e.g., Playground equipment, scholarship fund, operating support"
-          />
+          <label className="block text-sm font-medium mb-1">Notes</label>
+          <textarea value={opportunity.notes} onChange={(e) => setOpportunity(prev => ({ ...prev, notes: e.target.value }))} className="w-full px-4 py-2 border rounded-lg" rows={2} />
         </div>
 
-        {/* Notes */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-          <textarea
-            value={newOpportunity.notes}
-            onChange={(e) => setNewOpportunity(prev => ({ ...prev, notes: e.target.value }))}
-            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            rows={2}
-            placeholder="Additional context..."
-          />
+        <div className="flex gap-3 justify-end pt-4 border-t">
+          <button onClick={onClose} className="px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+          <button onClick={onCreate} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">Add to Pipeline</button>
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="mt-6 flex gap-3 justify-end">
-        <button
-          onClick={onClose}
-          className="touch-target px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onCreate}
-          disabled={creating}
-          className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-semibold disabled:opacity-50"
-        >
-          {creating ? 'Adding...' : 'Add to Pipeline'}
-        </button>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-// Opportunity Detail Modal Component
-const OpportunityDetailModal = ({ opportunity, onClose, onStageChange, onGenerateThankYou, onGenerateTaxReceipt }) => {
-  const stage = PURSUIT_STAGES.find(s => s.id === opportunity.stage);
-  const pursuitType = PURSUIT_TYPES.find(t => t.value === opportunity.pursuitType);
-  const isIndividualOrCorporate = ['individual_major', 'individual_annual', 'corporate_sponsor'].includes(opportunity.pursuitType);
+// Detail Modal - COMPREHENSIVE
+const DetailModal = ({ opportunity, onClose, onStageChange, onGenerateThankYou, onGenerateTaxReceipt, onUpdate }) => {
+  const isGrant = ['foundation_grant', 'corporate_grant', 'government_grant'].includes(opportunity.pursuitType);
+  const stages = isGrant ? GRANT_STAGES : DONOR_STAGES;
+  const currentStage = stages.find(s => s.id === opportunity.stage);
+  const isWon = opportunity.stage === 'awarded' || opportunity.stage === 'committed' || opportunity.stage === 'stewarded';
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4 text-white flex items-center justify-between z-10">
           <div>
             <h2 className="text-2xl font-bold">{opportunity.name}</h2>
-            <div className="text-sm text-primary-100 mt-1">{opportunity.contactName}</div>
+            <div className="text-sm text-primary-100 mt-1">{opportunity.funderName || opportunity.contactName}</div>
           </div>
-          <button onClick={onClose} className="touch-target p-2 hover:bg-primary-500 rounded-lg">
-            <XMarkIcon className="h-6 w-6" />
-          </button>
+          <button onClick={onClose} className="p-2 hover:bg-primary-500 rounded"><XMarkIcon className="h-6 w-6" /></button>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-6">
           {/* Current Stage */}
-          <div className={`p-4 rounded-lg border-2 bg-${stage?.color}-50 border-${stage?.color}-200`}>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-semibold text-gray-900">Current Stage: {stage?.name}</span>
-            </div>
-            <div className="text-sm text-gray-700">{stage?.description}</div>
+          <div className={`p-4 rounded-lg border-2 bg-${currentStage?.color}-50 border-${currentStage?.color}-200`}>
+            <div className="font-semibold text-gray-900 mb-1">Stage: {currentStage?.name}</div>
+            <div className="text-sm text-gray-700">{currentStage?.desc}</div>
           </div>
 
-          {/* Thank You & Tax Receipt (For Won Gifts) */}
-          {(opportunity.stage === 'closed_won' || opportunity.stage === 'stewardship') && isIndividualOrCorporate && (
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <h3 className="font-semibold text-purple-900 mb-3">Donor Stewardship</h3>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => onGenerateThankYou(opportunity)}
-                  className="touch-target px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-semibold flex items-center gap-2"
-                >
-                  <EnvelopeIcon className="h-4 w-4" />
-                  Generate Thank You Letter
-                </button>
-                <button
-                  onClick={() => onGenerateTaxReceipt(opportunity)}
-                  className="touch-target px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold flex items-center gap-2"
-                >
-                  <DocumentArrowDownIcon className="h-4 w-4" />
-                  Generate Tax Receipt
-                </button>
+          {/* Grant Details */}
+          {isGrant && (
+            <div className="space-y-4">
+              <h3 className="font-bold text-gray-900">Grant Details</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <DetailField label="Funder" value={opportunity.funderName} />
+                <DetailField label="Program Officer" value={opportunity.programOfficer} />
+                <DetailField label="LOI Due" value={opportunity.loiDueDate} />
+                <DetailField label="Proposal Due" value={opportunity.proposalDueDate} />
+                <DetailField label="Decision Date" value={opportunity.decisionDate} />
+                <DetailField label="Report Due" value={opportunity.reportDueDate} />
               </div>
-              <div className="mt-3 flex gap-4 text-xs">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={opportunity.thankYouSent} readOnly className="rounded" />
-                  <span className="text-gray-700">Thank you sent</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={opportunity.taxReceiptSent} readOnly className="rounded" />
-                  <span className="text-gray-700">Tax receipt sent</span>
-                </label>
+              {opportunity.eligibilityNotes && (
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-1">Eligibility Notes</div>
+                  <div className="text-sm text-gray-700 bg-gray-50 p-3 rounded">{opportunity.eligibilityNotes}</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Donor Contact Details */}
+          {!isGrant && (
+            <div className="space-y-4">
+              <h3 className="font-bold text-gray-900">Contact Information</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <DetailField label="Name" value={opportunity.contactName} />
+                <DetailField label="Organization" value={opportunity.contactOrganization} />
+                <DetailField label="Email" value={opportunity.contactEmail} />
+                <DetailField label="Phone" value={opportunity.contactPhone} />
               </div>
             </div>
           )}
 
-          {/* Key Details */}
-          <div className="grid grid-cols-2 gap-4">
-            <DetailItem label="Type" value={pursuitType?.label} />
-            <DetailItem label="Award Type" value={opportunity.awardType === 'unrestricted' ? 'Unrestricted' : 'Restricted'} />
-            <DetailItem label="Ask Amount" value={formatCurrency(opportunity.askAmount)} />
-            <DetailItem label="Amount Received" value={opportunity.amountReceived ? formatCurrency(opportunity.amountReceived) : '—'} />
-          </div>
-
-          {/* Contact Info */}
-          <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-            <h3 className="font-semibold text-gray-900 mb-3">Contact Information</h3>
-            <div className="space-y-2 text-sm">
-              <div><span className="text-gray-600">Name:</span> <span className="font-medium">{opportunity.contactName}</span></div>
-              {opportunity.contactOrganization && (
-                <div><span className="text-gray-600">Organization:</span> <span className="font-medium">{opportunity.contactOrganization}</span></div>
-              )}
-              {opportunity.contactEmail && (
-                <div className="flex items-center gap-2">
-                  <EnvelopeIcon className="h-4 w-4 text-gray-400" />
-                  <a href={`mailto:${opportunity.contactEmail}`} className="text-primary-600 hover:text-primary-800">
-                    {opportunity.contactEmail}
-                  </a>
-                </div>
-              )}
-              {opportunity.contactPhone && (
-                <div className="flex items-center gap-2">
-                  <PhoneIcon className="h-4 w-4 text-gray-400" />
-                  <a href={`tel:${opportunity.contactPhone}`} className="text-primary-600 hover:text-primary-800">
-                    {opportunity.contactPhone}
-                  </a>
-                </div>
-              )}
-            </div>
+          {/* Financial */}
+          <div className="grid grid-cols-3 gap-4">
+            <DetailField label="Ask Amount" value={`$${opportunity.askAmount?.toLocaleString() || '0'}`} />
+            <DetailField label="Amount Received" value={opportunity.amountReceived ? `$${opportunity.amountReceived.toLocaleString()}` : '—'} />
+            <DetailField label="Award Type" value={opportunity.awardType === 'unrestricted' ? 'Unrestricted' : 'Restricted'} />
           </div>
 
           {/* Purpose */}
           {opportunity.purpose && (
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Purpose / Use of Funds</h3>
-              <p className="text-gray-700">{opportunity.purpose}</p>
+              <div className="text-sm font-medium text-gray-700 mb-1">Purpose / Use of Funds</div>
+              <div className="text-sm text-gray-700">{opportunity.purpose}</div>
             </div>
           )}
 
           {/* Notes */}
           {opportunity.notes && (
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Notes</h3>
-              <p className="text-gray-700 bg-yellow-50 border border-yellow-100 rounded-lg p-4">{opportunity.notes}</p>
+              <div className="text-sm font-medium text-gray-700 mb-1">Notes</div>
+              <div className="text-sm text-gray-700 bg-yellow-50 border border-yellow-100 p-3 rounded">{opportunity.notes}</div>
             </div>
           )}
 
-          {/* Stage Actions */}
+          {/* Thank You & Tax Receipt */}
+          {isWon && !isGrant && (
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+              <h3 className="font-semibold text-purple-900 mb-3">Donor Stewardship</h3>
+              <div className="flex flex-wrap gap-3">
+                <button onClick={() => onGenerateThankYou(opportunity)} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2">
+                  <EnvelopeIcon className="h-4 w-4" />
+                  Generate Thank You
+                </button>
+                <button onClick={() => onGenerateTaxReceipt(opportunity)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <DocumentArrowDownIcon className="h-4 w-4" />
+                  Tax Receipt
+                </button>
+              </div>
+              <div className="mt-3 flex gap-4 text-xs">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={opportunity.thankYouSent} readOnly className="rounded" />
+                  <span>Thank you sent</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" checked={opportunity.taxReceiptSent} readOnly className="rounded" />
+                  <span>Tax receipt sent</span>
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* Stage Movement */}
           <div>
             <h3 className="font-semibold text-gray-900 mb-3">Move to Stage</h3>
             <div className="flex flex-wrap gap-2">
-              {PURSUIT_STAGES.map(s => (
+              {stages.map(s => (
                 <button
                   key={s.id}
-                  onClick={() => {
-                    onStageChange(opportunity, s.id);
-                    onClose();
-                  }}
+                  onClick={() => { onStageChange(opportunity, s.id); onClose(); }}
                   disabled={s.id === opportunity.stage}
-                  className={`touch-target px-3 py-2 rounded-lg text-sm font-semibold transition ${
-                    s.id === opportunity.stage
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : `bg-${s.color}-100 text-${s.color}-700 hover:bg-${s.color}-200`
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold ${
+                    s.id === opportunity.stage ? 'bg-gray-200 text-gray-500' : `bg-${s.color}-100 text-${s.color}-700 hover:bg-${s.color}-200`
                   }`}
                 >
                   {s.name}
@@ -1232,21 +924,15 @@ const OpportunityDetailModal = ({ opportunity, onClose, onStageChange, onGenerat
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="sticky bottom-0 border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-end">
-          <button
-            onClick={onClose}
-            className="touch-target px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-sm font-medium"
-          >
-            Close
-          </button>
+        <div className="border-t px-6 py-4 flex justify-end">
+          <button onClick={onClose} className="px-4 py-2 border rounded-lg hover:bg-gray-50">Close</button>
         </div>
       </div>
     </div>
   );
 };
 
-const DetailItem = ({ label, value }) => (
+const DetailField = ({ label, value }) => (
   <div>
     <div className="text-sm text-gray-600 mb-1">{label}</div>
     <div className="font-medium text-gray-900">{value || '—'}</div>
@@ -1254,3 +940,4 @@ const DetailItem = ({ label, value }) => (
 );
 
 export default FundraisingCRM;
+
