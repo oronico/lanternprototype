@@ -423,41 +423,66 @@ export default function GTDActionCenter() {
 
       {/* Noom-Style Streaks - KEEP THESE! */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm opacity-90">Login Streak</span>
-            <FireIcon className="h-6 w-6" />
-          </div>
-          <div className="text-4xl font-bold mb-1">15</div>
-          <div className="text-sm opacity-90">days in a row! 🔥</div>
-        </div>
+        {[
+          {
+            id: 'login',
+            label: 'Login Streak',
+            value: streaks.dailyLogin || 0,
+            footer: 'days in a row! 🔥',
+            icon: FireIcon,
+            variant: 'accent'
+          },
+          {
+            id: 'actions',
+            label: 'Actions Completed',
+            value: completedToday,
+            footer: 'today! ✅',
+            icon: CheckCircleIcon,
+            variant: 'success'
+          },
+          {
+            id: 'reserve',
+            label: 'Building Reserve',
+            value: FINANCIAL.daysCash,
+            footer: 'days cash 💪',
+            icon: SparklesIcon,
+            variant: 'primary'
+          },
+          {
+            id: 'enrollment',
+            label: 'Enrollment Progress',
+            value: `${ENROLLMENT.goalProgress}%`,
+            footer: 'to goal 🚀',
+            icon: CalendarIcon,
+            variant: 'neutral'
+          }
+        ].map((card) => {
+          const Icon = card.icon;
+          const isNeutral = card.variant === 'neutral';
+          const cardClasses = {
+            accent: 'bg-gradient-to-br from-accent-500 to-accent-600 text-white',
+            success: 'bg-gradient-to-br from-success-600 to-success-700 text-white',
+            primary: 'bg-gradient-to-br from-primary-600 to-primary-700 text-white',
+            neutral: 'bg-white border border-primary-200 text-gray-900 shadow-sm'
+          }[card.variant] || 'bg-white border border-gray-200 text-gray-900';
 
-        <div className="bg-gradient-to-br from-success-600 to-success-700 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm opacity-90">Actions Completed</span>
-            <CheckCircleIcon className="h-6 w-6" />
-          </div>
-          <div className="text-4xl font-bold mb-1">{completedToday}</div>
-          <div className="text-sm opacity-90">today! ✅</div>
-        </div>
-
-        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm opacity-90">Building Reserve</span>
-            <SparklesIcon className="h-6 w-6" />
-          </div>
-          <div className="text-4xl font-bold mb-1">22</div>
-          <div className="text-sm opacity-90">days cash 💪</div>
-        </div>
-
-        <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm opacity-90">Enrollment Progress</span>
-            <CalendarIcon className="h-6 w-6" />
-          </div>
-          <div className="text-4xl font-bold mb-1">69%</div>
-          <div className="text-sm opacity-90">to goal 🚀</div>
-        </div>
+          return (
+            <div key={card.id} className={`${cardClasses} rounded-lg shadow-lg p-6`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={isNeutral ? 'text-sm text-gray-600' : 'text-sm text-white/80'}>
+                  {card.label}
+                </span>
+                <Icon className={`h-6 w-6 ${isNeutral ? 'text-primary-600' : 'text-white/80'}`} />
+              </div>
+              <div className={`text-4xl font-bold mb-1 ${isNeutral ? 'text-primary-600' : 'text-white'}`}>
+                {card.value}
+              </div>
+              <div className={isNeutral ? 'text-sm text-gray-600' : 'text-sm text-white/90'}>
+                {card.footer}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Encouragement Banner */}
