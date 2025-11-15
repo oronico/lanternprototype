@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 /**
- * Student Detail Modal - PowerSchool-inspired
+ * Student Detail Modal - Enterprise SIS
  * 
  * Complete student profile showing:
  * - Demographics & contact info

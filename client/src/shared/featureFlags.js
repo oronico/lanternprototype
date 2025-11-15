@@ -269,7 +269,7 @@ export const featureConfig = {
     enabled: true,
     rollout: 100,
     tier: 'all',
-    description: 'Noom/Duolingo-style streaks, progress bars, and positive nudges',
+    description: 'Habit-building streaks, progress bars, and positive nudges',
   },
   
   [FEATURES.CLASSROOM_ASSIGNMENT]: {

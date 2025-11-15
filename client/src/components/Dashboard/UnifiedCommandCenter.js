@@ -39,7 +39,7 @@ export default function UnifiedCommandCenter() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [activeTab, setActiveTab] = useState('actions'); // actions, nudges, goals, milestones
   
-  // Streaks (Duolingo-style)
+  // Daily habit streaks
   const [streaks, setStreaks] = useState({
     dailyLogin: 15,
     attendanceTaken: 12,

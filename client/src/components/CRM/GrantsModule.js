@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 
 /**
  * Grant Management Module
- * Inspired by Submittable, Fluxx, Foundant
+ * Enterprise-grade grant pipeline tracking
  */
 
 const GRANT_STAGES = [

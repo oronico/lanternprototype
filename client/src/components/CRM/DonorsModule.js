@@ -11,7 +11,7 @@ import {
 
 /**
  * Individual & Corporate Donor Management
- * Inspired by DonorPerfect, Bloomerang
+ * Enterprise-grade donor relationship tracking
  */
 
 export const DonorsModule = ({ donors, onGenerateThankYou, onGenerateTaxReceipt, onAddDonor }) => {

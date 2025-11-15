@@ -10,7 +10,7 @@ import {
  * Coaching Alerts - Positive Reframes
  * 
  * Replaces fear-based alerts with coaching-based encouragement
- * Noom-style positive psychology
+ * Positive psychology coaching approach
  */
 
 export const COACHING_ALERTS = {

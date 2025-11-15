@@ -428,7 +428,7 @@ export default function GTDActionCenter() {
         </div>
       </div>
 
-      {/* Noom-Style Streaks - KEEP THESE! */}
+          {/* Daily Momentum Streaks */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
           {

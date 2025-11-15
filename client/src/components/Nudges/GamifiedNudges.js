@@ -21,7 +21,7 @@ import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 
 /**
- * Gamified Nudge System (Noom/Duolingo Inspired)
+ * Gamified Nudge System (Habit-Building Approach)
  * 
  * Features:
  * - Daily streaks (login, attendance, engagement)
@@ -276,7 +276,7 @@ export default function GamifiedNudges() {
         </div>
       </div>
 
-      {/* Streaks - Duolingo Style! */}
+      {/* Daily Streaks */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
@@ -315,7 +315,7 @@ export default function GamifiedNudges() {
         </div>
       </div>
 
-      {/* Goal Progress - Noom Style! */}
+      {/* Goal Progress Tracking */}
       <div className="mb-8 bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <TrophyIcon className="h-6 w-6 text-yellow-500" />

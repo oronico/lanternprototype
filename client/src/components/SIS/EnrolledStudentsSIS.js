@@ -32,7 +32,7 @@ import Confetti from 'react-confetti';
 /**
  * Comprehensive Student Information System (SIS)
  * 
- * Inspired by PowerSchool with microschool-specific features:
+ * Enterprise-grade student management with microschool-specific features:
  * - Student directory with complete profiles
  * - Daily attendance (mobile-optimized for teachers)
  * - Automated parent notifications for absences
