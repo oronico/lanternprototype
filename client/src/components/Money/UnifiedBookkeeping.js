@@ -97,6 +97,118 @@ const defaultSplitModalState = {
   saving: false
 };
 
+const ChartProgramBuilder = ({
+  chartAccounts,
+  programCodes,
+  newAccountName,
+  setNewAccountName,
+  handleAddChartAccount,
+  newProgramName,
+  setNewProgramName,
+  handleAddProgram
+}) => (
+  <div className="mb-10">
+    <div className="mb-6 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
+      <div className="flex items-start gap-3">
+        <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank’s chart builder</p>
+          <h2 className="text-xl font-bold text-gray-900">Define the backbone once so every transaction falls into place</h2>
+          <p className="text-sm text-gray-600">
+            Hank uses these GL codes and program tags to suggest categories, keep reports lender-ready, and prove you don’t need an outside bookkeeper.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Revenue & expense GL codes</h3>
+            <p className="text-sm text-gray-600">Matches how boards, lenders, and Hank read your statements.</p>
+          </div>
+          <span className="text-xs text-gray-500">{chartAccounts.length} total</span>
+        </div>
+
+        <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+          {chartAccounts.map(account => (
+            <div key={account.id} className="border border-gray-100 rounded-xl p-4">
+              <div className="font-semibold text-gray-900">{account.name}</div>
+              {account.description && (
+                <p className="text-xs text-gray-600 mt-1">{account.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={newAccountName}
+            onChange={(e) => setNewAccountName(e.target.value)}
+            placeholder="Add a GL code (e.g., Transportation)"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 text-sm"
+          />
+          <button
+            onClick={handleAddChartAccount}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
+          >
+            + Add GL code
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Programs & Projects</h3>
+            <p className="text-sm text-gray-600">Tie every dollar to the offerings you actually run.</p>
+          </div>
+          <span className="text-xs text-gray-500">{programCodes.length} programs</span>
+        </div>
+
+        <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+          {programCodes.map(program => (
+            <div key={program.id} className="border border-gray-100 rounded-xl p-4">
+              <div className="font-semibold text-gray-900">{program.name}</div>
+              {program.description && (
+                <p className="text-xs text-gray-600 mt-1">{program.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={newProgramName}
+            onChange={(e) => setNewProgramName(e.target.value)}
+            placeholder="Add a program (e.g., ESA Micro-Pods)"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 text-sm"
+          />
+          <button
+            onClick={handleAddProgram}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
+          >
+            + Add program
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-6 bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-3">Why this matters</h3>
+      <ul className="space-y-2 text-sm text-gray-700">
+        <li>• Revenue accounts map private pay, ESA/voucher, and fundraising dollars per program.</li>
+        <li>• Expense accounts cover facilities, payroll, curriculum, technology, travel, marketing, professional services, insurance, taxes, repairs, improvements, FF&E, meals, and more.</li>
+        <li>• Program codes ensure every GL line can roll up by offering so lenders and boards see which programs make money.</li>
+        <li>• Hank uses this list to auto-suggest categorizations and to prove controls were followed when books close.</li>
+      </ul>
+    </div>
+  </div>
+);
+
 export default function UnifiedBookkeeping() {
   const [activeTab, setActiveTab] = useState('accounts'); // accounts, categorization, sync, settings
   const [accountingMethod, setAccountingMethod] = useState('accrual');
@@ -1047,108 +1159,16 @@ export default function UnifiedBookkeeping() {
         </div>
       )}
 
-      {/* Chart of Accounts & Programs */}
-      <div className="mb-10">
-          <div className="mb-6 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <div className="flex items-start gap-3">
-              <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
-              <div>
-                <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank’s chart builder</p>
-                <h2 className="text-xl font-bold text-gray-900">Define the backbone once so every transaction falls into place</h2>
-                <p className="text-sm text-gray-600">
-                  Hank uses these GL codes and program tags to suggest categories, keep reports lender-ready, and prove you don’t need an outside bookkeeper.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Revenue & expense GL codes</h3>
-                  <p className="text-sm text-gray-600">Matches how boards, lenders, and Hank read your statements.</p>
-                </div>
-                <span className="text-xs text-gray-500">{chartAccounts.length} total</span>
-              </div>
-
-              <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
-                {chartAccounts.map(account => (
-                  <div key={account.id} className="border border-gray-100 rounded-xl p-4">
-                    <div className="font-semibold text-gray-900">{account.name}</div>
-                    {account.description && (
-                      <p className="text-xs text-gray-600 mt-1">{account.description}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                <input
-                  type="text"
-                  value={newAccountName}
-                  onChange={(e) => setNewAccountName(e.target.value)}
-                  placeholder="Add a GL code (e.g., Transportation)"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 text-sm"
-                />
-                <button
-                  onClick={handleAddChartAccount}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
-                >
-                  + Add GL code
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Programs & Projects</h3>
-                  <p className="text-sm text-gray-600">Tie every dollar to the offerings you actually run.</p>
-                </div>
-                <span className="text-xs text-gray-500">{programCodes.length} programs</span>
-              </div>
-
-              <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
-                {programCodes.map(program => (
-                  <div key={program.id} className="border border-gray-100 rounded-xl p-4">
-                    <div className="font-semibold text-gray-900">{program.name}</div>
-                    {program.description && (
-                      <p className="text-xs text-gray-600 mt-1">{program.description}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                <input
-                  type="text"
-                  value={newProgramName}
-                  onChange={(e) => setNewProgramName(e.target.value)}
-                  placeholder="Add a program (e.g., ESA Micro-Pods)"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500	text-sm"
-                />
-                <button
-                  onClick={handleAddProgram}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
-                >
-                  + Add program
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Why this matters</h3>
-            <ul className="space-y-2 text-sm text-gray-700">
-              <li>• Revenue accounts map private pay, ESA/voucher, and fundraising dollars per program.</li>
-              <li>• Expense accounts cover facilities, payroll, curriculum, technology, travel, marketing, professional services, insurance, taxes, repairs, improvements, FF&E, meals, and more.</li>
-              <li>• Program codes ensure every GL line can roll up by offering so lenders and boards see which programs make money.</li>
-              <li>• Hank uses this list to auto-suggest categorizations and to prove controls were followed when books close.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <ChartProgramBuilder
+        chartAccounts={chartAccounts}
+        programCodes={programCodes}
+        newAccountName={newAccountName}
+        setNewAccountName={setNewAccountName}
+        handleAddChartAccount={handleAddChartAccount}
+        newProgramName={newProgramName}
+        setNewProgramName={setNewProgramName}
+        handleAddProgram={handleAddProgram}
+      />
 
       {/* QuickBooks Sync Tab */}
       {activeTab === 'sync' && (
