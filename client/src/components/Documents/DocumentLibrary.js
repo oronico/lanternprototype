@@ -102,8 +102,55 @@ export default function DocumentLibrary() {
       setSchoolName(settings.schoolName || 'Your School');
       setEntityType(localStorage.getItem('entityType') || 'llc-single');
       
-      const docs = JSON.parse(localStorage.getItem('documents') || '[]');
-      setDocuments(docs);
+      const storedDocs = localStorage.getItem('documents');
+      if (storedDocs) {
+        setDocuments(JSON.parse(storedDocs));
+      } else {
+        // Prototype docs to show structure
+        const prototypeDocs = [
+          {
+            id: '1',
+            category: 'Legal & Formation',
+            type: 'Articles of Incorporation',
+            name: 'Articles of Incorporation - Sunshine Microschool',
+            uploadDate: '2024-08-15',
+            expirationDate: null
+          },
+          {
+            id: '2',
+            category: 'Insurance',
+            type: 'General Liability',
+            name: 'General Liability Insurance 2024-2025 State Farm',
+            uploadDate: '2024-09-01',
+            expirationDate: '2025-08-31'
+          },
+          {
+            id: '3',
+            category: 'Facility',
+            type: 'Lease',
+            name: 'Lease Agreement 123 Main St 2024-2027',
+            uploadDate: '2024-08-01',
+            expirationDate: '2027-07-31'
+          },
+          {
+            id: '4',
+            category: 'Tuition Contracts',
+            type: 'Enrollment Contracts (Families)',
+            name: 'Master Enrollment Contract 2024-2025',
+            uploadDate: '2024-07-15',
+            expirationDate: null
+          },
+          {
+            id: '5',
+            category: 'Facility',
+            type: 'Fire Inspection',
+            name: 'Fire Inspection Certificate 2024',
+            uploadDate: '2024-08-10',
+            expirationDate: '2025-08-10'
+          }
+        ];
+        setDocuments(prototypeDocs);
+      }
       
       const archived = JSON.parse(localStorage.getItem('archivedDocuments') || '[]');
       setArchivedDocs(archived);
@@ -285,53 +332,74 @@ export default function DocumentLibrary() {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg shadow border">
-        <table className="min-w-full">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="px-3 py-2"><input type="checkbox" className="rounded" /></th>
-              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Type</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Category</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Document Name</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Uploaded</th>
-              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Expires</th>
-              <th className="px-4 py-2 text-right text-xs font-semibold uppercase whitespace-nowrap">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {documents.length === 0 ? (
-              <tr>
-                <td colSpan="7" className="px-4 py-12 text-center">
-                  <p className="text-gray-600 font-medium mb-2">Start building your document library</p>
-                  <p className="text-sm text-gray-500">Upload: Articles, Tuition Contracts, Liability Insurance first</p>
-                </td>
-              </tr>
-            ) : (
-              documents.map(doc => (
-                <tr key={doc.id} className="hover:bg-gray-50">
-                  <td className="px-3 py-2">
-                    <input type="checkbox" checked={selectedDocs.includes(doc.id)} onChange={() => toggleSelect(doc.id)} className="rounded" />
-                  </td>
-                  <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.type}</td>
-                  <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.category}</td>
-                  <td className="px-4 py-2 text-sm font-medium whitespace-nowrap">{doc.name}</td>
-                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.uploadDate}</td>
-                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.expirationDate || '—'}</td>
-                  <td className="px-4 py-2 text-right whitespace-nowrap">
-                    <div className="inline-flex gap-1">
-                      <button className="p-1 hover:bg-gray-100 rounded"><EyeIcon className="h-4 w-4 text-gray-600" /></button>
-                      <button className="p-1 hover:bg-gray-100 rounded"><ArrowDownTrayIcon className="h-4 w-4 text-gray-600" /></button>
-                      <button onClick={() => handleArchive(doc.id)} className="p-1 hover:bg-gray-100 rounded" title="Archive">
-                        <ArchiveBoxIcon className="h-4 w-4 text-gray-400" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      {/* Documents by Category with Subcategories */}
+      <div className="space-y-4">
+        {visibleCategories.map(([categoryName, config]) => {
+          const categoryDocs = documents.filter(d => d.category === categoryName);
+          
+          return (
+            <div key={categoryName} className="bg-white rounded-lg shadow border">
+              {/* Category Header */}
+              <div className="px-6 py-3 bg-gray-50 border-b flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-gray-900">{categoryName}</h3>
+                  <p className="text-xs text-gray-600 mt-0.5">
+                    {config.items.slice(0, 5).join(', ')}{config.items.length > 5 && '...'}
+                  </p>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {categoryDocs.length} document{categoryDocs.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+
+              {/* Documents in Category */}
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-3 py-2"><input type="checkbox" className="rounded" /></th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Type</th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Document Name</th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Uploaded</th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Expires</th>
+                      <th className="px-4 py-2 text-right text-xs font-semibold uppercase whitespace-nowrap">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {categoryDocs.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="px-4 py-6 text-center text-sm text-gray-500">
+                          No documents yet. Common types: {config.items.slice(0, 3).join(', ')}
+                        </td>
+                      </tr>
+                    ) : (
+                      categoryDocs.map(doc => (
+                        <tr key={doc.id} className="hover:bg-gray-50">
+                          <td className="px-3 py-2">
+                            <input type="checkbox" checked={selectedDocs.includes(doc.id)} onChange={() => toggleSelect(doc.id)} className="rounded" />
+                          </td>
+                          <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.type}</td>
+                          <td className="px-4 py-2 text-sm font-medium whitespace-nowrap">{doc.name}</td>
+                          <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.uploadDate}</td>
+                          <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.expirationDate || '—'}</td>
+                          <td className="px-4 py-2 text-right whitespace-nowrap">
+                            <div className="inline-flex gap-1">
+                              <button className="p-1 hover:bg-gray-100 rounded"><EyeIcon className="h-4 w-4 text-gray-600" /></button>
+                              <button className="p-1 hover:bg-gray-100 rounded"><ArrowDownTrayIcon className="h-4 w-4 text-gray-600" /></button>
+                              <button onClick={() => handleArchive(doc.id)} className="p-1 hover:bg-gray-100 rounded" title="Archive">
+                                <ArchiveBoxIcon className="h-4 w-4 text-gray-400" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Archived Documents */}
