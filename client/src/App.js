@@ -60,6 +60,7 @@ import EnrolledStudentsSIS from './components/SIS/EnrolledStudentsSIS';
 import BoardManagement from './components/Governance/BoardManagement';
 import YearEndFinancials from './components/Reports/YearEndFinancials';
 import DocumentLibrary from './components/Documents/DocumentLibrary';
+import ComprehensiveDocumentLibrary from './components/Documents/ComprehensiveDocumentLibrary';
 import ComprehensiveMetrics from './components/Reports/ComprehensiveMetrics';
 import BusinessHealthDashboard from './components/Reports/BusinessHealthDashboard';
 import FinancialsLanding from './components/Money/FinancialsLanding';
@@ -179,7 +180,8 @@ function AppContent() {
               <Route path="/tax" element={<TaxFilingManager />} />
               <Route path="/reports/bank-ready-archived" element={<BankReadyReports />} />
               <Route path="/reports/year-end" element={<YearEndFinancials />} />
-              <Route path="/documents" element={<DocumentLibrary />} />
+              <Route path="/documents" element={<ComprehensiveDocumentLibrary />} />
+              <Route path="/documents/old" element={<DocumentLibrary />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/metrics" element={<ComprehensiveMetrics />} />

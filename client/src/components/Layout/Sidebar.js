@@ -112,11 +112,7 @@ const navigationGroups = [
     name: 'Documents',
     icon: FolderIcon,
     href: '/documents',
-    color: 'yellow',
-    subItems: [
-      { name: 'Document Library', href: '/documents' },
-      { name: 'Upload Documents', href: '/documents?action=upload' }
-    ]
+    color: 'yellow'
   },
   {
     id: 'facility',
