@@ -219,6 +219,7 @@ export default function SimpleDashboard() {
       </div>
 
       <HealthOverview categories={healthCategories} />
+      <DetailedMetrics />
 
       {/* Coaching Alerts - Gamified! */}
       {FINANCIAL.daysCash < 30 && (
@@ -382,4 +383,71 @@ const HealthCategoryCard = ({ category }) => {
     </div>
   );
 };
+
+const detailedMetricsConfig = [
+  {
+    title: 'Students & Enrollment',
+    icon: UserGroupIcon,
+    accent: 'from-blue-50 to-indigo-50',
+    border: 'border-blue-100',
+    cards: [
+      { label: 'Enrolled', value: `${ENROLLMENT.current}`, sub: `of ${ENROLLMENT.target} goal`, tone: 'text-blue-600' },
+      { label: 'Capacity', value: `${ENROLLMENT.utilization}%`, sub: `${ENROLLMENT.current}/${ENROLLMENT.capacity}`, tone: 'text-gray-900' },
+      { label: 'Attendance', value: `${ATTENDANCE.ytdRate}%`, sub: 'YTD average', tone: 'text-green-600' },
+      { label: 'Retention', value: `${ENROLLMENT.retentionRate}%`, sub: 'students returned', tone: 'text-purple-600' }
+    ]
+  },
+  {
+    title: 'Money & Finance',
+    icon: BanknotesIcon,
+    accent: 'from-green-50 to-emerald-50',
+    border: 'border-green-100',
+    cards: [
+      { label: 'Operating Cash', value: `$${(FINANCIAL.operatingCash / 1000).toFixed(1)}k`, sub: `${FINANCIAL.daysCash} days`, tone: 'text-green-600' },
+      { label: 'Monthly Revenue', value: `$${(FINANCIAL.monthlyRevenue / 1000).toFixed(1)}k`, sub: 'tuition income', tone: 'text-gray-900' },
+      { label: 'Monthly Expenses', value: `$${(FINANCIAL.monthlyExpenses / 1000).toFixed(1)}k`, sub: 'total costs', tone: 'text-gray-900' },
+      { label: 'Net Income', value: `$${(FINANCIAL.netIncome / 1000).toFixed(1)}k`, sub: `${FINANCIAL.profitMargin}% margin`, tone: 'text-green-600' }
+    ]
+  },
+  {
+    title: 'Operations & Compliance',
+    icon: BuildingOfficeIcon,
+    accent: 'from-indigo-50 to-purple-50',
+    border: 'border-indigo-100',
+    cards: [
+      { label: 'Contracts Signed', value: `${OPERATIONS.contractCoverage}%`, sub: `${ENROLLMENT.current - OPERATIONS.missingContracts}/${ENROLLMENT.current}`, tone: 'text-indigo-600' },
+      { label: 'On-Time Payments', value: `${OPERATIONS.onTimePayment}%`, sub: 'families current', tone: 'text-green-600' },
+      { label: 'Staff Count', value: `${STAFF.total}`, sub: `${STAFF.w2Employees} W-2 / ${STAFF.contractors1099} 1099`, tone: 'text-orange-600' },
+      { label: 'Facility Burden', value: `${Math.round(FACILITY.facilityBurden * 100)}%`, sub: 'of revenue', tone: 'text-orange-600' }
+    ]
+  }
+];
+
+const DetailedMetrics = () => (
+  <section className="mb-10 space-y-8">
+    <h3 className="text-xl font-bold text-gray-900">Your School at a Glance</h3>
+    {detailedMetricsConfig.map(section => (
+      <div
+        key={section.title}
+        className={`bg-gradient-to-br ${section.accent} rounded-2xl p-6 border ${section.border}`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-white shadow rounded-lg">
+            <section.icon className="h-6 w-6 text-gray-700" />
+          </div>
+          <h4 className="text-lg font-bold text-gray-900">{section.title}</h4>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {section.cards.map(card => (
+            <div key={card.label} className="bg-white rounded-lg shadow p-4">
+              <div className="text-xs text-gray-600 mb-1">{card.label}</div>
+              <div className={`text-2xl font-bold ${card.tone}`}>{card.value}</div>
+              <div className="text-xs text-gray-500">{card.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+);
 
