@@ -21,6 +21,11 @@ export { STUDENTS_DATA as DEMO_STUDENTS, PROGRAMS_DATA as PROGRAMS, TEACHERS_DAT
 
 // Calculate from actual student data
 const enrollmentMetrics = calculateEnrollmentMetrics(STUDENTS_DATA);
+const totalStudents = STUDENTS_DATA.length;
+const specialNeedsCount = STUDENTS_DATA.filter(student => student.health?.specialNeeds).length;
+const frlCount = STUDENTS_DATA.filter(student => student.health?.freeReducedLunch).length;
+const specialNeedsPercent = Math.round((specialNeedsCount / totalStudents) * 100);
+const frlPercent = Math.round((frlCount / totalStudents) * 100);
 
 // ENROLLMENT METRICS (Used everywhere)
 export const ENROLLMENT = {
@@ -41,7 +46,9 @@ export const ENROLLMENT = {
   ytdGrowth: 12, // +12% this year
   monthlyGrowth: 2, // +2 students this month
   retentionRate: 92, // 92% of students returned this year
-  attritionRate: 8 // 8% left
+  attritionRate: 8, // 8% left
+  specialEducationPercent: specialNeedsPercent,
+  freeReducedLunchPercent: frlPercent
 };
 
 // ATTENDANCE METRICS (Calculated from students)
@@ -64,15 +71,29 @@ export const ATTENDANCE = {
   ]
 };
 
+const OPERATING_CASH = 14200;
+const SAVINGS_CASH = 8500;
+const TOTAL_CASH = OPERATING_CASH + SAVINGS_CASH;
+const MONTHLY_REVENUE = 19774;
+const MONTHLY_EXPENSES = 17650;
+const NET_INCOME = 2124;
+const PROFIT_MARGIN = 11;
+const DEBT_PAYMENTS = 1850;
+const DSCR = 1.15;
+const BUDGETED_REVENUE = 20800;
+const BUDGET_VARIANCE = MONTHLY_REVENUE - BUDGETED_REVENUE;
+const BUDGET_VARIANCE_PERCENT = Math.round((BUDGET_VARIANCE / BUDGETED_REVENUE) * 100);
+const revenuePerStudent = Math.round(MONTHLY_REVENUE / ENROLLMENT.current);
+
 // FINANCIAL METRICS (Master numbers)
 export const FINANCIAL = {
   // Accounting Method (Most schools use cash basis)
   accountingMethod: 'cash', // 'cash' or 'accrual'
   
   // Cash Position
-  operatingCash: 14200, // Checking account (operating funds)
-  savingsCash: 8500, // Savings account (reserve)
-  totalCash: 22700, // Total = operating + savings
+  operatingCash: OPERATING_CASH, // Checking account (operating funds)
+  savingsCash: SAVINGS_CASH, // Savings account (reserve)
+  totalCash: TOTAL_CASH, // Total = operating + savings
   daysCash: 22, // Days of operating expenses covered
   cashGoal: 30,
   cashReserveProgress: 73, // 22/30 = 73%
@@ -85,19 +106,22 @@ export const FINANCIAL = {
   idealSavingsTarget: 105900, // 6 months (17650 × 6)
   
   // Monthly P&L (Cash Basis - revenue when received, expenses when paid)
-  monthlyRevenue: 19774, // Sum of all student tuition RECEIVED
-  monthlyExpenses: 17650, // Expenses PAID this month
-  netIncome: 2124,
-  profitMargin: 11, // 2124/19774 = 11%
+  monthlyRevenue: MONTHLY_REVENUE, // Sum of all student tuition RECEIVED
+  monthlyExpenses: MONTHLY_EXPENSES, // Expenses PAID this month
+  monthlyBreakEven: MONTHLY_EXPENSES,
+  netIncome: NET_INCOME,
+  profitMargin: PROFIT_MARGIN, // 2124/19774 = 11%
+  revenuePerStudent,
   
   // Debt Service Coverage Ratio (DSCR)
-  debtPayments: 1850, // Monthly debt service (if any)
-  dscr: 1.15, // (Net Income + Debt Payments) / Debt Payments = (2124+1850)/1850 = 2.15 (simplified for demo)
+  debtPayments: DEBT_PAYMENTS, // Monthly debt service (if any)
+  dscr: DSCR, // (Net Income + Debt Payments) / Debt Payments
+  mads: DEBT_PAYMENTS * 12,
   
   // Budget Variance
-  budgetedRevenue: 20800,
-  budgetVariance: -1026, // 19774 - 20800 = -1026 (under budget)
-  budgetVariancePercent: -5, // -1026/20800 = -5%
+  budgetedRevenue: BUDGETED_REVENUE,
+  budgetVariance: BUDGET_VARIANCE,
+  budgetVariancePercent: BUDGET_VARIANCE_PERCENT,
   
   // Revenue Detail
   tuitionRevenue: 19774,
@@ -164,6 +188,7 @@ export const FACILITY = {
   costPerSqFt: 28.13,
   marketRate: 22,
   aboveMarket: true,
+  leaseExpiration: '2026-07-31',
   
   // Facility Occupancy
   squareFootage: 1600,

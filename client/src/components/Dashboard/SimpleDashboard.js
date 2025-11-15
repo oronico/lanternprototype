@@ -21,6 +21,9 @@ import { CoachingAlert } from '../Gamification/CoachingAlerts';
  * No loading states, no conditionals, just works
  */
 
+const formatCurrency = (value) =>
+  value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
 const getStatus = (value, goodThreshold, warningThreshold, invert = false) => {
   if (invert) {
     if (value <= goodThreshold) return 'good';
@@ -163,6 +166,45 @@ export default function SimpleDashboard() {
         </div>
       </div>
 
+      <HealthOverview categories={healthCategories} />
+      <QuickStatSection
+        title="Student Snapshot"
+        description="Enrollment health indicators pulled directly from your SIS."
+        cards={[
+          { label: 'Current Enrollment', value: `${ENROLLMENT.current} students`, sublabel: `Goal ${ENROLLMENT.target}` },
+          { label: 'Enrollment to Goal', value: `${ENROLLMENT.goalProgress}%`, sublabel: 'Including pending offers' },
+          { label: 'Attrition Rate', value: `${ENROLLMENT.attritionRate}%`, sublabel: 'Students who left this year' },
+          { label: 'Retention Rate', value: `${ENROLLMENT.retentionRate}%`, sublabel: 'Students returning' },
+          { label: 'Daily Attendance', value: `${ATTENDANCE.todayRate}%`, sublabel: 'Today’s check-ins' },
+          { label: 'Students with IEP/SpEd', value: `${ENROLLMENT.specialEducationPercent}%`, sublabel: 'Require accommodations' },
+          { label: 'Free & Reduced Lunch', value: `${ENROLLMENT.freeReducedLunchPercent}%`, sublabel: 'Need financial support' }
+        ]}
+      />
+      <QuickStatSection
+        title="Financial Pulse"
+        description="Cash runway, break-even, and debt coverage in one glance."
+        cards={[
+          { label: 'Operating Cash', value: formatCurrency(FINANCIAL.operatingCash), sublabel: 'Checking balance' },
+          { label: 'Days Cash on Hand', value: `${FINANCIAL.daysCash} days`, sublabel: 'Goal 30+' },
+          { label: 'Monthly Break Even', value: formatCurrency(FINANCIAL.monthlyBreakEven), sublabel: 'Expenses to cover' },
+          { label: 'Revenue Needed per Student', value: formatCurrency(FINANCIAL.revenuePerStudent), sublabel: `${ENROLLMENT.current} enrolled` },
+          { label: 'Savings Balance', value: formatCurrency(FINANCIAL.savingsCash), sublabel: `${FINANCIAL.savingsProgress}% of reserve goal` },
+          { label: 'DSCR', value: `${FINANCIAL.dscr}x`, sublabel: 'Debt coverage ratio' },
+          { label: 'MADS', value: formatCurrency(FINANCIAL.mads), sublabel: 'Max annual debt service' }
+        ]}
+      />
+      <QuickStatSection
+        title="Facility & Operations"
+        description="Facilities cost profile and capacity in one place."
+        cards={[
+          { label: 'Monthly Facility Cost', value: formatCurrency(FACILITY.totalMonthlyCost), sublabel: 'Lease + operations' },
+          { label: 'Rent to Revenue', value: `${Math.round(FACILITY.rentToRevenue * 100)}%`, sublabel: 'Target ≤ 20%' },
+          { label: 'Capacity Utilization', value: `${FACILITY.facilityCapacityUtilization}%`, sublabel: 'Students vs. space' },
+          { label: 'Lease Expiration', value: FACILITY.leaseExpiration, sublabel: 'Plan renewals early' }
+        ]}
+      />
+      <DetailedMetrics />
+
       {/* Savings Builder - Gamified Encouragement */}
       <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start">
@@ -217,9 +259,6 @@ export default function SimpleDashboard() {
           </div>
         </div>
       </div>
-
-      <HealthOverview categories={healthCategories} />
-      <DetailedMetrics />
 
       {/* Coaching Alerts - Gamified! */}
       {FINANCIAL.daysCash < 30 && (
@@ -383,6 +422,24 @@ const HealthCategoryCard = ({ category }) => {
     </div>
   );
 };
+
+const QuickStatSection = ({ title, description, cards }) => (
+  <section className="mb-10">
+    <div className="mb-4">
+      <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+      {description && <p className="text-sm text-gray-600">{description}</p>}
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      {cards.map(card => (
+        <div key={card.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">{card.label}</p>
+          <p className="text-2xl font-semibold text-gray-900">{card.value}</p>
+          {card.sublabel && <p className="text-xs text-gray-500 mt-1">{card.sublabel}</p>}
+        </div>
+      ))}
+    </div>
+  </section>
+);
 
 const detailedMetricsConfig = [
   {
