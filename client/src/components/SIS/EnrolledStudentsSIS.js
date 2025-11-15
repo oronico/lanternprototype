@@ -25,6 +25,7 @@ import { analytics } from '../../shared/analytics';
 import { DEMO_STUDENTS, ENROLLMENT, ATTENDANCE } from '../../data/centralizedMetrics';
 import ComprehensiveAddStudent from './ComprehensiveAddStudent';
 import StudentDetailModal from './StudentDetailModal';
+import StudentSnapshot from './StudentSnapshot';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 
@@ -53,6 +54,7 @@ export default function EnrolledStudentsSIS() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showStudentDetail, setShowStudentDetail] = useState(false);
+  const [showStudentSnapshot, setShowStudentSnapshot] = useState(false);
   
   // Attendance states
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -270,7 +272,7 @@ export default function EnrolledStudentsSIS() {
 
   const viewStudentDetails = (student) => {
     setSelectedStudent(student);
-    setShowStudentDetail(true);
+    setShowStudentSnapshot(true);
   };
 
   const handleAddStudent = (newStudent) => {
@@ -458,12 +460,23 @@ export default function EnrolledStudentsSIS() {
         onAdd={handleAddStudent}
       />
 
-      {/* Student Detail Modal */}
+      {/* Student Detail Modal (Old) */}
       {showStudentDetail && selectedStudent && (
         <StudentDetailModal
           student={selectedStudent}
           onClose={() => {
             setShowStudentDetail(false);
+            setSelectedStudent(null);
+          }}
+        />
+      )}
+
+      {/* Student Snapshot (PowerSchool-Style) */}
+      {showStudentSnapshot && selectedStudent && (
+        <StudentSnapshot
+          student={selectedStudent}
+          onClose={() => {
+            setShowStudentSnapshot(false);
             setSelectedStudent(null);
           }}
         />
