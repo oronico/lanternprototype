@@ -253,7 +253,7 @@ export default function UnifiedBookkeeping() {
         </div>
       </div>
 
-      {/* AI Bookkeeper Coach */}
+      {/* Hank - AI Bookkeeper Coach */}
       <section className="mb-10 bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center mb-4">
           <div className="flex items-center gap-3">
@@ -261,18 +261,18 @@ export default function UnifiedBookkeeping() {
               <SparklesIcon className="h-6 w-6 text-primary-600" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">AI Bookkeeper</p>
-              <h2 className="text-xl font-bold text-gray-900">Your Noom-style coach for closing the books</h2>
+              <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Meet Hank, your AI bookkeeper</p>
+              <h2 className="text-xl font-bold text-gray-900">Hank guides, coaches, and closes books like a controller</h2>
               <p className="text-sm text-gray-600">
-                Why it matters: clean books unlock loans, board trust, and stress-free audits.
+                Why it matters: clean books unlock loans, board trust, and stress-free audits—Hank enforces the same controls a CPA would.
               </p>
             </div>
           </div>
           <button
-            onClick={() => toast.success('AI Bookkeeper is monitoring all transactions.')}
+            onClick={() => toast.success('Hank is reviewing every transaction right now.')}
             className="px-4 py-2 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700"
           >
-            Ask AI what to do next
+            Ask Hank what to do next
           </button>
         </div>
 
