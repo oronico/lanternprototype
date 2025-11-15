@@ -38,11 +38,16 @@
 - **Usage:** Can be emoji (🏮) or custom designed icon
 
 ### **Color Palette:**
-- **Primary:** Purple (#7c3aed) - Innovation, wisdom, education
-- **Secondary:** Blue (#3b82f6) - Trust, stability, intelligence  
-- **Accent:** Green (#10b981) - Growth, success, positive outcomes
-- **Warning:** Yellow (#f59e0b) - Attention, optimization opportunities
+- **Primary:** Teal (#0A5F6F) - Professional, trustworthy, serious yet warm
+- **Accent:** Orange (#F59E0B) - Energy, warmth, approachability
+- **Success:** Green (#22c55e) - Growth, positive outcomes, on-track status
+- **Warning:** Amber (#f59e0b) - Attention, needs work
 - **Critical:** Red (#ef4444) - Urgent action needed
+
+**Design Principles:**
+- No pastels—use rich, saturated colors for professional, scannable UI
+- Serious and warm, not childish or playful
+- Easy to scan with clear visual hierarchy
 
 ### **Typography:**
 - **Headers:** Bold, modern sans-serif (Inter, Poppins)

@@ -93,21 +93,35 @@ const navigationGroups = [
     name: 'Reports',
     icon: ChartBarIcon,
     href: '/tax',
-    color: 'indigo'
+    color: 'indigo',
+    subItems: [
+      { name: 'Tax Filings', href: '/tax' },
+      { name: 'Year-End Financials', href: '/reports/year-end', badge: 'Pro' },
+      { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' }
+    ]
   },
   {
     id: 'documents',
     name: 'Documents',
     icon: FolderIcon,
     href: '/documents',
-    color: 'yellow'
+    color: 'yellow',
+    subItems: [
+      { name: 'Document Library', href: '/documents' },
+      { name: 'Upload Documents', href: '/documents?action=upload' }
+    ]
   },
   {
     id: 'facility',
     name: 'Facility',
     icon: BuildingOfficeIcon,
     href: '/facility',
-    color: 'orange'
+    color: 'orange',
+    subItems: [
+      { name: 'Facility Management', href: '/facility', badge: 'Pro' },
+      { name: 'Lease Analyzer', href: '/lease' },
+      { name: 'Upload Lease (OCR)', href: '/lease/upload', badge: 'New' }
+    ]
   },
   {
     id: 'people',

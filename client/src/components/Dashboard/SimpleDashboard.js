@@ -278,10 +278,6 @@ export default function SimpleDashboard() {
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
       <CoachGreeting />
-      <HealthScoreCard score={FINANCIAL.healthScore} />
-      <CategoryScorecard categories={healthCategories} />
-      <MovesThatMatter expanded={movesExpanded} onToggle={() => setMovesExpanded(!movesExpanded)} />
-      {nudges.length > 0 && <CoachingNudges nudges={nudges} />}
       <DailyMomentum
         streaks={streaks}
         dailyWins={dailyWins}
@@ -289,6 +285,10 @@ export default function SimpleDashboard() {
         winsProgress={winsProgress}
         onLogWin={handleLogWin}
       />
+      <HealthScoreCard score={FINANCIAL.healthScore} />
+      <CategoryScorecard categories={healthCategories} />
+      <MovesThatMatter expanded={movesExpanded} onToggle={() => setMovesExpanded(!movesExpanded)} />
+      {nudges.length > 0 && <CoachingNudges nudges={nudges} />}
     </div>
   );
 }
