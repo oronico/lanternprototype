@@ -73,6 +73,14 @@ const navigationGroups = [
     ]
   },
   {
+    id: 'fundraising',
+    name: 'Fundraising',
+    icon: CurrencyDollarIcon,
+    href: '/crm/fundraising',
+    color: 'red',
+    badge: '501c3 Only'
+  },
+  {
     id: 'students',
     name: 'Students',
     icon: UserGroupIcon,
@@ -83,14 +91,6 @@ const navigationGroups = [
       { name: 'Daily Attendance', href: '/attendance/daily' },
       { name: 'Recruitment Pipeline', href: '/crm/recruitment' }
     ]
-  },
-  {
-    id: 'fundraising',
-    name: 'Fundraising',
-    icon: CurrencyDollarIcon,
-    href: '/crm/fundraising',
-    color: 'red',
-    badge: '501c3 Only'
   },
   {
     id: 'reports',

@@ -10,45 +10,117 @@ import {
   ArrowTrendingUpIcon,
   SparklesIcon,
   DocumentTextIcon,
-  BanknotesIcon
+  BanknotesIcon,
+  ClockIcon,
+  ExclamationTriangleIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  ChartBarIcon,
+  EyeIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import { fundraisingAPI } from '../../services/api';
 
+/**
+ * Best-in-Class Fundraising CRM for Microschools
+ * 
+ * Inspired by: Submittable, Fluxx, Blackbaud Grantmaking, Foundant, Salesforce NPSP
+ * 
+ * Features:
+ * - Grant Discovery & Research Database
+ * - Grant Pipeline Management (Research → Applied → Awarded → Reported)
+ * - Deadline Tracking & Reminders
+ * - Ask Amount vs. Awarded Amount Tracking
+ * - Restricted vs. Unrestricted Revenue
+ * - Contact Management (Program Officers, Foundation Reps)
+ * - Document Library (LOIs, Proposals, Reports)
+ * - Win/Loss Analysis
+ * - Annual Goal Tracking with Weighted Forecast
+ * - Reporting Requirements & Compliance
+ */
+
+// Enhanced pipeline stages inspired by Submittable + Fluxx
 const PIPELINE_STAGES = [
-  { id: 'prospect', name: 'Prospects', description: 'Research + alignment', color: 'blue' },
-  { id: 'nurture', name: 'Nurture', description: 'Relationship building', color: 'indigo' },
-  { id: 'pursue', name: 'Pursue', description: 'Preparing proposal / cultivation', color: 'purple' },
-  { id: 'apply', name: 'Apply / Ask', description: 'Request submitted / event live', color: 'amber' },
-  { id: 'closed_won', name: 'Closed Won', description: 'Funding secured', color: 'green' },
-  { id: 'closed_lost', name: 'Closed Lost', description: 'Not awarded', color: 'red' }
+  { id: 'research', name: 'Research', description: 'Grant discovery & eligibility check', color: 'gray', icon: MagnifyingGlassIcon },
+  { id: 'qualify', name: 'Qualify', description: 'Mission aligned, building relationship', color: 'blue', icon: CheckCircleIcon },
+  { id: 'loi', name: 'LOI Submitted', description: 'Letter of Intent submitted', color: 'indigo', icon: DocumentTextIcon },
+  { id: 'invited', name: 'Invited to Apply', description: 'Full proposal invited', color: 'purple', icon: SparklesIcon },
+  { id: 'in_progress', name: 'In Progress', description: 'Preparing full application', color: 'yellow', icon: PencilIcon },
+  { id: 'submitted', name: 'Submitted', description: 'Application submitted, awaiting decision', color: 'amber', icon: ClockIcon },
+  { id: 'awarded', name: 'Awarded', description: 'Grant secured!', color: 'green', icon: TrophyIcon },
+  { id: 'declined', name: 'Declined', description: 'Not funded this cycle', color: 'red', icon: XMarkIcon },
+  { id: 'reported', name: 'Reported', description: 'Final report submitted', color: 'teal', icon: CheckCircleIcon }
 ];
 
+// Win probability weights (for forecast calculation)
 const STAGE_WEIGHTS = {
-  prospect: 0.15,
-  nurture: 0.3,
-  pursue: 0.45,
-  apply: 0.65,
-  closed_won: 1,
-  closed_lost: 0
+  research: 0.05,
+  qualify: 0.15,
+  loi: 0.25,
+  invited: 0.50,
+  in_progress: 0.65,
+  submitted: 0.75,
+  awarded: 1.00,
+  declined: 0,
+  reported: 1.00
 };
+
+const GRANT_TYPES = [
+  { value: 'foundation', label: 'Foundation Grant' },
+  { value: 'corporate', label: 'Corporate Grant' },
+  { value: 'government', label: 'Government Grant' },
+  { value: 'individual', label: 'Major Gift (Individual)' },
+  { value: 'event', label: 'Fundraising Event' },
+  { value: 'campaign', label: 'Annual Campaign' }
+];
+
+const AWARD_TYPES = [
+  { value: 'restricted', label: 'Restricted (Specific Use)', help: 'e.g., playground equipment, scholarships' },
+  { value: 'unrestricted', label: 'Unrestricted (Operating)', help: 'Can be used for any school needs' }
+];
 
 const EMPTY_FORM = {
   name: '',
-  organizationType: 'foundation',
-  pursuitType: 'grant',
+  grantType: 'foundation',
   awardType: 'restricted',
-  eventName: '',
-  stage: 'prospect',
+  stage: 'research',
   askAmount: '',
   amountAwarded: '',
+  
+  // Foundation/Funder Info
+  funderName: '',
+  funderWebsite: '',
+  funderType: 'private',
+  
+  // Contact Info (Program Officer)
   contactName: '',
-  contactOrganization: '',
+  contactTitle: '',
   contactEmail: '',
   contactPhone: '',
-  nextStep: '',
-  dueDate: '',
-  notes: ''
+  
+  // Timeline
+  discoveryDate: new Date().toISOString().split('T')[0],
+  loiDueDate: '',
+  proposalDueDate: '',
+  decisionDate: '',
+  reportDueDate: '',
+  
+  // Application Details
+  eligibilityMatch: true,
+  typicalRange: '',
+  restrictions: '',
+  purpose: '',
+  
+  // Internal Tracking
+  leadStaffMember: '',
+  priority: 'medium',
+  notes: '',
+  nextAction: '',
+  
+  // Reporting
+  reportingFrequency: 'annual',
+  metricsRequired: []
 };
 
 const DEFAULT_SUMMARY = {
@@ -57,7 +129,10 @@ const DEFAULT_SUMMARY = {
   securedUnrestricted: 0,
   pipelineTotal: 0,
   weightedForecast: 0,
-  winRate: 0
+  winRate: 0,
+  averageGrantSize: 0,
+  totalAsked: 0,
+  totalAwarded: 0
 };
 
 const formatCurrency = (value) => {
@@ -74,24 +149,21 @@ const parseDate = (value) => {
 const daysUntil = (value) => {
   const date = parseDate(value);
   if (!date) return null;
-  return Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-};
-
-const daysSince = (value) => {
-  const date = parseDate(value);
-  if (!date) return null;
-  return Math.ceil((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+  const days = Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  return days;
 };
 
 const FundraisingCRM = () => {
   const [entityType, setEntityType] = useState('llc-single');
+  const [view, setView] = useState('pipeline'); // pipeline, grants, contacts, reports
   const [annualGoal, setAnnualGoal] = useState(0);
   const [opportunities, setOpportunities] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [bookkeepingSync, setBookkeepingSync] = useState([]);
   const [summary, setSummary] = useState(DEFAULT_SUMMARY);
   const [selectedStageFilter, setSelectedStageFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedGrant, setSelectedGrant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [goalDirty, setGoalDirty] = useState(false);
   const [savingGoal, setSavingGoal] = useState(false);
@@ -111,7 +183,6 @@ const FundraisingCRM = () => {
     } else {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entityType]);
 
   const loadFundraisingData = async () => {
@@ -120,8 +191,6 @@ const FundraisingCRM = () => {
       const { data } = await fundraisingAPI.getOpportunities();
       setAnnualGoal(data.annualGoal ?? data.summary?.annualGoal ?? 0);
       setOpportunities(data.opportunities || []);
-      setDocuments(data.documents || []);
-      setBookkeepingSync(data.bookkeepingSync || []);
       setSummary(data.summary || DEFAULT_SUMMARY);
     } catch (error) {
       console.error(error);
@@ -132,200 +201,102 @@ const FundraisingCRM = () => {
     }
   };
 
-  const upsertOpportunity = (updatedOpportunity, nextSummary) => {
-    setOpportunities((prev) => {
-      const index = prev.findIndex((op) => op.id === updatedOpportunity.id);
-      if (index === -1) return [updatedOpportunity, ...prev];
-      const clone = [...prev];
-      clone[index] = updatedOpportunity;
-      return clone;
-    });
-    if (nextSummary) {
-      setSummary(nextSummary);
+  const handleSaveGoal = async () => {
+    try {
+      setSavingGoal(true);
+      await fundraisingAPI.updateGoal(annualGoal);
+      setGoalDirty(false);
+      toast.success('Annual goal updated');
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to save goal');
+    } finally {
+      setSavingGoal(false);
+    }
+  };
+
+  const handleCreateOpportunity = async () => {
+    if (!newOpportunity.name || !newOpportunity.funderName) {
+      toast.error('Please fill in grant name and funder');
+      return;
+    }
+
+    try {
+      setCreatingOpportunity(true);
+      const { data } = await fundraisingAPI.createOpportunity(newOpportunity);
+      setOpportunities(prev => [data.opportunity, ...prev]);
+      setSummary(data.summary);
+      setShowAddModal(false);
+      setNewOpportunity(EMPTY_FORM);
+      toast.success('Grant added to pipeline');
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to create grant');
+    } finally {
+      setCreatingOpportunity(false);
     }
   };
 
   const handleStageChange = async (opportunity, nextStage) => {
     try {
       const updates = { stage: nextStage };
-      if (nextStage === 'closed_won' && !opportunity.amountAwarded) {
-        updates.amountAwarded = opportunity.askAmount;
-      }
       const { data } = await fundraisingAPI.updateOpportunity(opportunity.id, updates);
-      upsertOpportunity(data.opportunity, data.summary);
-      toast.success(`Moved to ${PIPELINE_STAGES.find((s) => s.id === nextStage)?.name || nextStage}`);
+      setOpportunities(prev => prev.map(op => op.id === opportunity.id ? data.opportunity : op));
+      setSummary(data.summary);
+      toast.success(`Moved to ${PIPELINE_STAGES.find(s => s.id === nextStage)?.name}`);
     } catch (error) {
       console.error(error);
       toast.error('Unable to update stage');
     }
   };
 
-  const handleAmountAwardedChange = async (opportunity, value) => {
-    try {
-      const amountAwarded = Number(value) || 0;
-      const { data } = await fundraisingAPI.updateOpportunity(opportunity.id, { amountAwarded });
-      upsertOpportunity(data.opportunity, data.summary);
-    } catch (error) {
-      console.error(error);
-      toast.error('Unable to update award amount');
-    }
+  const viewGrantDetails = (grant) => {
+    setSelectedGrant(grant);
+    setShowDetailModal(true);
   };
 
-  const handleNewOpportunityChange = (field, value) => {
-    setNewOpportunity((prev) => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleAddOpportunity = async (e) => {
-    e.preventDefault();
-    const payload = {
-      name: newOpportunity.name,
-      organizationType: newOpportunity.organizationType,
-      pursuitType: newOpportunity.pursuitType,
-      awardType: newOpportunity.awardType,
-      eventName: newOpportunity.pursuitType === 'event' ? newOpportunity.eventName : '',
-      stage: newOpportunity.stage,
-      askAmount: Number(newOpportunity.askAmount) || 0,
-      amountAwarded:
-        newOpportunity.stage === 'closed_won'
-          ? Number(newOpportunity.amountAwarded || newOpportunity.askAmount || 0)
-          : 0,
-      contact: {
-        name: newOpportunity.contactName,
-        organization: newOpportunity.contactOrganization,
-        email: newOpportunity.contactEmail,
-        phone: newOpportunity.contactPhone
-      },
-      nextStep: newOpportunity.nextStep || 'Define next action',
-      dueDate: newOpportunity.dueDate || '',
-      notes: newOpportunity.notes
-    };
-
-    try {
-      setCreatingOpportunity(true);
-      const { data } = await fundraisingAPI.createOpportunity(payload);
-      setOpportunities((prev) => [data.opportunity, ...prev]);
-      if (data.summary) setSummary(data.summary);
-      toast.success('Opportunity added');
-      setShowAddModal(false);
-      setNewOpportunity(EMPTY_FORM);
-    } catch (error) {
-      console.error(error);
-      toast.error('Unable to add opportunity');
-    } finally {
-      setCreatingOpportunity(false);
-    }
-  };
-
-  const handleGoalBlur = async () => {
-    if (!goalDirty) return;
-    try {
-      setSavingGoal(true);
-      const { data } = await fundraisingAPI.updateGoal(annualGoal);
-      if (data.summary) setSummary(data.summary);
-      toast.success('Goal updated');
-    } catch (error) {
-      console.error(error);
-      toast.error('Unable to update goal');
-    } finally {
-      setSavingGoal(false);
-      setGoalDirty(false);
-    }
-  };
-
-  const filteredContacts = useMemo(() => {
-    const unique = new Map();
-    opportunities.forEach((op) => {
-      if (!op.contact?.email) return;
-      unique.set(op.contact.email, {
-        name: op.contact.name,
-        organization: op.contact.organization,
-        email: op.contact.email,
-        phone: op.contact.phone,
-        lastTouch: op.lastTouch,
-        stage: op.stage,
-        pursuitType: op.pursuitType
-      });
+  // Filtered and searched opportunities
+  const filteredOpportunities = useMemo(() => {
+    return opportunities.filter(op => {
+      const matchesStage = selectedStageFilter === 'all' || op.stage === selectedStageFilter;
+      const matchesSearch = !searchTerm || 
+        op.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        op.funderName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (op.purpose && op.purpose.toLowerCase().includes(searchTerm.toLowerCase()));
+      return matchesStage && matchesSearch;
     });
-    return Array.from(unique.values());
-  }, [opportunities]);
+  }, [opportunities, selectedStageFilter, searchTerm]);
 
-  const stageBuckets = useMemo(() => {
-    return PIPELINE_STAGES.reduce((acc, stage) => {
-      acc[stage.id] = opportunities.filter((op) => op.stage === stage.id);
-      return acc;
-    }, {});
-  }, [opportunities]);
-
-  const wonTotal = useMemo(
-    () =>
-      opportunities
-        .filter((op) => op.stage === 'closed_won')
-        .reduce((sum, op) => sum + (op.amountAwarded || 0), 0),
-    [opportunities]
-  );
-
-  const restrictedTotal = summary?.securedRestricted ?? opportunities
-    .filter((op) => op.stage === 'closed_won' && op.awardType === 'restricted')
-    .reduce((sum, op) => sum + (op.amountAwarded || 0), 0);
-
-  const unrestrictedTotal = summary?.securedUnrestricted ?? Math.max(wonTotal - restrictedTotal, 0);
-
-  const weightedForecast = summary?.weightedForecast ?? opportunities.reduce((sum, op) => {
-    const weight = STAGE_WEIGHTS[op.stage] ?? 0;
-    return sum + (op.askAmount || 0) * weight;
-  }, 0);
-
-  const documentsNeedingAction = useMemo(
-    () => documents.filter((doc) => doc.status && doc.status !== 'stored'),
-    [documents]
-  );
-
-  const bookkeepingReady = useMemo(
-    () => bookkeepingSync.filter((entry) => entry.status !== 'synced'),
-    [bookkeepingSync]
-  );
-
-  const automationQueue = useMemo(() => {
-    const upcoming = opportunities.filter((op) => {
-      if (!op.dueDate) return false;
-      const days = daysUntil(op.dueDate);
-      return days !== null && days >= 0 && days <= 7 && !['closed_won', 'closed_lost'].includes(op.stage);
+  // Organize by stage for Kanban view
+  const opportunitiesByStage = useMemo(() => {
+    const result = {};
+    PIPELINE_STAGES.forEach(stage => {
+      result[stage.id] = filteredOpportunities.filter(op => op.stage === stage.id);
     });
-    const stale = opportunities.filter((op) => {
-      const age = daysSince(op.lastTouch);
-      return age !== null && age >= 21 && !['closed_won', 'closed_lost'].includes(op.stage);
-    });
-    const merged = [...upcoming, ...stale];
-    const unique = [];
-    const seen = new Set();
-    merged.forEach((item) => {
-      if (!seen.has(item.id)) {
-        unique.push(item);
-        seen.add(item.id);
+    return result;
+  }, [filteredOpportunities]);
+
+  // Calculate upcoming deadlines
+  const upcomingDeadlines = useMemo(() => {
+    const deadlines = [];
+    opportunities.forEach(op => {
+      if (op.loiDueDate) {
+        deadlines.push({ grant: op, type: 'LOI', date: op.loiDueDate, label: 'LOI Due' });
+      }
+      if (op.proposalDueDate) {
+        deadlines.push({ grant: op, type: 'Proposal', date: op.proposalDueDate, label: 'Proposal Due' });
+      }
+      if (op.reportDueDate && op.stage === 'awarded') {
+        deadlines.push({ grant: op, type: 'Report', date: op.reportDueDate, label: 'Report Due' });
       }
     });
-    return unique.slice(0, 4);
+    return deadlines
+      .filter(d => parseDate(d.date))
+      .sort((a, b) => parseDate(a.date) - parseDate(b.date))
+      .slice(0, 10); // Top 10 upcoming
   }, [opportunities]);
 
-  const handleReminderAction = (opportunity, action) => {
-    toast.success(`${action} queued for ${opportunity.name}`);
-  };
-
-  const handleDocumentAction = (doc) => {
-    if (doc.url) {
-      window.open(doc.url, '_blank', 'noopener,noreferrer');
-    } else {
-      toast('Attach the award letter or IRS form from your files.');
-    }
-  };
-
-  const handleBookkeepingSync = (entry) => {
-    toast.success(`Marked ${entry.description} for QuickBooks sync`);
-  };
-
+  // Non-profit check
   if (entityType !== '501c3') {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -333,9 +304,9 @@ const FundraisingCRM = () => {
           <div className="flex items-start gap-4">
             <SparklesIcon className="h-10 w-10 text-yellow-600" />
             <div>
-              <h2 className="text-2xl font-bold text-yellow-900 mb-2">Fundraising is unlocked for 501(c)(3) schools</h2>
+              <h2 className="text-2xl font-bold text-yellow-900 mb-2">Fundraising workspace is for 501(c)(3) schools</h2>
               <p className="text-sm text-yellow-800 mb-4">
-                Grants, donor tracking, and audit-ready revenue workflows display automatically when your entity type is set to nonprofit.
+                Grant management, foundation tracking, and donor relationships unlock automatically when your entity type is set to nonprofit.
               </p>
               <button
                 onClick={() => { window.location.href = '/settings'; }}
@@ -350,650 +321,903 @@ const FundraisingCRM = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow p-8 text-center">
-          <div className="animate-spin mx-auto h-8 w-8 border-2 border-primary-300 border-t-purple-600 rounded-full mb-4"></div>
-          <p className="text-sm text-gray-600">Loading fundraising workspace…</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <UserGroupIcon className="h-10 w-10 text-primary-600" />
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Fundraising</h1>
-            <p className="text-sm text-gray-600">
-              Manage donors, grants, events, and audit-ready revenue from one mobile workspace.
-            </p>
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center space-x-3">
+            <TrophyIcon className="h-8 w-8 text-primary-600" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Fundraising & Grants</h1>
+              <p className="text-gray-600">Grant pipeline, foundation relationships, and compliance tracking</p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-wrap gap-3">
+          
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 shadow-sm"
+            className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2 shadow-sm"
           >
-            <PlusIcon className="h-4 w-4 mr-2" />
-            New Opportunity
-          </button>
-          <button
-            onClick={loadFundraisingData}
-            className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50"
-          >
-            Refresh Data
+            <PlusIcon className="h-5 w-5" />
+            Add Grant
           </button>
         </div>
       </div>
 
-      {/* Goal tracker */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+      {/* Annual Goal & Key Metrics */}
+      <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Annual Goal - Editable */}
         <div className="bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl p-6 shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm text-white/80">Annual Goal</p>
-              <h3 className="text-3xl font-bold">{formatCurrency(annualGoal)}</h3>
-            </div>
-            <ArrowTrendingUpIcon className="h-10 w-10 text-white/70" />
+          <div className="flex items-center gap-2 mb-2">
+            <ArrowTrendingUpIcon className="h-5 w-5 text-primary-100" />
+            <span className="text-sm text-primary-100">Annual Goal</span>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span>Secured</span>
-              <span className="font-semibold">{formatCurrency(wonTotal)}</span>
-            </div>
-            <div className="w-full bg-white/30 rounded-full h-2.5">
-              <div
-                className="bg-white rounded-full h-2.5"
-                style={{ width: `${annualGoal ? Math.min((wonTotal / annualGoal) * 100, 100) : 0}%` }}
-              />
-            </div>
-            <div className="text-xs text-white/70">
-              {annualGoal ? ((wonTotal / annualGoal) * 100).toFixed(1) : 0}% to goal • {formatCurrency(Math.max(annualGoal - wonTotal, 0))} remaining
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-sm text-gray-500">Update goal</p>
-              <h3 className="text-lg font-semibold text-gray-900">Leader-set target</h3>
-            </div>
-            <TrophyIcon className="h-8 w-8 text-amber-500" />
-          </div>
-          <div className="space-y-2">
-            <label className="text-xs text-gray-500 uppercase tracking-wider">Annual fundraising goal</label>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xs text-primary-100">$</span>
             <input
               type="number"
-              min="0"
               value={annualGoal}
               onChange={(e) => {
-                setAnnualGoal(Number(e.target.value) || 0);
+                setAnnualGoal(Number(e.target.value));
                 setGoalDirty(true);
               }}
-              onBlur={handleGoalBlur}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="bg-transparent text-3xl font-bold text-white border-none focus:outline-none focus:ring-0 w-full"
+              placeholder="0"
             />
-            <p className="text-xs text-gray-500 flex items-center gap-2">
-              {savingGoal ? 'Saving…' : 'Adjust anytime. Progress updates instantly.'}
-            </p>
           </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow p-6">
-          <p className="text-sm text-gray-500 mb-2">Award type mix</p>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900">{formatCurrency(restrictedTotal)}</h3>
-              <p className="text-xs text-gray-500">Restricted awards</p>
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900">{formatCurrency(unrestrictedTotal)}</h3>
-              <p className="text-xs text-gray-500">Unrestricted awards</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-xs">
-            <div className="p-3 rounded-lg bg-green-50 border border-green-100">
-              <p className="text-green-600 font-semibold">Restricted</p>
-              <p className="text-gray-600 mt-1">Audit-ready, tied to program delivery.</p>
-            </div>
-            <div className="p-3 rounded-lg bg-blue-50 border border-primary-200">
-              <p className="text-blue-600 font-semibold">Unrestricted</p>
-              <p className="text-gray-600 mt-1">Flexible ops + cash runway.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-sm text-gray-500">Weighted forecast</p>
-              <h3 className="text-2xl font-bold text-gray-900">{formatCurrency(weightedForecast)}</h3>
-            </div>
-            <ArrowTrendingUpIcon className="h-8 w-8 text-emerald-500" />
-          </div>
-          <p className="text-xs text-gray-600">
-            Pipeline weighted by stage probability. Perfect for board updates and cash runway planning.
-          </p>
-        </div>
-      </div>
-
-      {/* Stage filter */}
-      <div className="flex flex-wrap gap-3 mb-6">
-        <button
-          onClick={() => setSelectedStageFilter('all')}
-          className={`px-4 py-2 rounded-full text-sm font-medium border ${
-            selectedStageFilter === 'all'
-              ? 'bg-primary-600 text-white border-purple-600'
-              : 'text-gray-600 border-gray-200 hover:border-purple-300 hover:text-primary-600'
-          }`}
-        >
-          All Opportunities ({opportunities.length})
-        </button>
-        {PIPELINE_STAGES.map((stage) => (
-          <button
-            key={stage.id}
-            onClick={() => setSelectedStageFilter(stage.id)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${
-              selectedStageFilter === stage.id
-                ? `bg-${stage.color}-600 text-white border-${stage.color}-600`
-                : 'text-gray-500 border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            {stage.name}
-            <span className="ml-1">
-              ({stageBuckets[stage.id]?.length || 0})
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Pipeline board */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-        {PIPELINE_STAGES.map((stage) => {
-          const items = stageBuckets[stage.id] || [];
-          if (selectedStageFilter !== 'all' && selectedStageFilter !== stage.id) {
-            return null;
-          }
-          return (
-            <div key={stage.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900">{stage.name}</h4>
-                  <p className="text-xs text-gray-500">{stage.description}</p>
-                </div>
-                <span className="text-xs font-semibold text-gray-500">{items.length}</span>
-              </div>
-              <div className="space-y-3 flex-1 overflow-auto">
-                {items.length === 0 && (
-                  <div className="text-sm text-gray-500 bg-gray-50 rounded-xl p-4 text-center">
-                    No records in this stage yet.
-                  </div>
-                )}
-                {items.map((opportunity) => (
-                  <div key={opportunity.id} className="border border-gray-200 rounded-xl p-4 shadow-xs">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h5 className="text-base font-semibold text-gray-900">{opportunity.name}</h5>
-                        <p className="text-xs text-gray-500 capitalize flex items-center gap-1">
-                          <BuildingOfficeIcon className="h-4 w-4 text-gray-400" />
-                          {opportunity.organizationType}
-                        </p>
-                      </div>
-                      <select
-                        value={opportunity.stage}
-                        onChange={(e) => handleStageChange(opportunity, e.target.value)}
-                        className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:ring-2 focus:ring-purple-500"
-                      >
-                        {PIPELINE_STAGES.map((option) => (
-                          <option key={option.id} value={option.id}>
-                            {option.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                      <span className="px-2 py-1 rounded-full bg-primary-50 text-primary-700 font-semibold">
-                        Ask: {formatCurrency(opportunity.askAmount)}
-                      </span>
-                      <span className={`px-2 py-1 rounded-full bg-${opportunity.pursuitType === 'event' ? 'amber' : 'blue'}-50 text-${opportunity.pursuitType === 'event' ? 'amber' : 'blue'}-700 capitalize`}>
-                        {opportunity.pursuitType}
-                        {opportunity.pursuitType === 'event' && opportunity.eventName ? ` · ${opportunity.eventName}` : ''}
-                      </span>
-                      <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 capitalize">
-                        {opportunity.awardType}
-                      </span>
-                    </div>
-                    {opportunity.stage === 'closed_won' && (
-                      <div className="mt-3 text-sm text-green-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div className="flex items-center gap-1">
-                          <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                          Awarded {formatCurrency(opportunity.amountAwarded)}
-                        </div>
-                        <input
-                          type="number"
-                          min="0"
-                          value={opportunity.amountAwarded ?? ''}
-                          onChange={(e) => handleAmountAwardedChange(opportunity, e.target.value)}
-                          className="w-full sm:w-32 px-2 py-1 text-xs border border-success-300 rounded-md focus:ring-1 focus:ring-green-500"
-                          placeholder="Update amount"
-                        />
-                      </div>
-                    )}
-                    {opportunity.stage === 'closed_lost' && (
-                      <div className="mt-3 text-xs text-red-600">
-                        Outcome recorded. Capture feedback in notes for next cycle.
-                      </div>
-                    )}
-                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4 text-gray-400" />
-                        Due {opportunity.dueDate || 'TBD'}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <ArrowTrendingUpIcon className="h-4 w-4 text-gray-400" />
-                        Next: {opportunity.nextStep || 'Define action'}
-                      </div>
-                    </div>
-                    <div className="mt-3 text-xs text-gray-500">
-                      Relationship owner: <span className="font-semibold">{opportunity.contact?.name}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Automation & Finance */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Automation & reminders</h3>
-            <SparklesIcon className="h-6 w-6 text-primary-500" />
-          </div>
-          {automationQueue.length === 0 ? (
-            <p className="text-sm text-gray-500">All prospects are on schedule. Great job!</p>
-          ) : (
-            <div className="space-y-3">
-              {automationQueue.map((item) => {
-                const dueIn = daysUntil(item.dueDate);
-                const lastTouch = daysSince(item.lastTouch);
-                return (
-                  <div key={item.id} className="border border-gray-200 rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{item.name}</p>
-                        <p className="text-xs text-gray-500">{item.contact?.name} • {item.organizationType}</p>
-                      </div>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600 capitalize">
-                        {item.stage.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <div className="mt-3 text-xs text-gray-600 flex flex-wrap gap-4">
-                      {dueIn !== null && (
-                        <span className={dueIn < 0 ? 'text-red-600' : 'text-gray-700'}>
-                          {dueIn < 0 ? `${Math.abs(dueIn)} days overdue` : `Due in ${dueIn} days`}
-                        </span>
-                      )}
-                      {lastTouch !== null && <span>Last touch {lastTouch} days ago</span>}
-                    </div>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <button
-                        onClick={() => handleReminderAction(item, 'Email')}
-                        className="px-3 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50"
-                      >
-                        Send Email
-                      </button>
-                      <button
-                        onClick={() => handleReminderAction(item, 'Call')}
-                        className="px-3 py-1 text-xs border border-gray-200 rounded-lg hover:bg-gray-50"
-                      >
-                        Schedule Call
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          {goalDirty && (
+            <button
+              onClick={handleSaveGoal}
+              disabled={savingGoal}
+              className="mt-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold"
+            >
+              {savingGoal ? 'Saving...' : 'Save Goal'}
+            </button>
           )}
+          <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-white rounded-full transition-all"
+              style={{ width: `${Math.min((summary.totalAwarded / annualGoal) * 100, 100)}%` }}
+            />
+          </div>
+          <div className="mt-2 text-xs text-primary-100">
+            {formatCurrency(summary.totalAwarded)} secured ({annualGoal > 0 ? Math.round((summary.totalAwarded / annualGoal) * 100) : 0}%)
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Finance sync & forecasts</h3>
-            <BanknotesIcon className="h-6 w-6 text-emerald-500" />
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-gray-500">Ready to sync</p>
-            <p className="text-2xl font-bold text-gray-900">{formatCurrency(
-              bookkeepingReady.reduce((sum, entry) => sum + (entry.amount || 0), 0)
-            )}</p>
-            <p className="text-xs text-gray-500">{bookkeepingReady.length} entries mapped to GL accounts</p>
-          </div>
-          <div className="space-y-3 max-h-72 overflow-auto">
-            {bookkeepingReady.length === 0 && (
-              <p className="text-sm text-gray-500">All gift revenue is synced to QuickBooks.</p>
-            )}
-            {bookkeepingReady.map((entry) => (
-              <div key={entry.id} className="border border-gray-100 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">{entry.description}</p>
-                  <p className="text-xs text-gray-500">{entry.account}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-gray-900">{formatCurrency(entry.amount)}</span>
-                  <button
-                    onClick={() => handleBookkeepingSync(entry)}
-                    className="px-3 py-1 text-xs text-white bg-emerald-600 rounded-lg hover:bg-emerald-700"
-                  >
-                    Sync
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Secured (Awarded) */}
+        <MetricCard
+          icon={TrophyIcon}
+          label="Awarded YTD"
+          value={formatCurrency(summary.totalAwarded)}
+          subtitle={`${opportunities.filter(o => o.stage === 'awarded').length} grants`}
+          color="green"
+        />
+
+        {/* Weighted Forecast */}
+        <MetricCard
+          icon={ChartBarIcon}
+          label="Forecast"
+          value={formatCurrency(summary.weightedForecast)}
+          subtitle="Weighted pipeline"
+          color="blue"
+        />
+
+        {/* In Pipeline */}
+        <MetricCard
+          icon={ClockIcon}
+          label="In Pipeline"
+          value={formatCurrency(summary.pipelineTotal)}
+          subtitle={`${opportunities.filter(o => !['awarded', 'declined', 'reported'].includes(o.stage)).length} active`}
+          color="yellow"
+        />
+
+        {/* Win Rate */}
+        <MetricCard
+          icon={CheckCircleIcon}
+          label="Win Rate"
+          value={`${summary.winRate || 0}%`}
+          subtitle={`Avg grant: ${formatCurrency(summary.averageGrantSize)}`}
+          color="purple"
+        />
       </div>
 
-      {/* Documents & contacts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Award documents & compliance</h3>
-            <DocumentTextIcon className="h-6 w-6 text-blue-500" />
-          </div>
-          <div className="table-scroll">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-gray-500 uppercase border-b">
-                  <th className="py-2">Document</th>
-                  <th className="py-2">Type</th>
-                  <th className="py-2">Status</th>
-                  <th className="py-2 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {documents.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className="py-6 text-center text-sm text-gray-500">
-                      No fundraising documents uploaded yet.
-                    </td>
-                  </tr>
-                )}
-                {documents.map((doc) => (
-                  <tr key={doc.id}>
-                    <td className="py-2">
-                      <p className="font-medium text-gray-900">{doc.name}</p>
-                      <p className="text-xs text-gray-500">Linked to {doc.opportunityId}</p>
-                    </td>
-                    <td className="py-2 text-xs capitalize">{doc.type?.replace('_', ' ')}</td>
-                    <td className="py-2">
-                      <span className={`px-2 py-0.5 rounded-full text-xs ${
-                        doc.status === 'stored'
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : doc.status === 'awaiting_upload'
-                            ? 'bg-red-50 text-red-700'
-                            : 'bg-amber-50 text-amber-700'
-                      }`}>
-                        {doc.status.replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="py-2 text-right">
-                      <button
-                        onClick={() => handleDocumentAction(doc)}
-                        className="text-xs text-blue-600 hover:text-blue-800"
-                      >
-                        {doc.url ? 'Open' : 'Upload'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Relationship contacts</h3>
-            <UserGroupIcon className="h-6 w-6 text-primary-600" />
-          </div>
-          <div className="table-scroll">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-gray-500 uppercase border-b">
-                  <th className="py-2">Contact</th>
-                  <th className="py-2">Org / Type</th>
-                  <th className="py-2">Email</th>
-                  <th className="py-2">Phone</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {filteredContacts.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className="py-6 text-center text-sm text-gray-500">
-                      Add opportunities to populate your contact roll-up.
-                    </td>
-                  </tr>
-                )}
-                {filteredContacts.map((contact) => (
-                  <tr key={contact.email}>
-                    <td className="py-2">
-                      <p className="font-medium text-gray-900">{contact.name}</p>
-                      <p className="text-xs text-gray-500">{contact.stage.replace('_', ' ')}</p>
-                    </td>
-                    <td className="py-2 text-xs text-gray-600">{contact.organization}</td>
-                    <td className="py-2 text-xs text-primary-600">{contact.email}</td>
-                    <td className="py-2 text-xs text-gray-600">{contact.phone}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* View Tabs */}
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          <ViewTab active={view === 'pipeline'} onClick={() => setView('pipeline')} label="Pipeline View" />
+          <ViewTab active={view === 'grants'} onClick={() => setView('grants')} label="All Grants" />
+          <ViewTab active={view === 'deadlines'} onClick={() => setView('deadlines')} label="Deadlines" badge={upcomingDeadlines.length} />
+          <ViewTab active={view === 'reports'} onClick={() => setView('reports')} label="Analytics" />
+        </nav>
       </div>
 
-      {/* Modal */}
+      {/* Pipeline Kanban View */}
+      {view === 'pipeline' && (
+        <PipelineKanbanView
+          opportunitiesByStage={opportunitiesByStage}
+          onStageChange={handleStageChange}
+          onViewDetails={viewGrantDetails}
+        />
+      )}
+
+      {/* All Grants Table View */}
+      {view === 'grants' && (
+        <GrantsTableView
+          opportunities={filteredOpportunities}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedStageFilter={selectedStageFilter}
+          setSelectedStageFilter={setSelectedStageFilter}
+          onViewDetails={viewGrantDetails}
+        />
+      )}
+
+      {/* Deadlines View */}
+      {view === 'deadlines' && (
+        <DeadlinesView upcomingDeadlines={upcomingDeadlines} onViewDetails={viewGrantDetails} />
+      )}
+
+      {/* Analytics View */}
+      {view === 'reports' && (
+        <AnalyticsView opportunities={opportunities} summary={summary} annualGoal={annualGoal} />
+      )}
+
+      {/* Add Grant Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">Add fundraising opportunity</h3>
-                <p className="text-xs text-gray-500">Each field maps directly to finance and audit requirements.</p>
+        <AddGrantModal
+          newOpportunity={newOpportunity}
+          setNewOpportunity={setNewOpportunity}
+          onClose={() => {
+            setShowAddModal(false);
+            setNewOpportunity(EMPTY_FORM);
+          }}
+          onCreate={handleCreateOpportunity}
+          creating={creatingOpportunity}
+        />
+      )}
+
+      {/* Grant Detail Modal */}
+      {showDetailModal && selectedGrant && (
+        <GrantDetailModal
+          grant={selectedGrant}
+          onClose={() => {
+            setShowDetailModal(false);
+            setSelectedGrant(null);
+          }}
+          onStageChange={handleStageChange}
+        />
+      )}
+    </div>
+  );
+};
+
+// View Tab Component
+const ViewTab = ({ active, onClick, label, badge }) => (
+  <button
+    onClick={onClick}
+    className={`touch-target py-4 px-1 border-b-2 font-medium text-sm ${
+      active
+        ? 'border-primary-500 text-primary-600'
+        : 'border-transparent text-gray-500 hover:text-gray-700'
+    }`}
+  >
+    {label}
+    {badge !== undefined && badge > 0 && (
+      <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-800 rounded-full text-xs font-bold">
+        {badge}
+      </span>
+    )}
+  </button>
+);
+
+// Metric Card Component
+const MetricCard = ({ icon: Icon, label, value, subtitle, color }) => {
+  const colorClasses = {
+    green: 'bg-green-50 border-green-200 text-green-700',
+    blue: 'bg-blue-50 border-blue-200 text-blue-700',
+    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
+    purple: 'bg-purple-50 border-purple-200 text-purple-700'
+  };
+
+  const iconColorClasses = {
+    green: 'text-green-600',
+    blue: 'text-blue-600',
+    yellow: 'text-yellow-600',
+    purple: 'text-purple-600'
+  };
+
+  return (
+    <div className={`rounded-2xl border-2 p-6 ${colorClasses[color]}`}>
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`h-5 w-5 ${iconColorClasses[color]}`} />
+        <span className="text-xs font-medium">{label}</span>
+      </div>
+      <div className="text-2xl font-bold text-gray-900">{value}</div>
+      <div className="text-xs text-gray-600 mt-1">{subtitle}</div>
+    </div>
+  );
+};
+
+// Pipeline Kanban View Component
+const PipelineKanbanView = ({ opportunitiesByStage, onStageChange, onViewDetails }) => (
+  <div className="overflow-x-auto pb-4">
+    <div className="inline-flex gap-4 min-w-full">
+      {PIPELINE_STAGES.map(stage => {
+        const grants = opportunitiesByStage[stage.id] || [];
+        const total = grants.reduce((sum, g) => sum + (Number(g.askAmount) || 0), 0);
+        const StageIcon = stage.icon;
+
+        return (
+          <div key={stage.id} className="flex-shrink-0 w-80">
+            <div className={`bg-${stage.color}-50 border-2 border-${stage.color}-200 rounded-t-xl p-4`}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <StageIcon className={`h-5 w-5 text-${stage.color}-600`} />
+                  <h3 className="font-semibold text-gray-900">{stage.name}</h3>
+                </div>
+                <span className="text-sm font-bold text-gray-600">{grants.length}</span>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
-                <XMarkIcon className="h-6 w-6" />
-              </button>
+              <div className="text-xs text-gray-600">{stage.description}</div>
+              <div className="text-xs font-semibold text-gray-900 mt-2">
+                Total: {formatCurrency(total)}
+              </div>
             </div>
-            <form onSubmit={handleAddOpportunity} className="px-6 py-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Opportunity name</label>
-                  <input
-                    type="text"
-                    value={newOpportunity.name}
-                    onChange={(e) => handleNewOpportunityChange('name', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                    required
+
+            <div className="bg-gray-50 border-l-2 border-r-2 border-b-2 border-gray-200 rounded-b-xl p-3 space-y-3 min-h-[200px] max-h-[600px] overflow-y-auto">
+              {grants.length === 0 ? (
+                <div className="text-center py-8 text-gray-400 text-sm">
+                  No grants in this stage
+                </div>
+              ) : (
+                grants.map(grant => (
+                  <GrantCard
+                    key={grant.id}
+                    grant={grant}
+                    stage={stage}
+                    onViewDetails={onViewDetails}
+                    onStageChange={onStageChange}
                   />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Organization type</label>
-                  <select
-                    value={newOpportunity.organizationType}
-                    onChange={(e) => handleNewOpportunityChange('organizationType', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="individual">Individual</option>
-                    <option value="foundation">Foundation</option>
-                    <option value="corporation">Corporation</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Pursuit type</label>
-                  <select
-                    value={newOpportunity.pursuitType}
-                    onChange={(e) => handleNewOpportunityChange('pursuitType', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="grant">Grant</option>
-                    <option value="request">Request</option>
-                    <option value="event">Event</option>
-                  </select>
-                </div>
-                {newOpportunity.pursuitType === 'event' && (
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase">Event name</label>
-                    <input
-                      type="text"
-                      value={newOpportunity.eventName}
-                      onChange={(e) => handleNewOpportunityChange('eventName', e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                )}
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Award type</label>
-                  <select
-                    value={newOpportunity.awardType}
-                    onChange={(e) => handleNewOpportunityChange('awardType', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  >
-                    <option value="restricted">Restricted</option>
-                    <option value="unrestricted">Unrestricted</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Stage</label>
-                  <select
-                    value={newOpportunity.stage}
-                    onChange={(e) => handleNewOpportunityChange('stage', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  >
-                    {PIPELINE_STAGES.map((stage) => (
-                      <option key={stage.id} value={stage.id}>{stage.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Ask amount</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newOpportunity.askAmount}
-                    onChange={(e) => handleNewOpportunityChange('askAmount', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-                {newOpportunity.stage === 'closed_won' && (
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase">Amount awarded</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={newOpportunity.amountAwarded}
-                      onChange={(e) => handleNewOpportunityChange('amountAwarded', e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                )}
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Next step</label>
-                  <input
-                    type="text"
-                    value={newOpportunity.nextStep}
-                    onChange={(e) => handleNewOpportunityChange('nextStep', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Due date / event date</label>
-                  <input
-                    type="date"
-                    value={newOpportunity.dueDate}
-                    onChange={(e) => handleNewOpportunityChange('dueDate', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-              </div>
-              <div className="border-t border-gray-100 pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-gray-500 uppercase">Primary contact</label>
-                  <input
-                    type="text"
-                    value={newOpportunity.contactName}
-                    onChange={(e) => handleNewOpportunityChange('contactName', e.target.value)}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  />
-                  <input
-                    type="text"
-                    value={newOpportunity.contactOrganization}
-                    onChange={(e) => handleNewOpportunityChange('contactOrganization', e.target.value)}
-                    placeholder="Organization / Title"
-                    className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase">Email</label>
-                    <input
-                      type="email"
-                      value={newOpportunity.contactEmail}
-                      onChange={(e) => handleNewOpportunityChange('contactEmail', e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase">Phone</label>
-                    <input
-                      type="text"
-                      value={newOpportunity.contactPhone}
-                      onChange={(e) => handleNewOpportunityChange('contactPhone', e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className="text-xs text-gray-500 uppercase">Notes</label>
-                <textarea
-                  rows="3"
-                  value={newOpportunity.notes}
-                  onChange={(e) => handleNewOpportunityChange('notes', e.target.value)}
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  placeholder="Stewardship details, restrictions, audit notes, etc."
-                />
-              </div>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-sm"
-                  disabled={creatingOpportunity}
-                >
-                  {creatingOpportunity ? 'Saving…' : 'Save Opportunity'}
-                </button>
-              </div>
-            </form>
+                ))
+              )}
+            </div>
           </div>
+        );
+      })}
+    </div>
+  </div>
+);
+
+// Grant Card Component (for Kanban)
+const GrantCard = ({ grant, stage, onViewDetails, onStageChange }) => {
+  const deadline = grant.proposalDueDate || grant.loiDueDate;
+  const daysLeft = deadline ? daysUntil(deadline) : null;
+  const isUrgent = daysLeft !== null && daysLeft <= 7 && daysLeft >= 0;
+
+  return (
+    <div
+      className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => onViewDetails(grant)}
+    >
+      <div className="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">{grant.name}</div>
+      <div className="text-xs text-gray-600 mb-2">{grant.funderName}</div>
+      
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-bold text-primary-600">
+          {formatCurrency(grant.askAmount || grant.amountAwarded)}
+        </span>
+        {grant.awardType && (
+          <span className={`px-2 py-0.5 text-xs font-medium rounded ${
+            grant.awardType === 'unrestricted'
+              ? 'bg-green-100 text-green-800'
+              : 'bg-blue-100 text-blue-800'
+          }`}>
+            {grant.awardType === 'unrestricted' ? 'Unrestricted' : 'Restricted'}
+          </span>
+        )}
+      </div>
+
+      {deadline && (
+        <div className={`flex items-center gap-1 text-xs ${
+          isUrgent ? 'text-red-600 font-semibold' : 'text-gray-600'
+        }`}>
+          <ClockIcon className="h-3 w-3" />
+          {daysLeft !== null && daysLeft >= 0 ? `${daysLeft} days` : 'Overdue'}
+        </div>
+      )}
+
+      {grant.priority === 'high' && (
+        <div className="mt-2 text-xs font-semibold text-red-600 flex items-center gap-1">
+          <ExclamationTriangleIcon className="h-3 w-3" />
+          High Priority
         </div>
       )}
     </div>
   );
 };
 
-export default FundraisingCRM;
+// Grants Table View Component
+const GrantsTableView = ({ opportunities, searchTerm, setSearchTerm, selectedStageFilter, setSelectedStageFilter, onViewDetails }) => (
+  <div>
+    {/* Filters */}
+    <div className="mb-4 flex flex-col md:flex-row gap-4">
+      <div className="flex-1 relative">
+        <MagnifyingGlassIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search grants, funders, or purpose..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="touch-target w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+        />
+      </div>
+      <select
+        value={selectedStageFilter}
+        onChange={(e) => setSelectedStageFilter(e.target.value)}
+        className="touch-target px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+      >
+        <option value="all">All Stages</option>
+        {PIPELINE_STAGES.map(stage => (
+          <option key={stage.id} value={stage.id}>{stage.name}</option>
+        ))}
+      </select>
+    </div>
 
+    {/* Table */}
+    <div className="bg-white rounded-lg shadow">
+      <div className="table-scroll">
+        <table className="min-w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grant</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Funder</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ask Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Awarded</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stage</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deadline</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {opportunities.map(grant => {
+              const deadline = grant.proposalDueDate || grant.loiDueDate;
+              const daysLeft = deadline ? daysUntil(deadline) : null;
+              const stage = PIPELINE_STAGES.find(s => s.id === grant.stage);
+
+              return (
+                <tr key={grant.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => onViewDetails(grant)}>
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900">{grant.name}</div>
+                    <div className="text-xs text-gray-500">{grant.purpose}</div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{grant.funderName}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                    {formatCurrency(grant.askAmount)}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-semibold text-green-600">
+                    {grant.amountAwarded ? formatCurrency(grant.amountAwarded) : '—'}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full bg-${stage?.color}-100 text-${stage?.color}-800`}>
+                      {stage?.name}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {deadline ? (
+                      <div className={daysLeft !== null && daysLeft <= 7 && daysLeft >= 0 ? 'text-red-600 font-semibold' : 'text-gray-600'}>
+                        {daysLeft !== null && daysLeft >= 0 ? `${daysLeft} days` : 'Overdue'}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button className="touch-target text-primary-600 hover:text-primary-900 text-sm font-medium">
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {opportunities.length === 0 && (
+      <div className="text-center py-12 text-gray-500">
+        No grants match your filters. Try adjusting your search or adding a new grant.
+      </div>
+    )}
+  </div>
+);
+
+// Deadlines View Component
+const DeadlinesView = ({ upcomingDeadlines, onViewDetails }) => (
+  <div className="space-y-4">
+    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="flex items-start gap-2">
+        <ClockIcon className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+        <div>
+          <h3 className="font-semibold text-yellow-900">Upcoming Deadlines</h3>
+          <p className="text-sm text-yellow-800">Stay on top of LOI, proposal, and report due dates.</p>
+        </div>
+      </div>
+    </div>
+
+    {upcomingDeadlines.length === 0 ? (
+      <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
+        <CalendarIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
+        <p className="text-gray-600">No upcoming deadlines. You're all caught up!</p>
+      </div>
+    ) : (
+      <div className="bg-white rounded-lg shadow">
+        <div className="table-scroll">
+          <table className="min-w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Grant</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Funder</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Days Until</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {upcomingDeadlines.map((deadline, idx) => {
+                const daysLeft = daysUntil(deadline.date);
+                const isUrgent = daysLeft <= 7 && daysLeft >= 0;
+                const isOverdue = daysLeft < 0;
+
+                return (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-gray-900">{deadline.grant.name}</div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{deadline.grant.funderName}</td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+                        {deadline.label}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {new Date(deadline.date).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`text-sm font-semibold ${
+                        isOverdue ? 'text-red-600' :
+                        isUrgent ? 'text-yellow-600' :
+                        'text-gray-600'
+                      }`}>
+                        {isOverdue ? 'Overdue!' : daysLeft <= 0 ? 'Today!' : `${daysLeft} days`}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => onViewDetails(deadline.grant)}
+                        className="touch-target text-primary-600 hover:text-primary-900 text-sm font-medium"
+                      >
+                        View Grant
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+// Analytics View Component
+const AnalyticsView = ({ opportunities, summary, annualGoal }) => {
+  const byType = {};
+  const byAwardType = { restricted: 0, unrestricted: 0 };
+  const byStage = {};
+
+  opportunities.forEach(op => {
+    // By Grant Type
+    if (!byType[op.grantType]) byType[op.grantType] = { count: 0, total: 0 };
+    byType[op.grantType].count++;
+    byType[op.grantType].total += Number(op.askAmount || 0);
+
+    // By Award Type
+    if (op.stage === 'awarded' && op.amountAwarded) {
+      if (op.awardType === 'restricted') {
+        byAwardType.restricted += Number(op.amountAwarded);
+      } else {
+        byAwardType.unrestricted += Number(op.amountAwarded);
+      }
+    }
+
+    // By Stage
+    if (!byStage[op.stage]) byStage[op.stage] = 0;
+    byStage[op.stage]++;
+  });
+
+  return (
+    <div className="space-y-6">
+      {/* Goal Progress */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Annual Goal Progress</h3>
+        <div className="h-8 bg-gray-200 rounded-full overflow-hidden mb-2">
+          <div
+            className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all"
+            style={{ width: `${Math.min((summary.totalAwarded / annualGoal) * 100, 100)}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">{formatCurrency(summary.totalAwarded)} secured</span>
+          <span className="text-gray-600">{formatCurrency(annualGoal)} goal</span>
+        </div>
+      </div>
+
+      {/* Restricted vs. Unrestricted */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Type</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="text-sm text-blue-600 mb-1">Restricted</div>
+            <div className="text-2xl font-bold text-blue-700">{formatCurrency(byAwardType.restricted)}</div>
+          </div>
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <div className="text-sm text-green-600 mb-1">Unrestricted</div>
+            <div className="text-2xl font-bold text-green-700">{formatCurrency(byAwardType.unrestricted)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* By Grant Type */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">By Grant Type</h3>
+        <div className="space-y-3">
+          {Object.entries(byType).map(([type, data]) => (
+            <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <div className="font-medium text-gray-900 capitalize">{type.replace('_', ' ')}</div>
+                <div className="text-xs text-gray-500">{data.count} grant{data.count !== 1 ? 's' : ''}</div>
+              </div>
+              <div className="text-lg font-bold text-gray-900">{formatCurrency(data.total)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* By Stage */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Distribution</h3>
+        <div className="space-y-2">
+          {PIPELINE_STAGES.map(stage => (
+            <div key={stage.id} className="flex items-center gap-3">
+              <div className="w-32 text-sm text-gray-700">{stage.name}</div>
+              <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full bg-${stage.color}-500 transition-all`}
+                  style={{ width: `${(byStage[stage.id] || 0) / Math.max(opportunities.length, 1) * 100}%` }}
+                />
+              </div>
+              <div className="w-8 text-sm font-semibold text-gray-900">{byStage[stage.id] || 0}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Add Grant Modal Component
+const AddGrantModal = ({ newOpportunity, setNewOpportunity, onClose, onCreate, creating }) => (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Add New Grant</h2>
+        <button onClick={onClose} className="touch-target p-2 hover:bg-gray-100 rounded-lg">
+          <XMarkIcon className="h-6 w-6 text-gray-400" />
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {/* Grant Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Grant Name *</label>
+          <input
+            type="text"
+            value={newOpportunity.name}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, name: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            placeholder="e.g., Knight Foundation STEM Grant"
+          />
+        </div>
+
+        {/* Funder Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Funder Name *</label>
+          <input
+            type="text"
+            value={newOpportunity.funderName}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, funderName: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            placeholder="e.g., Knight Foundation"
+          />
+        </div>
+
+        {/* Grant Type & Award Type */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Grant Type</label>
+            <select
+              value={newOpportunity.grantType}
+              onChange={(e) => setNewOpportunity(prev => ({ ...prev, grantType: e.target.value }))}
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              {GRANT_TYPES.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Award Type</label>
+            <select
+              value={newOpportunity.awardType}
+              onChange={(e) => setNewOpportunity(prev => ({ ...prev, awardType: e.target.value }))}
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            >
+              {AWARD_TYPES.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Ask Amount */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Ask Amount</label>
+          <input
+            type="number"
+            value={newOpportunity.askAmount}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, askAmount: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            placeholder="50000"
+          />
+        </div>
+
+        {/* Purpose */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Purpose / Use of Funds</label>
+          <textarea
+            value={newOpportunity.purpose}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, purpose: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            rows={3}
+            placeholder="e.g., STEM lab equipment, teacher salaries, facility improvements"
+          />
+        </div>
+
+        {/* Proposal Deadline */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Proposal Deadline</label>
+          <input
+            type="date"
+            value={newOpportunity.proposalDueDate}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, proposalDueDate: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        {/* Contact Info */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
+            <input
+              type="text"
+              value={newOpportunity.contactName}
+              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactName: e.target.value }))}
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              placeholder="Program Officer"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+            <input
+              type="email"
+              value={newOpportunity.contactEmail}
+              onChange={(e) => setNewOpportunity(prev => ({ ...prev, contactEmail: e.target.value }))}
+              className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              placeholder="officer@foundation.org"
+            />
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <textarea
+            value={newOpportunity.notes}
+            onChange={(e) => setNewOpportunity(prev => ({ ...prev, notes: e.target.value }))}
+            className="touch-target w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+            rows={2}
+            placeholder="Additional notes..."
+          />
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-6 flex gap-3 justify-end">
+        <button
+          onClick={onClose}
+          className="touch-target px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={onCreate}
+          disabled={creating}
+          className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-semibold disabled:opacity-50"
+        >
+          {creating ? 'Adding...' : 'Add Grant'}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// Grant Detail Modal Component
+const GrantDetailModal = ({ grant, onClose, onStageChange }) => {
+  const stage = PIPELINE_STAGES.find(s => s.id === grant.stage);
+  const StageIcon = stage?.icon;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4 text-white flex items-center justify-between z-10">
+          <div>
+            <h2 className="text-2xl font-bold">{grant.name}</h2>
+            <div className="text-sm text-primary-100 mt-1">{grant.funderName}</div>
+          </div>
+          <button onClick={onClose} className="touch-target p-2 hover:bg-primary-500 rounded-lg">
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6">
+          {/* Current Stage */}
+          <div className={`p-4 rounded-lg border-2 bg-${stage?.color}-50 border-${stage?.color}-200`}>
+            <div className="flex items-center gap-2 mb-2">
+              {StageIcon && <StageIcon className={`h-5 w-5 text-${stage?.color}-600`} />}
+              <span className="font-semibold text-gray-900">Current Stage: {stage?.name}</span>
+            </div>
+            <div className="text-sm text-gray-700">{stage?.description}</div>
+          </div>
+
+          {/* Key Details */}
+          <div className="grid grid-cols-2 gap-4">
+            <DetailItem label="Ask Amount" value={formatCurrency(grant.askAmount)} />
+            <DetailItem label="Awarded Amount" value={grant.amountAwarded ? formatCurrency(grant.amountAwarded) : '—'} />
+            <DetailItem label="Grant Type" value={grant.grantType?.replace('_', ' ')} />
+            <DetailItem label="Award Type" value={grant.awardType === 'unrestricted' ? 'Unrestricted (Operating)' : 'Restricted (Specific Use)'} />
+          </div>
+
+          {/* Timeline */}
+          {(grant.proposalDueDate || grant.loiDueDate || grant.decisionDate) && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Timeline</h3>
+              <div className="space-y-2">
+                {grant.loiDueDate && <TimelineItem label="LOI Due" date={grant.loiDueDate} />}
+                {grant.proposalDueDate && <TimelineItem label="Proposal Due" date={grant.proposalDueDate} />}
+                {grant.decisionDate && <TimelineItem label="Decision Date" date={grant.decisionDate} />}
+                {grant.reportDueDate && <TimelineItem label="Report Due" date={grant.reportDueDate} />}
+              </div>
+            </div>
+          )}
+
+          {/* Contact */}
+          {grant.contactName && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Contact</h3>
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="font-medium text-gray-900">{grant.contactName}</div>
+                {grant.contactTitle && <div className="text-sm text-gray-600">{grant.contactTitle}</div>}
+                {grant.contactEmail && (
+                  <a href={`mailto:${grant.contactEmail}`} className="text-sm text-primary-600 hover:text-primary-800">
+                    {grant.contactEmail}
+                  </a>
+                )}
+                {grant.contactPhone && <div className="text-sm text-gray-600">{grant.contactPhone}</div>}
+              </div>
+            </div>
+          )}
+
+          {/* Purpose */}
+          {grant.purpose && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Purpose / Use of Funds</h3>
+              <p className="text-gray-700">{grant.purpose}</p>
+            </div>
+          )}
+
+          {/* Notes */}
+          {grant.notes && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Notes</h3>
+              <p className="text-gray-700 bg-yellow-50 border border-yellow-100 rounded-lg p-4">{grant.notes}</p>
+            </div>
+          )}
+
+          {/* Stage Actions */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-3">Move to Stage</h3>
+            <div className="flex flex-wrap gap-2">
+              {PIPELINE_STAGES.map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    onStageChange(grant, s.id);
+                    onClose();
+                  }}
+                  disabled={s.id === grant.stage}
+                  className={`touch-target px-3 py-2 rounded-lg text-sm font-semibold transition ${
+                    s.id === grant.stage
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : `bg-${s.color}-100 text-${s.color}-700 hover:bg-${s.color}-200`
+                  }`}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="sticky bottom-0 border-t border-gray-200 px-6 py-4 bg-gray-50 flex justify-between">
+          <button
+            onClick={onClose}
+            className="touch-target px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-sm font-medium"
+          >
+            Close
+          </button>
+          <button
+            onClick={() => alert('Edit grant - coming soon!')}
+            className="touch-target px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-semibold flex items-center gap-2"
+          >
+            <PencilIcon className="h-4 w-4" />
+            Edit Grant
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DetailItem = ({ label, value }) => (
+  <div>
+    <div className="text-sm text-gray-600 mb-1">{label}</div>
+    <div className="font-medium text-gray-900">{value || '—'}</div>
+  </div>
+);
+
+const TimelineItem = ({ label, date }) => {
+  const daysLeft = daysUntil(date);
+  const isUrgent = daysLeft !== null && daysLeft <= 7 && daysLeft >= 0;
+
+  return (
+    <div className="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+      <span className="text-sm text-gray-700">{label}</span>
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium text-gray-900">{new Date(date).toLocaleDateString()}</span>
+        {daysLeft !== null && (
+          <span className={`text-xs font-semibold ${isUrgent ? 'text-red-600' : 'text-gray-600'}`}>
+            ({daysLeft >= 0 ? `${daysLeft} days` : 'overdue'})
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default FundraisingCRM;
