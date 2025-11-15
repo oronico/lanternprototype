@@ -37,13 +37,22 @@ import {
 export default function StudentSnapshot({ student, onClose }) {
   const [activeTab, setActiveTab] = useState('snapshot'); // snapshot, attendance, progress, health, contacts, documents
 
-  if (!student) return null;
+  if (!student) {
+    console.log('StudentSnapshot: No student prop');
+    return null;
+  }
+
+  console.log('StudentSnapshot rendering for:', student.studentInfo?.firstName);
 
   const fullName = `${student.studentInfo.firstName} ${student.studentInfo.lastName}`;
-  const primaryGuardian = student.guardians.find(g => g.isPrimary) || student.guardians[0];
+  const primaryGuardian = student.guardians?.find(g => g.isPrimary) || student.guardians?.[0];
+
+  if (!primaryGuardian) {
+    console.log('StudentSnapshot: No guardian found');
+  }
 
   return (
-    <div className="fixed inset-0 bg-gray-100 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-gray-100 z-50 overflow-y-auto" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Header Bar */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow">
         <div className="flex items-center gap-4">
