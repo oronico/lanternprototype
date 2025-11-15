@@ -46,7 +46,7 @@ const navigationGroups = [
     name: 'Financials',
     icon: BanknotesIcon,
     href: '/financials',
-    color: 'green',
+    color: 'teal',
     subItems: [
       {
         name: 'Cash & Collections',
@@ -61,11 +61,6 @@ const navigationGroups = [
         name: 'Payroll & Staff Costs',
         href: '/payroll',
         badge: 'Pro'
-      },
-      {
-        name: 'Fundraising (501c3)',
-        href: '/crm/fundraising',
-        badge: 'Beta'
       },
       {
         name: 'Financial Health',
@@ -86,39 +81,33 @@ const navigationGroups = [
     ]
   },
   {
+    id: 'fundraising',
+    name: 'Fundraising',
+    icon: CurrencyDollarIcon,
+    href: '/crm/fundraising',
+    color: 'red',
+    badge: '501c3 Only'
+  },
+  {
     id: 'reports',
     name: 'Reports',
     icon: ChartBarIcon,
-    href: '/reports/bank-ready',
-    color: 'indigo',
-    subItems: [
-      { name: 'Tax Filings', href: '/tax' },
-      { name: 'Year-End Financials', href: '/reports/year-end', badge: 'Pro' },
-      { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' }
-    ]
+    href: '/tax',
+    color: 'indigo'
   },
   {
     id: 'documents',
     name: 'Documents',
     icon: FolderIcon,
     href: '/documents',
-    color: 'yellow',
-    subItems: [
-      { name: 'Document Library', href: '/documents' },
-      { name: 'Upload Documents', href: '/documents?action=upload' }
-    ]
+    color: 'yellow'
   },
   {
     id: 'facility',
     name: 'Facility',
     icon: BuildingOfficeIcon,
     href: '/facility',
-    color: 'orange',
-    subItems: [
-      { name: 'Facility Management', href: '/facility', badge: 'Pro' },
-      { name: 'Upload Lease (OCR)', href: '/lease/upload', badge: 'New' },
-      { name: 'Lease Analyzer', href: '/lease' }
-    ]
+    color: 'orange'
   },
   {
     id: 'people',
@@ -169,7 +158,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'fundraising', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
   
   // Check entity type safely (inside component, not at module level)
   const [entityType, setEntityType] = useState('llc-single');
@@ -215,24 +204,18 @@ const Sidebar = () => {
     return location.pathname === href;
   };
 
-  const computedNavigationGroups = navigationGroups.map((group) => ({
-    ...group,
-    subItems: group.subItems ? [...group.subItems] : undefined
-  }));
-
-  if (entityType === '501c3') {
-    computedNavigationGroups.splice(3, 0, {
-      id: 'fundraising',
-      name: 'Fundraising',
-      icon: CurrencyDollarIcon,
-      href: '/crm/fundraising',
-      color: 'pink'
-    });
-  }
+  // Filter navigation groups based on entity type
+  const filteredNavigationGroups = navigationGroups.filter(group => {
+    // Show fundraising only for 501c3
+    if (group.id === 'fundraising' && entityType !== '501c3') {
+      return false;
+    }
+    return true;
+  });
 
   // Build navigation with conditional governance
   const navigation = [
-    ...computedNavigationGroups.slice(0, 7), // Everything up to People & HR
+    ...filteredNavigationGroups.slice(0, 7), // Everything up to People & HR
     ...(needsGovernance ? [{
       id: 'governance',
       name: 'Governance',
@@ -242,7 +225,7 @@ const Sidebar = () => {
       badge: entityType === '501c3' ? 'Nonprofit' : 'Corp'
       // No subItems - page has its own tab navigation!
     }] : []),
-    ...computedNavigationGroups.slice(7) // Rest of navigation
+    ...filteredNavigationGroups.slice(7) // Rest of navigation
   ];
 
   return (

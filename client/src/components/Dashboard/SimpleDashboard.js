@@ -55,9 +55,9 @@ const buildHealthCategories = () => {
       id: 'financial',
       name: 'Finances',
       icon: BanknotesIcon,
-      gradient: 'from-green-50 to-emerald-50',
-      border: 'border-green-100',
-      iconBg: 'bg-green-600',
+      gradient: 'from-teal-50 to-cyan-50',
+      border: 'border-teal-200',
+      iconBg: 'bg-teal-600',
       cta: { label: 'Open Financials', href: '/financials' },
       metrics: [
         {
@@ -250,8 +250,8 @@ const buildHealthCategories = () => {
 };
 
 export default function SimpleDashboard() {
-  const [expandedCategory, setExpandedCategory] = useState(null);
   const [dailyWins, setDailyWins] = useState(0);
+  const [movesExpanded, setMovesExpanded] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -275,20 +275,12 @@ export default function SimpleDashboard() {
     }
   };
 
-  const handleToggleCategory = (categoryId) => {
-    setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
-  };
-
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
       <CoachGreeting />
       <HealthScoreCard score={FINANCIAL.healthScore} />
-      <MovesThatMatter />
-      <CategoryScorecard
-        categories={healthCategories}
-        expandedCategory={expandedCategory}
-        onToggle={handleToggleCategory}
-      />
+      <CategoryScorecard categories={healthCategories} />
+      <MovesThatMatter expanded={movesExpanded} onToggle={() => setMovesExpanded(!movesExpanded)} />
       {nudges.length > 0 && <CoachingNudges nudges={nudges} />}
       <DailyMomentum
         streaks={streaks}
@@ -302,14 +294,7 @@ export default function SimpleDashboard() {
 }
 
 const CoachGreeting = () => {
-  const [userName, setUserName] = useState('Director');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedName = window.localStorage.getItem('userFirstName') || 'Director';
-      setUserName(storedName);
-    }
-  }, []);
+  const userName = 'Sarah'; // Prototype user
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -327,7 +312,7 @@ const CoachGreeting = () => {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-wide text-gray-500">Welcome back</p>
-          <h1 className="text-3xl font-bold text-gray-900">Hello, {userName}. Your business is covered.</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Hello, {userName}.</h1>
           <p className="text-gray-600">{today}</p>
         </div>
         <div className="bg-primary-50 border border-primary-100 rounded-xl px-5 py-3">
@@ -339,7 +324,7 @@ const CoachGreeting = () => {
   );
 };
 
-const MovesThatMatter = () => {
+const MovesThatMatter = ({ expanded, onToggle }) => {
   const moves = [
     {
       id: 'enrollment',
@@ -400,49 +385,63 @@ const MovesThatMatter = () => {
 
   return (
     <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary-600 rounded-lg">
-          <SparklesIcon className="h-6 w-6 text-white" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-primary-600 rounded-lg">
+            <SparklesIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold">Financial Health Drivers</p>
+            <h3 className="text-xl font-bold text-gray-900">The Moves That Matter Most</h3>
+            <p className="text-sm text-gray-600">Focus on these to unlock loan-readiness and profitability.</p>
+          </div>
         </div>
-        <div>
-          <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold">Financial Health Drivers</p>
-          <h3 className="text-xl font-bold text-gray-900">The Moves That Matter Most</h3>
-          <p className="text-sm text-gray-600">Focus on these to unlock loan-readiness and profitability.</p>
-        </div>
+        <button
+          onClick={onToggle}
+          className="p-2 hover:bg-gray-100 rounded-lg transition"
+        >
+          {expanded ? (
+            <ChevronUpIcon className="h-5 w-5 text-gray-600" />
+          ) : (
+            <ChevronDownIcon className="h-5 w-5 text-gray-600" />
+          )}
+        </button>
       </div>
-      <div className="space-y-3">
-        {moves.map(move => {
-          const statusInfo = statusMeta[move.status] || statusMeta.good;
-          return (
-            <div key={move.id} className="border border-gray-100 rounded-xl p-4 bg-gray-50 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-3 flex-1">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm">
-                  {move.priority}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-base font-semibold text-gray-900">{move.title}</h4>
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.class}`}>
-                      {statusInfo.text}
-                    </span>
+      {expanded && (
+        <div className="space-y-3">
+          {moves.map(move => {
+            const statusInfo = statusMeta[move.status] || statusMeta.good;
+            return (
+              <div key={move.id} className="border border-gray-100 rounded-xl p-4 bg-gray-50 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm">
+                    {move.priority}
                   </div>
-                  <p className="text-sm text-gray-700 mb-1">
-                    <span className="font-semibold">Current:</span> {move.current} • {move.target}
-                  </p>
-                  <p className="text-xs text-gray-600 italic">{move.why}</p>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-base font-semibold text-gray-900">{move.title}</h4>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.class}`}>
+                        {statusInfo.text}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-1">
+                      <span className="font-semibold">Current:</span> {move.current} • {move.target}
+                    </p>
+                    <p className="text-xs text-gray-600 italic">{move.why}</p>
+                  </div>
                 </div>
+                <Link
+                  to={move.href}
+                  className="text-sm font-semibold text-primary-600 hover:text-primary-800 flex items-center gap-1"
+                >
+                  {move.action}
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
               </div>
-              <Link
-                to={move.href}
-                className="text-sm font-semibold text-primary-600 hover:text-primary-800 flex items-center gap-1"
-              >
-                {move.action}
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 };
@@ -479,7 +478,7 @@ const HealthScoreCard = ({ score }) => {
   );
 };
 
-const CategoryScorecard = ({ categories, expandedCategory, onToggle }) => (
+const CategoryScorecard = ({ categories }) => (
   <section className="space-y-4">
     <div>
       <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">5 Category Health Check</p>
@@ -487,18 +486,13 @@ const CategoryScorecard = ({ categories, expandedCategory, onToggle }) => (
     </div>
     <div className="space-y-4">
       {categories.map(category => (
-        <CategoryCard
-          key={category.id}
-          category={category}
-          expanded={expandedCategory === category.id}
-          onToggle={() => onToggle(category.id)}
-        />
+        <CategoryCard key={category.id} category={category} />
       ))}
     </div>
   </section>
 );
 
-const CategoryCard = ({ category, expanded, onToggle }) => {
+const CategoryCard = ({ category }) => {
   const Icon = category.icon;
   const goodCount = category.metrics.filter(m => m.status === 'good').length;
   const warningCount = category.metrics.filter(m => m.status === 'warning').length;
@@ -518,35 +512,21 @@ const CategoryCard = ({ category, expanded, onToggle }) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          {category.cta && (
-            <Link
-              to={category.cta.href}
-              className="text-xs font-semibold text-primary-600 hover:text-primary-800"
-            >
-              {category.cta.label}
-            </Link>
-          )}
-          <button
-            onClick={onToggle}
-            className="p-2 hover:bg-white/50 rounded-lg transition"
+        {category.cta && (
+          <Link
+            to={category.cta.href}
+            className="text-xs font-semibold text-primary-600 hover:text-primary-800"
           >
-            {expanded ? (
-              <ChevronUpIcon className="h-5 w-5 text-gray-600" />
-            ) : (
-              <ChevronDownIcon className="h-5 w-5 text-gray-600" />
-            )}
-          </button>
-        </div>
+            {category.cta.label}
+          </Link>
+        )}
       </div>
 
-      {expanded && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
-          {category.metrics.map(metric => (
-            <MetricTile key={metric.label} metric={metric} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
+        {category.metrics.map(metric => (
+          <MetricTile key={metric.label} metric={metric} />
+        ))}
+      </div>
     </div>
   );
 };
