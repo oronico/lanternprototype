@@ -423,7 +423,7 @@ export default function GTDActionCenter() {
 
       {/* Noom-Style Streaks - KEEP THESE! */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-accent-500 to-accent-600 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Login Streak</span>
             <FireIcon className="h-6 w-6" />
@@ -450,7 +450,7 @@ export default function GTDActionCenter() {
           <div className="text-sm opacity-90">days cash 💪</div>
         </div>
 
-        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Enrollment Progress</span>
             <CalendarIcon className="h-6 w-6" />

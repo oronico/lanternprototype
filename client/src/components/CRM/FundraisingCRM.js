@@ -392,7 +392,7 @@ const FundraisingCRM = () => {
 
       {/* Goal tracker */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-2xl p-6 shadow-lg">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm text-white/80">Annual Goal</p>
