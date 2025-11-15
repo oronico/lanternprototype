@@ -858,7 +858,7 @@ const ContactDetailModal = ({ contact, opportunities, onClose, onGenerateThankYo
                 Sync to Bookkeeping
               </button>
               <p className="text-xs text-teal-700 mt-2">
-                Hank will categorize as restricted/unrestricted revenue and handle cash vs. accrual
+                Hank (AI assistant) helps categorize as restricted/unrestricted revenue. Final accounting by your CPA.
               </p>
             </div>
           )}

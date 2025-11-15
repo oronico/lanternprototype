@@ -112,10 +112,13 @@ const ChartProgramBuilder = ({
       <div className="flex items-start gap-3">
         <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
         <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank’s chart builder</p>
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank's AI chart builder</p>
           <h2 className="text-xl font-bold text-gray-900">Define the backbone once so every transaction falls into place</h2>
           <p className="text-sm text-gray-600">
-            Hank uses these GL codes and program tags to suggest categories, keep reports lender-ready, and prove you don’t need an outside bookkeeper.
+            Hank (our AI finance coach) uses these GL codes and program tags to suggest categories and help keep your books organized.
+          </p>
+          <p className="text-xs text-gray-500 italic mt-1">
+            Hank is an AI assistant, not a licensed accountant. Always consult with your CPA for final review.
           </p>
         </div>
       </div>
@@ -682,7 +685,7 @@ export default function UnifiedBookkeeping() {
             </div>
           </div>
           <button
-            onClick={() => toast.success('Hank is reviewing every transaction right now.')}
+            onClick={() => toast.success('Hank (AI assistant) is reviewing transactions to suggest categorizations.')}
             className="px-4 py-2 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700"
           >
             Ask Hank what to do next
@@ -977,7 +980,7 @@ export default function UnifiedBookkeeping() {
                 <span className="font-semibold text-gray-900">{needsAttentionCount}</span> need details
               </div>
               <div className="text-gray-500">
-                Hank requires category + program + description + split + receipt for every row.
+                Hank (AI coach) recommends: category + program + description + split + receipt for clean books.
               </div>
             </div>
           </div>

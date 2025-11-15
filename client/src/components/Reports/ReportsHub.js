@@ -62,7 +62,7 @@ export default function ReportsHub() {
           <ChartBarIcon className="h-8 w-8 text-primary-600" />
           <div>
             <h1 className="text-2xl font-bold">Financial Reports</h1>
-            <p className="text-gray-600">CPA-grade reporting with Hank's audit & sign-off</p>
+            <p className="text-gray-600">Professional reporting with Hank's AI-powered book review</p>
           </div>
         </div>
       </div>
@@ -74,9 +74,12 @@ export default function ReportsHub() {
             <SparklesIcon className="h-8 w-8 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Hank's CPA Review</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Hank's AI Finance Coach</h2>
             <p className="text-sm text-gray-700 mb-4">
-              Before running any report, Hank audits your books to ensure all revenue and expenses meet CPA standards.
+              Before running reports, Hank (our AI assistant) helps ensure your books are organized and ready for your accountant or CPA review.
+            </p>
+            <p className="text-xs text-gray-600 italic mb-4">
+              Note: Hank is an AI tool, not a licensed CPA. Always consult with a qualified accountant for final review and tax preparation.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <ReviewItem
@@ -347,7 +350,7 @@ const ReportCard = ({ title, description, period, status, cpaApproved, nonprofit
         <p className="text-sm text-gray-600">{description}</p>
       </div>
       {cpaApproved && (
-        <ShieldCheckIcon className="h-6 w-6 text-green-600" title="CPA-approved by Hank" />
+        <ShieldCheckIcon className="h-6 w-6 text-green-600" title="Reviewed by Hank (AI assistant)" />
       )}
     </div>
 
