@@ -439,7 +439,7 @@ export default function FlexibleReportGenerator() {
         <div className="flex items-start gap-3">
           <SparklesIcon className="h-6 w-6 text-purple-600" />
           <div>
-            <h3 className="font-semibold text-purple-900 mb-2">Hank's AI Report Coach</h3>
+            <h3 className="font-semibold text-purple-900 mb-2">AI Report Coach</h3>
             <p className="text-sm text-purple-800 mb-3">
               Hank reviews your data quality before generating reports to ensure accuracy. If revenue isn't fully categorized or expenses are missing receipts, Hank will let you know!
             </p>

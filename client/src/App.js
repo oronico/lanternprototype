@@ -180,8 +180,8 @@ function AppContent() {
               <Route path="/tax" element={<TaxFilingManager />} />
               <Route path="/reports/bank-ready-archived" element={<BankReadyReports />} />
               <Route path="/reports/year-end" element={<YearEndFinancials />} />
-              <Route path="/documents" element={<ComprehensiveDocumentLibrary />} />
-              <Route path="/documents/old" element={<DocumentLibrary />} />
+              <Route path="/documents" element={<DocumentLibrary />} />
+              <Route path="/documents/experimental" element={<ComprehensiveDocumentLibrary />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />
               <Route path="/operations/metrics" element={<OperationalMetrics />} />
               <Route path="/metrics" element={<ComprehensiveMetrics />} />

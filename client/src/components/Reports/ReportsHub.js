@@ -73,7 +73,7 @@ export default function ReportsHub() {
           <ChartBarIcon className="h-8 w-8 text-primary-600" />
           <div>
             <h1 className="text-2xl font-bold">Financial Reports</h1>
-            <p className="text-gray-600">Professional reporting with Hank's AI-powered book review</p>
+            <p className="text-gray-600">Professional reporting with AI-powered book review</p>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function ReportsHub() {
             <SparklesIcon className="h-8 w-8 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Hank's AI Finance Coach</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">AI Finance Coach</h2>
             <p className="text-sm text-gray-700 mb-4">
               Before running reports, Hank (our AI assistant) helps ensure your books are organized and ready for your accountant or CPA review.
             </p>
@@ -289,7 +289,7 @@ export default function ReportsHub() {
             <div className="flex items-start gap-3">
               <SparklesIcon className="h-6 w-6 text-purple-600" />
               <div>
-                <h3 className="font-semibold text-purple-900 mb-2">Hank's AI Tax Prep Coach</h3>
+                <h3 className="font-semibold text-purple-900 mb-2">AI Tax Prep Coach</h3>
                 <p className="text-sm text-purple-800 mb-3">
                   Hank helps you organize your books so tax season is smooth. Your CPA will thank you! 💙
                 </p>

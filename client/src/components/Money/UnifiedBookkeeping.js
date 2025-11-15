@@ -112,7 +112,7 @@ const ChartProgramBuilder = ({
       <div className="flex items-start gap-3">
         <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
         <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank's AI chart builder</p>
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">AI Chart Builder</p>
           <h2 className="text-xl font-bold text-gray-900">Define the backbone once so every transaction falls into place</h2>
           <p className="text-sm text-gray-600">
             Hank (our AI finance coach) uses these GL codes and program tags to suggest categories and help keep your books organized.
