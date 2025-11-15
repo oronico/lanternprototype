@@ -54,19 +54,37 @@ const ACCOUNTING_METHODS = {
 };
 
 const CHART_OF_ACCOUNTS = [
-  { id: 'tuition_revenue', name: 'Tuition Revenue' },
-  { id: 'esa_funding', name: 'ESA / Scholarship Funding' },
-  { id: 'utilities', name: 'Utilities - Electric' },
-  { id: 'supplies', name: 'Classroom Supplies' },
-  { id: 'rent', name: 'Rent & Facilities' },
-  { id: 'payroll_teachers', name: 'Teacher Payroll' }
+  { id: 'tuition_revenue', name: 'Tuition Revenue', description: 'Private-pay tuition collected from enrolled students' },
+  { id: 'esa_funding', name: 'ESA / Scholarship Funding', description: 'Education savings accounts, vouchers, or scholarship tax credits' },
+  { id: 'fundraising_restricted', name: 'Fundraising – Restricted', description: 'Donations earmarked for a specific purpose' },
+  { id: 'fundraising_unrestricted', name: 'Fundraising – Unrestricted', description: 'Donations available for any program' },
+  { id: 'rent', name: 'Rent & Facilities', description: 'Lease payments or facility costs' },
+  { id: 'debt_service', name: 'Debt Service', description: 'Mortgage or facility loan payments' },
+  { id: 'utilities', name: 'Utilities', description: 'Electric, water, internet' },
+  { id: 'insurance', name: 'Insurance', description: 'Property, liability, and student insurance' },
+  { id: 'payroll_teachers', name: 'Teacher Payroll', description: 'Wages for classroom staff' },
+  { id: 'payroll_support', name: 'Support Staff Payroll', description: 'Admin/support wages' },
+  { id: 'benefits', name: 'Payroll Taxes & Benefits', description: 'Employer taxes, health plans, retirement' },
+  { id: 'supplies', name: 'Classroom Supplies', description: 'Books, art supplies, cleaning, testing materials' },
+  { id: 'technology', name: 'Technology & Subscriptions', description: 'Software, devices, licenses' },
+  { id: 'curriculum', name: 'Curriculum & Instructional Materials', description: 'Curriculum purchases, PD content' },
+  { id: 'professional_services', name: 'Professional Services', description: 'Legal, accounting, consultants' },
+  { id: 'marketing', name: 'Marketing & Enrollment', description: 'Advertising, tours, events' },
+  { id: 'travel', name: 'Travel', description: 'Mileage, airfare, lodging, parking' },
+  { id: 'meals', name: 'Meals & Nutrition', description: 'Student meals and snacks' },
+  { id: 'facility_repairs', name: 'Facility Repairs & Maintenance', description: 'Repairs, janitorial, safety' },
+  { id: 'facility_improvements', name: 'Facility Improvements (CapEx)', description: 'Capital upgrades, build-outs' },
+  { id: 'ffe', name: 'Furniture, Fixtures & Equipment (FF&E)', description: 'Desks, seating, hardware' },
+  { id: 'taxes', name: 'Taxes & Fees', description: 'Business license, registrations, filings' },
+  { id: 'other_income', name: 'Other Operating Revenue', description: 'Aftercare, camps, ancillary programs' }
 ];
 
 const PROGRAM_CODES = [
-  { id: 'full_time', name: 'Full-Time Microschool' },
-  { id: 'after_school', name: 'After-School Program' },
-  { id: 'esa_program', name: 'ESA / Scholarship Program' },
-  { id: 'summer', name: 'Summer Session' }
+  { id: 'full_time', name: 'Full-Time Microschool', description: 'Core instructional program' },
+  { id: 'after_school', name: 'After-School Program', description: 'Extended day offerings' },
+  { id: 'esa_program', name: 'ESA / Scholarship Program', description: 'Students funded through ESA or vouchers' },
+  { id: 'summer', name: 'Summer Session', description: 'Seasonal programming' },
+  { id: 'tutoring', name: 'Tutoring / Microsessions', description: 'Small group or 1:1 offerings' }
 ];
 
 const defaultSplitModalState = {
@@ -84,6 +102,10 @@ export default function UnifiedBookkeeping() {
   const [transactions, setTransactions] = useState([]);
   const [quickbooksConnected, setQuickbooksConnected] = useState(false);
   const [plaidConnected, setPlaidConnected] = useState(false);
+  const [chartAccounts, setChartAccounts] = useState(CHART_OF_ACCOUNTS);
+  const [programCodes, setProgramCodes] = useState(PROGRAM_CODES);
+  const [newAccountName, setNewAccountName] = useState('');
+  const [newProgramName, setNewProgramName] = useState('');
   const [splitModal, setSplitModal] = useState(defaultSplitModalState);
 
   useEffect(() => {
@@ -217,7 +239,6 @@ export default function UnifiedBookkeeping() {
     .reduce((sum, a) => sum + a.balance, 0);
   
   const categorizedCount = transactions.filter(t => t.status === 'categorized').length;
-  const needsReviewCount = transactions.filter(t => t.status === 'review_needed').length;
   const syncedToQBCount = transactions.filter(t => t.syncedToQB).length;
 
   const currentMethod = ACCOUNTING_METHODS[accountingMethod.toUpperCase()];
@@ -290,8 +311,47 @@ export default function UnifiedBookkeeping() {
     closeSplitModal();
   };
 
-  const readyCount = transactions.filter(txn => getTransactionStatus(txn) === 'ready').length;
-  const needsAttentionCount = transactions.length - readyCount;
+  const transactionsNeedingAttention = transactions.filter(txn => getTransactionStatus(txn) !== 'ready');
+  const needsReviewCount = transactionsNeedingAttention.length;
+  const readyCount = transactions.length - needsReviewCount;
+  const needsAttentionCount = needsReviewCount;
+  const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  const handleAddChartAccount = () => {
+    if (!newAccountName.trim()) {
+      toast.error('Enter a name for the GL code');
+      return;
+    }
+    const id = slugify(newAccountName);
+    if (chartAccounts.some(acc => acc.id === id)) {
+      toast.error('That GL code already exists');
+      return;
+    }
+    setChartAccounts(prev => [
+      ...prev,
+      { id, name: newAccountName.trim(), description: 'Custom GL code added by your team' }
+    ]);
+    setNewAccountName('');
+    toast.success('GL code added');
+  };
+
+  const handleAddProgram = () => {
+    if (!newProgramName.trim()) {
+      toast.error('Enter a program or project name');
+      return;
+    }
+    const id = slugify(newProgramName);
+    if (programCodes.some(program => program.id === id)) {
+      toast.error('That program already exists');
+      return;
+    }
+    setProgramCodes(prev => [
+      ...prev,
+      { id, name: newProgramName.trim(), description: 'Custom program added by your team' }
+    ]);
+    setNewProgramName('');
+    toast.success('Program added');
+  };
 
   const aiCoachInsights = [
     {
@@ -585,6 +645,16 @@ export default function UnifiedBookkeeping() {
             )}
           </button>
           <button
+            onClick={() => setActiveTab('chart')}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'chart'
+                ? 'border-primary-500 text-primary-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Chart & Programs
+          </button>
+          <button
             onClick={() => setActiveTab('sync')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'sync'
@@ -720,7 +790,7 @@ export default function UnifiedBookkeeping() {
                         className="w-full border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
                       >
                         <option value="">Select GL code</option>
-                        {CHART_OF_ACCOUNTS.map(option => (
+                        {chartAccounts.map(option => (
                           <option key={option.id} value={option.id}>{option.name}</option>
                         ))}
                       </select>
@@ -732,7 +802,7 @@ export default function UnifiedBookkeeping() {
                         className="w-full border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
                       >
                         <option value="">Choose program</option>
-                        {PROGRAM_CODES.map(option => (
+                        {programCodes.map(option => (
                           <option key={option.id} value={option.id}>{option.name}</option>
                         ))}
                       </select>
@@ -794,6 +864,110 @@ export default function UnifiedBookkeeping() {
               </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chart of Accounts & Programs Tab */}
+      {activeTab === 'chart' && (
+        <div>
+          <div className="mb-6 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
+            <div className="flex items-start gap-3">
+              <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Hank’s chart builder</p>
+                <h2 className="text-xl font-bold text-gray-900">Define the backbone once so every transaction falls into place</h2>
+                <p className="text-sm text-gray-600">
+                  Hank uses these GL codes and program tags to suggest categories, keep reports lender-ready, and prove you don’t need an outside bookkeeper.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Revenue & expense GL codes</h3>
+                  <p className="text-sm text-gray-600">Matches how boards, lenders, and Hank read your statements.</p>
+                </div>
+                <span className="text-xs text-gray-500">{chartAccounts.length} total</span>
+              </div>
+
+              <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                {chartAccounts.map(account => (
+                  <div key={account.id} className="border border-gray-100 rounded-xl p-4">
+                    <div className="font-semibold text-gray-900">{account.name}</div>
+                    {account.description && (
+                      <p className="text-xs text-gray-600 mt-1">{account.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                <input
+                  type="text"
+                  value={newAccountName}
+                  onChange={(e) => setNewAccountName(e.target.value)}
+                  placeholder="Add a GL code (e.g., Transportation)"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 text-sm"
+                />
+                <button
+                  onClick={handleAddChartAccount}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
+                >
+                  + Add GL code
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Programs & Projects</h3>
+                  <p className="text-sm text-gray-600">Tie every dollar to the offerings you actually run.</p>
+                </div>
+                <span className="text-xs text-gray-500">{programCodes.length} programs</span>
+              </div>
+
+              <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                {programCodes.map(program => (
+                  <div key={program.id} className="border border-gray-100 rounded-xl p-4">
+                    <div className="font-semibold text-gray-900">{program.name}</div>
+                    {program.description && (
+                      <p className="text-xs text-gray-600 mt-1">{program.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                <input
+                  type="text"
+                  value={newProgramName}
+                  onChange={(e) => setNewProgramName(e.target.value)}
+                  placeholder="Add a program (e.g., ESA Micro-Pods)"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500	text-sm"
+                />
+                <button
+                  onClick={handleAddProgram}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700"
+                >
+                  + Add program
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Why this matters</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li>• Revenue accounts map private pay, ESA/voucher, and fundraising dollars per program.</li>
+              <li>• Expense accounts cover facilities, payroll, curriculum, technology, travel, marketing, professional services, insurance, taxes, repairs, improvements, FF&E, meals, and more.</li>
+              <li>• Program codes ensure every GL line can roll up by offering so lenders and boards see which programs make money.</li>
+              <li>• Hank uses this list to auto-suggest categorizations and to prove controls were followed when books close.</li>
+            </ul>
           </div>
         </div>
       )}
