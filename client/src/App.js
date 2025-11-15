@@ -175,7 +175,8 @@ function AppContent() {
               <Route path="/nudges" element={<NudgeCenter />} />
               <Route path="/milestones" element={<MilestoneTracker />} />
               <Route path="/bookkeeping" element={<UnifiedBookkeeping />} />
-              <Route path="/reports" element={<ReportsHub />} />
+              <Route path="/reports" element={<TaxFilingManager />} />
+              <Route path="/reports/hub" element={<ReportsHub />} />
               <Route path="/reports/bank-ready-archived" element={<BankReadyReports />} />
               <Route path="/reports/year-end" element={<YearEndFinancials />} />
               <Route path="/documents" element={<DocumentLibrary />} />
