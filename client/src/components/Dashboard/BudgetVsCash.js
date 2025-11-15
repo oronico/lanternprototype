@@ -49,7 +49,7 @@ const BudgetVsCash = ({ budgetData, cashData, period = 'monthly' }) => {
       color: 'green',
       icon: CheckCircleIcon,
       bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
+      borderColor: 'border-success-300',
       textColor: 'text-green-800',
       label: 'Covered'
     },
@@ -196,7 +196,7 @@ const BudgetVsCash = ({ budgetData, cashData, period = 'monthly' }) => {
 
       {/* Action Items */}
       {overallStatus !== 'good' && (
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+        <div className="bg-blue-50 border-2 border-primary-300 rounded-xl p-6">
           <div className="flex items-start space-x-3">
             <BanknotesIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
             <div>

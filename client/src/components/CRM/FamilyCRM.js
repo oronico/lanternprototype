@@ -67,7 +67,7 @@ const FamilyCRM = () => {
       excellent: 'border-green-500 bg-green-50',
       good: 'border-blue-500 bg-blue-50',
       at_risk: 'border-red-500 bg-red-50',
-      new: 'border-purple-500 bg-purple-50'
+      new: 'border-purple-500 bg-primary-50'
     };
     return colors[status] || 'border-gray-500 bg-gray-50';
   };
@@ -105,7 +105,7 @@ const FamilyCRM = () => {
       </div>
 
       {/* Connection Flow Diagram */}
-      <div className="mb-8 bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
+      <div className="mb-8 bg-blue-50 rounded-lg p-6 border-2 border-primary-300">
         <h3 className="font-semibold text-blue-900 mb-4">How It Works: Students → Contract → Payments</h3>
         <div className="flex items-center justify-between text-sm">
           <div className="flex-1 text-center">
@@ -129,10 +129,10 @@ const FamilyCRM = () => {
           <div className="px-2 text-blue-600">→</div>
           
           <div className="flex-1 text-center">
-            <div className="bg-purple-100 rounded-lg p-3 mb-2">
-              <LinkIcon className="h-6 w-6 text-purple-600 mx-auto mb-1" />
-              <div className="font-medium text-purple-900">3. Link Payment</div>
-              <div className="text-xs text-purple-700">ClassWallet for Emma & Liam</div>
+            <div className="bg-primary-100 rounded-lg p-3 mb-2">
+              <LinkIcon className="h-6 w-6 text-primary-600 mx-auto mb-1" />
+              <div className="font-medium text-primary-900">3. Link Payment</div>
+              <div className="text-xs text-primary-700">ClassWallet for Emma & Liam</div>
             </div>
           </div>
           
@@ -341,7 +341,7 @@ const FamilyCRM = () => {
               </div>
               
               {/* Contract - Shows Connection */}
-              <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
+              <div className="bg-green-50 rounded-lg p-4 border-2 border-success-300">
                 <h4 className="font-semibold text-green-900 mb-3 flex items-center">
                   <DocumentTextIcon className="h-5 w-5 mr-2" />
                   Contract (Links Students to Payments)
@@ -404,18 +404,18 @@ const FamilyCRM = () => {
               </div>
               
               {/* Family Health */}
-              <div className="bg-purple-50 rounded-lg p-4">
-                <h4 className="font-semibold text-purple-900 mb-3 flex items-center">
+              <div className="bg-primary-50 rounded-lg p-4">
+                <h4 className="font-semibold text-primary-900 mb-3 flex items-center">
                   <CheckCircleIcon className="h-5 w-5 mr-2" />
                   Family Health Score
                 </h4>
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
-                    <span className="text-purple-700">Satisfaction:</span>
-                    <span className="font-medium text-purple-900">{selectedFamily.familyHealth.satisfactionScore}/10</span>
+                    <span className="text-primary-700">Satisfaction:</span>
+                    <span className="font-medium text-primary-900">{selectedFamily.familyHealth.satisfactionScore}/10</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-700">Retention Risk:</span>
+                    <span className="text-primary-700">Retention Risk:</span>
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${getRiskBadge(selectedFamily.familyHealth.retentionRisk).color}`}>
                       {getRiskBadge(selectedFamily.familyHealth.retentionRisk).text}
                     </span>

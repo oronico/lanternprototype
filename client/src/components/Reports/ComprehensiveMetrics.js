@@ -47,7 +47,7 @@ export default function ComprehensiveMetrics() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-3">
-          <ChartBarIcon className="h-8 w-8 text-indigo-600" />
+          <ChartBarIcon className="h-8 w-8 text-primary-600" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Key Metrics</h1>
             <p className="text-gray-600">Comprehensive operational and financial metrics</p>
@@ -309,7 +309,7 @@ export default function ComprehensiveMetrics() {
       {/* Operations & Compliance */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <ChartBarIcon className="h-6 w-6 text-indigo-600" />
+          <ChartBarIcon className="h-6 w-6 text-primary-600" />
           <h2 className="text-xl font-bold text-gray-900">Operations & Compliance</h2>
         </div>
         
@@ -324,7 +324,7 @@ export default function ComprehensiveMetrics() {
                 {OPERATIONS.contractCoverage >= 95 ? 'Excellent' : 'Good'}
               </span>
             </div>
-            <div className="text-4xl font-bold text-indigo-600 mb-2">
+            <div className="text-4xl font-bold text-primary-600 mb-2">
               {OPERATIONS.contractCoverage}%
             </div>
             <div className="text-sm text-gray-600">

@@ -207,7 +207,7 @@ const AutomatedBookkeeping = () => {
 
       {/* Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-green-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-success-300">
           <div className="flex items-center justify-between mb-2">
             <SparklesIcon className="h-8 w-8 text-green-600" />
             <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
@@ -236,7 +236,7 @@ const AutomatedBookkeeping = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-blue-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300">
           <div className="flex items-center justify-between mb-2">
             <CheckCircleIcon className="h-8 w-8 text-blue-600" />
           </div>
@@ -249,9 +249,9 @@ const AutomatedBookkeeping = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-purple-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300">
           <div className="flex items-center justify-between mb-2">
-            <DocumentCheckIcon className="h-8 w-8 text-purple-600" />
+            <DocumentCheckIcon className="h-8 w-8 text-primary-600" />
             <span className={`text-xs font-bold px-2 py-1 rounded-full ${
               syncStatus?.status === 'healthy' ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
             }`}>
@@ -403,7 +403,7 @@ const AutomatedBookkeeping = () => {
       </div>
 
       {/* QuickBooks Sync Status */}
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+      <div className="bg-gradient-to-br from-success-100 to-success-200 rounded-xl p-6 border-2 border-success-300">
         <div className="flex items-start space-x-4">
           <div className="p-3 bg-white rounded-lg shadow-sm">
             <CheckCircleIcon className="h-8 w-8 text-green-600" />
@@ -452,7 +452,7 @@ const AutomatedBookkeeping = () => {
           </div>
 
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+            <div className="flex-shrink-0 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
               2
             </div>
             <div>
@@ -464,7 +464,7 @@ const AutomatedBookkeeping = () => {
           </div>
 
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+            <div className="flex-shrink-0 w-8 h-8 bg-accent-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
               3
             </div>
             <div>

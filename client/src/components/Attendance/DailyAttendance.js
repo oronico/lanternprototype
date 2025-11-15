@@ -443,7 +443,7 @@ export default function DailyAttendance() {
 
       {/* Gamification: Progress Toward Goal */}
       {todayStats && todayStats.rate < 95 && (
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="mt-8 bg-blue-50 border border-primary-300 rounded-lg p-6">
           <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
             <ChartBarIcon className="h-6 w-6" />
             Progress Toward 95% Attendance Goal

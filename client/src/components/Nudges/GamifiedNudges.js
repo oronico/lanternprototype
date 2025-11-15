@@ -287,7 +287,7 @@ export default function GamifiedNudges() {
           <div className="text-sm opacity-90">days in a row! 🔥</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-success-600 to-success-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Attendance Taken</span>
             <CalendarIcon className="h-6 w-6" />
@@ -296,7 +296,7 @@ export default function GamifiedNudges() {
           <div className="text-sm opacity-90">days straight ✅</div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Building Reserve</span>
             <BanknotesIcon className="h-6 w-6" />
@@ -305,7 +305,7 @@ export default function GamifiedNudges() {
           <div className="text-sm opacity-90">days improving 💪</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Enrollment Progress</span>
             <UserGroupIcon className="h-6 w-6" />

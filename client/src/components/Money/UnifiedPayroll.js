@@ -105,7 +105,7 @@ export default function UnifiedPayroll() {
 
       {/* Current Provider Status */}
       {isConnected && (
-        <div className="mb-8 p-6 bg-green-50 border-2 border-green-200 rounded-lg">
+        <div className="mb-8 p-6 bg-green-50 border-2 border-success-300 rounded-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="text-4xl">{currentProvider.logo}</div>
@@ -137,7 +137,7 @@ export default function UnifiedPayroll() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-sm text-gray-600 mb-1">Contractors</div>
-          <div className="text-3xl font-bold text-purple-600">
+          <div className="text-3xl font-bold text-primary-600">
             ${STAFF.monthlyContractors.toLocaleString()}
           </div>
           <div className="text-xs text-gray-500 mt-1">1099 payments</div>
@@ -202,7 +202,7 @@ export default function UnifiedPayroll() {
           {/* Next Payroll */}
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Next Payroll Run</h3>
-            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-primary-300">
               <div className="flex items-center gap-4">
                 <CalendarIcon className="h-8 w-8 text-blue-600" />
                 <div>
@@ -239,7 +239,7 @@ export default function UnifiedPayroll() {
       {/* Providers Tab */}
       {activeTab === 'providers' && (
         <div>
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-6 p-4 bg-blue-50 border border-primary-300 rounded-lg">
             <div className="font-medium text-blue-900 mb-1">Choose Your Payroll Provider</div>
             <div className="text-sm text-blue-700">
               SchoolStack integrates with all major payroll systems. Pick the one that works best for you.
@@ -349,9 +349,9 @@ export default function UnifiedPayroll() {
       )}
 
       {/* Helpful Info */}
-      <div className="mt-8 p-6 bg-purple-50 border border-purple-200 rounded-lg">
-        <h3 className="font-semibold text-purple-900 mb-3">Why Payroll Integration Matters</h3>
-        <div className="text-sm text-purple-800 space-y-2">
+      <div className="mt-8 p-6 bg-primary-50 border border-primary-300 rounded-lg">
+        <h3 className="font-semibold text-primary-900 mb-3">Why Payroll Integration Matters</h3>
+        <div className="text-sm text-primary-800 space-y-2">
           <div>✓ <strong>Automatic tax filing:</strong> No manual quarterly 941 forms</div>
           <div>✓ <strong>W-2 generation:</strong> Year-end forms created automatically</div>
           <div>✓ <strong>Compliance:</strong> Always up-to-date with tax law changes</div>

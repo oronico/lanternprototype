@@ -26,7 +26,7 @@ const PricingPlans = () => {
       description: 'For schools managing their own bookkeeping with smart automation',
       icon: ChartBarIcon,
       iconColor: 'text-blue-600',
-      bgGradient: 'from-blue-50 to-cyan-50',
+      bgGradient: 'from-primary-100 to-primary-200',
       features: {
         core: [
           'Real-time financial dashboard',
@@ -76,8 +76,8 @@ const PricingPlans = () => {
       popular: true,
       description: 'Full automated bookkeeping - we replace your bookkeeper',
       icon: ArrowPathIcon,
-      iconColor: 'text-purple-600',
-      bgGradient: 'from-purple-50 to-pink-50',
+      iconColor: 'text-primary-600',
+      bgGradient: 'from-primary-100 to-primary-200',
       features: {
         core: [
           '✨ Everything in Starter +',
@@ -220,8 +220,8 @@ const PricingPlans = () => {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center p-2 bg-purple-100 rounded-full mb-4">
-          <span className="text-sm font-bold text-purple-700 px-4 py-1">
+        <div className="inline-flex items-center justify-center p-2 bg-primary-100 rounded-full mb-4">
+          <span className="text-sm font-bold text-primary-700 px-4 py-1">
             🚀 New: Replace Your Bookkeeper
           </span>
         </div>
@@ -313,7 +313,7 @@ const PricingPlans = () => {
                     </div>
                   </div>
                   
-                  <div className="mt-4 p-3 bg-white rounded-lg border-2 border-green-200">
+                  <div className="mt-4 p-3 bg-white rounded-lg border-2 border-success-300">
                     <div className="text-xs text-gray-600">You save vs. {plan.roi.replaces}</div>
                     <div className="text-2xl font-bold text-green-600">
                       ${plan.roi.savings.toLocaleString()}/mo
@@ -353,13 +353,13 @@ const PricingPlans = () => {
                   {/* Automation */}
                   <div>
                     <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                      <ArrowPathIcon className="h-4 w-4 mr-1 text-purple-600" />
+                      <ArrowPathIcon className="h-4 w-4 mr-1 text-primary-600" />
                       Automation
                     </h4>
                     <ul className="space-y-2">
                       {plan.features.automation.map((feature, index) => (
                         <li key={index} className="flex items-start space-x-2">
-                          <SparklesIcon className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                          <SparklesIcon className="h-4 w-4 text-primary-500 mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-gray-700">{feature}</span>
                         </li>
                       ))}
@@ -420,7 +420,7 @@ const PricingPlans = () => {
 
                 {/* Trust Factors */}
                 {plan.trustFactors && (
-                  <div className="mb-6 p-4 bg-white rounded-lg border-2 border-blue-200">
+                  <div className="mb-6 p-4 bg-white rounded-lg border-2 border-primary-300">
                     <div className="text-xs font-bold text-blue-900 mb-2">TRUSTED BY:</div>
                     <div className="grid grid-cols-2 gap-2 text-xs text-blue-800">
                       {plan.trustFactors.map((factor, index) => (
@@ -526,15 +526,15 @@ const PricingPlans = () => {
           </table>
         </div>
         
-        <div className="mt-6 p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
-          <div className="text-sm text-purple-900">
+        <div className="mt-6 p-4 bg-primary-50 rounded-lg border-2 border-primary-300">
+          <div className="text-sm text-primary-900">
             <strong>Annual Savings (Professional Plan):</strong> $7,452 - $23,412 per year
           </div>
         </div>
       </div>
 
       {/* How It Works */}
-      <div className="mb-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8">
+      <div className="mb-16 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl p-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
           🔄 How Automated Bookkeeping Works
         </h3>
@@ -551,7 +551,7 @@ const PricingPlans = () => {
           </div>
           
           <div className="text-center">
-            <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">2</span>
             </div>
             <h4 className="font-bold text-gray-900 mb-2">Auto-Categorize</h4>
@@ -561,7 +561,7 @@ const PricingPlans = () => {
           </div>
           
           <div className="text-center">
-            <div className="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-white">3</span>
             </div>
             <h4 className="font-bold text-gray-900 mb-2">Build Ledger</h4>

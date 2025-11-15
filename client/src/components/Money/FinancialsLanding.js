@@ -426,7 +426,7 @@ const FinancialsLanding = () => {
                 )}
                 {txn.requiresSplit && txn.allowLea && (
                   <button
-                    className="px-3 py-1.5 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg"
+                    className="px-3 py-1.5 text-xs font-semibold border border-primary-300 text-blue-700 rounded-lg"
                     onClick={() => handleMarkAsLEA(txn.id)}
                   >
                     Mark as LEA / State

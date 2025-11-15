@@ -255,7 +255,7 @@ export default function EnhancedOnboarding({ onComplete }) {
             </div>
 
             {onboardingData.entityType && (
-              <div className="space-y-4 mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="space-y-4 mb-6 p-4 bg-blue-50 rounded-lg border border-primary-300">
                 <h3 className="font-semibold text-blue-900">Legal Entity Information</h3>
                 
                 <div>
@@ -387,7 +387,7 @@ export default function EnhancedOnboarding({ onComplete }) {
               </div>
 
               {!onboardingData.hasEIN && (
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-4 bg-blue-50 border border-primary-300 rounded-lg">
                   <div className="font-medium text-blue-900 mb-2">Need an EIN?</div>
                   <div className="text-sm text-blue-800 mb-3">
                     You can apply for free at IRS.gov and receive it immediately online.
@@ -561,7 +561,7 @@ export default function EnhancedOnboarding({ onComplete }) {
                       </select>
                     </div>
 
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="p-4 bg-green-50 border border-success-300 rounded-lg">
                       <div className="flex items-start gap-2">
                         <InformationCircleIcon className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                         <div className="text-sm text-green-800">
@@ -574,7 +574,7 @@ export default function EnhancedOnboarding({ onComplete }) {
               </div>
 
               {!onboardingData.hasBankAccount && (
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-4 bg-blue-50 border border-primary-300 rounded-lg">
                   <div className="font-medium text-blue-900 mb-2">Need a Business Bank Account?</div>
                   <div className="text-sm text-blue-800 mb-3">
                     We recommend these banks for small schools:

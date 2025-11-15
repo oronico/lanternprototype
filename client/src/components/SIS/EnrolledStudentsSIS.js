@@ -539,7 +539,7 @@ export default function EnrolledStudentsSIS() {
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-600">Documents</span>
-                <DocumentCheckIcon className="h-5 w-5 text-purple-500" />
+                <DocumentCheckIcon className="h-5 w-5 text-primary-500" />
               </div>
               <div className={`text-3xl font-bold ${missingDocuments === 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {missingDocuments}

@@ -26,12 +26,12 @@ export default function FeatureGate({
     return (
       <div className="relative">
         {beta && (
-          <div className="mb-4 bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <div className="mb-4 bg-primary-50 border border-primary-300 rounded-lg p-4">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">
+              <span className="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full font-medium">
                 Beta
               </span>
-              <p className="text-sm text-purple-800">
+              <p className="text-sm text-primary-800">
                 This feature is in beta. We'd love your feedback!
               </p>
             </div>

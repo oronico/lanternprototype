@@ -466,7 +466,7 @@ const LeaseDataEntry = ({ onAnalyze }) => {
             </div>
             
             {calculateNegotiationDate() && (
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-primary-300">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-blue-900">📅 Start Lease Negotiation</div>
@@ -644,7 +644,7 @@ const LeaseDataEntry = ({ onAnalyze }) => {
               </div>
 
               {/* Cyber Liability - Optional but Recommended */}
-              <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+              <div className="border border-primary-300 rounded-lg p-4 bg-blue-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="font-medium text-gray-900">Cyber Liability (Recommended)</h4>
@@ -692,7 +692,7 @@ const LeaseDataEntry = ({ onAnalyze }) => {
               </div>
               
               {/* Umbrella Policy - Optional */}
-              <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+              <div className="border border-primary-300 rounded-lg p-4 bg-blue-50">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h4 className="font-medium text-gray-900">Umbrella Policy (Additional Coverage)</h4>

@@ -403,18 +403,18 @@ export default function UnifiedPayments() {
       </div>
 
       {primaryCoachPrompt && (
-        <div className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 rounded-2xl p-4">
+        <div className="mb-6 bg-gradient-to-r from-primary-100 to-primary-200 border border-primary-200 rounded-2xl p-4">
           <div className="flex items-start gap-3">
-            <SparklesIcon className="h-6 w-6 text-purple-500" />
+            <SparklesIcon className="h-6 w-6 text-primary-500" />
             <div>
-              <p className="text-xs uppercase tracking-wide text-purple-600 font-semibold">AI Coach</p>
+              <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold">AI Coach</p>
               <p className="text-sm text-gray-800">{primaryCoachPrompt.text}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {primaryCoachPrompt.actions.map((action) => (
                   <button
                     key={action.label}
                     onClick={() => runCoachAction(action)}
-                    className="px-3 py-1.5 text-xs font-semibold bg-white text-purple-700 border border-purple-100 rounded-lg shadow-sm"
+                    className="px-3 py-1.5 text-xs font-semibold bg-white text-primary-700 border border-primary-200 rounded-lg shadow-sm"
                   >
                     {action.label}
                   </button>
@@ -589,7 +589,7 @@ export default function UnifiedPayments() {
                         {txn.requiresSplit && txn.allowLea && (
                           <button
                             onClick={() => handleMarkAsLEA(txn.id)}
-                            className="touch-target px-3 py-2 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg"
+                            className="touch-target px-3 py-2 text-xs font-semibold border border-primary-300 text-blue-700 rounded-lg"
                           >
                             Mark LEA / State
                           </button>
@@ -632,7 +632,7 @@ export default function UnifiedPayments() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {engines.map(engine => (
               <div key={engine.id} className={`bg-white rounded-lg shadow p-6 border-2 ${
-                engine.status === 'connected' ? 'border-green-200' : 'border-gray-200'
+                engine.status === 'connected' ? 'border-success-300' : 'border-gray-200'
               }`}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -724,7 +724,7 @@ export default function UnifiedPayments() {
 
       {activeTab === 'reconcile' && (
         <div>
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-6 p-4 bg-blue-50 border border-primary-300 rounded-lg">
             <div className="font-medium text-blue-900 mb-1">Payment Reconciliation</div>
             <div className="text-sm text-blue-700">
               Match bank deposits to student payments and sync to QuickBooks.
@@ -768,7 +768,7 @@ export default function UnifiedPayments() {
                       {txn.requiresSplit && txn.allowLea && (
                         <button
                           onClick={() => handleMarkAsLEA(txn.id)}
-                          className="px-4 py-2 border border-blue-200 rounded-lg text-blue-700 hover:bg-blue-50"
+                          className="px-4 py-2 border border-primary-300 rounded-lg text-blue-700 hover:bg-blue-50"
                         >
                           Mark LEA / State
                         </button>

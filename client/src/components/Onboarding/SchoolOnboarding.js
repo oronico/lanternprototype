@@ -56,7 +56,7 @@ const SchoolOnboarding = ({ onComplete }) => {
       title: 'Year 0 - Pre-Launch',
       description: "I'm planning to launch my school",
       icon: RocketLaunchIcon,
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-primary-600 to-primary-700',
       features: ['Fundraising tools', 'Startup budget planning', 'Enrollment projections']
     },
     {
@@ -64,7 +64,7 @@ const SchoolOnboarding = ({ onComplete }) => {
       title: 'Years 1-2 - Building',
       description: "I've been operating 1-2 years",
       icon: BuildingOfficeIcon,
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-primary-600 to-primary-700',
       features: ['Growth modeling', 'Cash flow management', 'Basic analytics']
     },
     {
@@ -72,7 +72,7 @@ const SchoolOnboarding = ({ onComplete }) => {
       title: 'Year 3+ - Scaling',
       description: "I've been operating 3+ years",
       icon: AcademicCapIcon,
-      color: 'from-green-500 to-emerald-500',
+      color: 'from-success-600 to-success-700',
       features: ['Advanced forecasting', 'Historical analysis', 'Multi-year trends']
     }
   ];
@@ -312,7 +312,7 @@ const SchoolOnboarding = ({ onComplete }) => {
                       <div className="text-xs text-gray-600">Record income when earned, expenses when incurred (for larger schools)</div>
                     </button>
                   </div>
-                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="mt-2 p-3 bg-blue-50 border border-primary-300 rounded-lg">
                     <div className="text-xs text-blue-800">
                       <strong>Most schools use Cash Accounting.</strong> It's simpler and shows actual cash flow. Choose Accrual only if required by your board or for GAAP compliance.
                     </div>
@@ -634,7 +634,7 @@ const SchoolOnboarding = ({ onComplete }) => {
                   </div>
                 </div>
 
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-4 bg-blue-50 border border-primary-300 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <CheckCircleIcon className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-blue-800">
@@ -671,7 +671,7 @@ const SchoolOnboarding = ({ onComplete }) => {
             ) : (
               <button
                 onClick={handleComplete}
-                className="flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:shadow-lg font-medium transition-all"
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-success-600 to-success-700 text-white rounded-lg hover:shadow-lg font-medium transition-all"
               >
                 Complete Setup 🎉
                 <CheckCircleIcon className="h-5 w-5 ml-2" />

@@ -220,7 +220,7 @@ const ChiefOfStaffDashboard = () => {
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Bookkeeping Status */}
-        <Link to="/bookkeeping" className="bg-white rounded-xl shadow-md p-6 border-2 border-green-200 hover:shadow-lg transition-all">
+        <Link to="/bookkeeping" className="bg-white rounded-xl shadow-md p-6 border-2 border-success-300 hover:shadow-lg transition-all">
           <div className="flex items-center justify-between mb-2">
             <BanknotesIcon className="h-8 w-8 text-green-600" />
             <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">
@@ -237,7 +237,7 @@ const ChiefOfStaffDashboard = () => {
         </Link>
 
         {/* Document Compliance */}
-        <Link to="/documents/repository" className="bg-white rounded-xl shadow-md p-6 border-2 border-blue-200 hover:shadow-lg transition-all">
+        <Link to="/documents/repository" className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300 hover:shadow-lg transition-all">
           <div className="flex items-center justify-between mb-2">
             <DocumentTextIcon className="h-8 w-8 text-blue-600" />
             {metrics.documents?.expiringSoon > 0 && (
@@ -254,10 +254,10 @@ const ChiefOfStaffDashboard = () => {
         </Link>
 
         {/* Cash Position */}
-        <Link to="/cash-reality" className="bg-white rounded-xl shadow-md p-6 border-2 border-purple-200 hover:shadow-lg transition-all">
+        <Link to="/cash-reality" className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300 hover:shadow-lg transition-all">
           <div className="flex items-center justify-between mb-2">
-            <ArrowTrendingUpIcon className="h-8 w-8 text-purple-600" />
-            <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+            <ArrowTrendingUpIcon className="h-8 w-8 text-primary-600" />
+            <span className="text-xs font-bold bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
               {metrics.cash?.daysCash} days
             </span>
           </div>
@@ -386,7 +386,7 @@ const ChiefOfStaffDashboard = () => {
       </div>
 
       {/* Quick Access Tools */}
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-8 border-2 border-purple-200">
+      <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-8 border-2 border-primary-300">
         <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
           🚀 Quick Actions
         </h3>
@@ -412,7 +412,7 @@ const ChiefOfStaffDashboard = () => {
             to="/documents/repository"
             className="p-4 bg-white rounded-lg hover:shadow-md transition-all text-center"
           >
-            <ShieldCheckIcon className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+            <ShieldCheckIcon className="h-8 w-8 text-primary-600 mx-auto mb-2" />
             <div className="text-sm font-semibold text-gray-900">Check Compliance</div>
           </Link>
 
@@ -429,8 +429,8 @@ const ChiefOfStaffDashboard = () => {
       {/* AI Chief of Staff Insights */}
       <div className="bg-white rounded-xl shadow-md p-6">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <SparklesIcon className="h-6 w-6 text-purple-600" />
+          <div className="p-2 bg-primary-100 rounded-lg">
+            <SparklesIcon className="h-6 w-6 text-primary-600" />
           </div>
           <h3 className="text-lg font-bold text-gray-900">AI Chief of Staff Recommendations</h3>
         </div>

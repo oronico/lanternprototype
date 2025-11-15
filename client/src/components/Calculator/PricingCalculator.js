@@ -252,7 +252,7 @@ const PricingCalculator = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 Tuition Recommendation</h3>
-              <div className="text-center p-6 bg-green-50 rounded-lg border-2 border-green-200">
+              <div className="text-center p-6 bg-green-50 rounded-lg border-2 border-success-300">
                 <div className="text-4xl font-bold text-green-600 mb-2">
                   ${sustainableTuition}
                 </div>
@@ -405,7 +405,7 @@ const PricingCalculator = () => {
           {/* Recommended Strategy */}
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Recommended Strategy</h3>
-            <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+            <div className="p-6 bg-gradient-to-r from-success-100 to-primary-100 rounded-lg border border-success-300">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <CurrencyDollarIcon className="h-6 w-6 text-green-600" />
@@ -520,10 +520,10 @@ const PricingCalculator = () => {
             
             <div className="bg-white rounded-lg shadow p-6">
               <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
-                <BuildingOfficeIcon className="h-5 w-5 mr-2 text-purple-600" />
+                <BuildingOfficeIcon className="h-5 w-5 mr-2 text-primary-600" />
                 Private Schools
               </h4>
-              <div className="text-2xl font-bold text-purple-600">$1,325</div>
+              <div className="text-2xl font-bold text-primary-600">$1,325</div>
               <div className="text-sm text-gray-600">Average rate</div>
               <div className="text-xs text-gray-500 mt-2">Traditional schools</div>
               <div className="mt-3 text-xs">
@@ -560,7 +560,7 @@ const PricingCalculator = () => {
                 const isOptimal = percentage <= item.target;
                 
                 return (
-                  <div key={index} className={`p-4 rounded-lg border ${isOptimal ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                  <div key={index} className={`p-4 rounded-lg border ${isOptimal ? 'border-success-300 bg-green-50' : 'border-red-200 bg-red-50'}`}>
                     <div className="text-sm font-medium text-gray-900">{item.label}</div>
                     <div className="text-lg font-bold text-gray-900">${item.amount.toLocaleString()}</div>
                     <div className="text-sm text-gray-600">{Math.round(percentage * 100)}% of total</div>

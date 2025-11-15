@@ -185,7 +185,7 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
           onClick={() => setScenarioMode(!scenarioMode)}
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
             scenarioMode
-              ? 'bg-purple-600 text-white shadow-md'
+              ? 'bg-primary-600 text-white shadow-md'
               : 'bg-white border-2 border-gray-300 text-gray-700 hover:border-purple-400'
           }`}
         >
@@ -196,9 +196,9 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
 
       {/* Scenario Planning Panel */}
       {scenarioMode && (
-        <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 animate-fade-in-up">
+        <div className="bg-primary-50 border-2 border-primary-300 rounded-xl p-6 animate-fade-in-up">
           <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <BeakerIcon className="h-5 w-5 mr-2 text-purple-600" />
+            <BeakerIcon className="h-5 w-5 mr-2 text-primary-600" />
             What-If Scenarios
           </h3>
           
@@ -246,7 +246,7 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
                   type="checkbox"
                   checked={scenarioParams.delayHiring}
                   onChange={(e) => setScenarioParams({...scenarioParams, delayHiring: e.target.checked})}
-                  className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  className="rounded border-gray-300 text-primary-600 focus:ring-purple-500"
                 />
                 <span className="text-sm text-gray-700">Delay hiring (-$3K/mo)</span>
               </label>
@@ -254,7 +254,7 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
           </div>
 
           {scenario && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white rounded-lg border border-purple-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white rounded-lg border border-primary-300">
               <div>
                 <div className="text-xs text-gray-500 mb-1">Projected Revenue</div>
                 <div className="text-xl font-bold text-gray-900">${scenario.newRevenue.toLocaleString()}</div>
@@ -300,7 +300,7 @@ const CashRealityDashboard = ({ schoolData, cashFlowData }) => {
         </div>
 
         {/* Expected Revenue */}
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-green-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-success-300">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-gray-700">Expected Revenue</h3>
             <ArrowTrendingUpIcon className="h-5 w-5 text-green-500" />

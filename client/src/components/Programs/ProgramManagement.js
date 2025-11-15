@@ -194,7 +194,7 @@ const ProgramManagement = () => {
               </div>
 
               {/* Pricing Info */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
+              <div className="mb-4 p-4 bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <CurrencyDollarIcon className="h-5 w-5 text-blue-600" />
                   <span className="font-semibold text-gray-900">Pricing Structure</span>
@@ -257,7 +257,7 @@ const ProgramManagement = () => {
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 border-2 border-purple-200">
+      <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-6 border-2 border-primary-300">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Program Portfolio Summary</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

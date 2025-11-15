@@ -200,7 +200,7 @@ export default function UnifiedBookkeeping() {
       </div>
 
       {/* Accounting Method Notice */}
-      <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mb-8 p-4 bg-blue-50 border border-primary-300 rounded-lg">
         <div className="flex items-start gap-3">
           <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
           <div className="flex-1">
@@ -224,7 +224,7 @@ export default function UnifiedBookkeeping() {
       {/* Integration Status */}
       <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className={`p-4 rounded-lg border-2 ${
-          plaidConnected ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+          plaidConnected ? 'bg-green-50 border-success-300' : 'bg-gray-50 border-gray-200'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -255,7 +255,7 @@ export default function UnifiedBookkeeping() {
         </div>
 
         <div className={`p-4 rounded-lg border-2 ${
-          quickbooksConnected ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+          quickbooksConnected ? 'bg-green-50 border-success-300' : 'bg-gray-50 border-gray-200'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -420,7 +420,7 @@ export default function UnifiedBookkeeping() {
       {/* Categorization Tab */}
       {activeTab === 'categorization' && (
         <div>
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-6 p-4 bg-blue-50 border border-primary-300 rounded-lg">
             <div className="font-medium text-blue-900 mb-1">AI-Powered Categorization</div>
             <div className="text-sm text-blue-700">
               Transactions are automatically categorized and synced to QuickBooks.
@@ -489,7 +489,7 @@ export default function UnifiedBookkeeping() {
         <div>
           {quickbooksConnected ? (
             <div>
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="mb-6 p-4 bg-green-50 border border-success-300 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <CheckCircleIcon className="h-6 w-6 text-green-600" />

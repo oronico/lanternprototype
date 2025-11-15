@@ -127,28 +127,28 @@ const BankReadyReports = () => {
   const getColorClasses = (color) => {
     const colors = {
       blue: {
-        bg: 'from-blue-50 to-cyan-50',
-        border: 'border-blue-200',
+        bg: 'from-primary-100 to-primary-200',
+        border: 'border-primary-300',
         icon: 'text-blue-600',
         button: 'bg-blue-600 hover:bg-blue-700'
       },
       green: {
-        bg: 'from-green-50 to-emerald-50',
-        border: 'border-green-200',
+        bg: 'from-success-100 to-success-200',
+        border: 'border-success-300',
         icon: 'text-green-600',
         button: 'bg-green-600 hover:bg-green-700'
       },
       purple: {
-        bg: 'from-purple-50 to-pink-50',
-        border: 'border-purple-200',
-        icon: 'text-purple-600',
-        button: 'bg-purple-600 hover:bg-purple-700'
+        bg: 'from-primary-100 to-primary-200',
+        border: 'border-primary-300',
+        icon: 'text-primary-600',
+        button: 'bg-primary-600 hover:bg-primary-700'
       },
       indigo: {
         bg: 'from-indigo-50 to-blue-50',
         border: 'border-indigo-200',
-        icon: 'text-indigo-600',
-        button: 'bg-indigo-600 hover:bg-indigo-700'
+        icon: 'text-primary-600',
+        button: 'bg-primary-600 hover:bg-primary-700'
       },
       amber: {
         bg: 'from-amber-50 to-orange-50',
@@ -319,8 +319,8 @@ const BankReadyReports = () => {
           </div>
 
           <div className="text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BuildingLibraryIcon className="h-8 w-8 text-purple-600" />
+            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BuildingLibraryIcon className="h-8 w-8 text-primary-600" />
             </div>
             <h4 className="font-bold text-gray-900 mb-2">Bank-Approved Format</h4>
             <p className="text-sm text-gray-600">
@@ -331,7 +331,7 @@ const BankReadyReports = () => {
       </div>
 
       {/* Success Stories */}
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-8 border-2 border-purple-200">
+      <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-8 border-2 border-primary-300">
         <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Recent Success Stories</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

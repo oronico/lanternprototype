@@ -87,11 +87,11 @@ const EnrollmentPipeline = () => {
   const getStageColor = (stage) => {
     const colors = {
       inquiry: 'bg-blue-100 text-blue-800',
-      tour_scheduled: 'bg-purple-100 text-purple-800',
+      tour_scheduled: 'bg-primary-100 text-primary-800',
       application_pending: 'bg-yellow-100 text-yellow-800',
       ready_to_enroll: 'bg-green-100 text-green-800',
       current_risk: 'bg-red-100 text-red-800',
-      new_inquiry: 'bg-indigo-100 text-indigo-800'
+      new_inquiry: 'bg-primary-100 text-primary-800'
     };
     return colors[stage] || 'bg-gray-100 text-gray-800';
   };
@@ -134,7 +134,7 @@ const EnrollmentPipeline = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <UserGroupIcon className="h-8 w-8 text-indigo-600" />
+            <UserGroupIcon className="h-8 w-8 text-primary-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Enrollment Pipeline</h1>
               <p className="text-gray-600">Track families from inquiry to enrollment to retention</p>
@@ -143,7 +143,7 @@ const EnrollmentPipeline = () => {
           
           <button
             onClick={() => setShowAddFamily(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add Family Inquiry
@@ -173,7 +173,7 @@ const EnrollmentPipeline = () => {
               <div className="text-2xl font-bold text-gray-900">{pipeline?.pipeline?.toursScheduled || 5}</div>
               <div className="text-sm text-gray-600">Tours Scheduled</div>
             </div>
-            <CalendarIcon className="h-8 w-8 text-purple-500" />
+            <CalendarIcon className="h-8 w-8 text-primary-500" />
           </div>
           <div className="mt-2 text-sm text-gray-600">
             42% conversion rate
@@ -228,7 +228,7 @@ const EnrollmentPipeline = () => {
             onClick={() => setActiveTab('pipeline')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'pipeline'
-                ? 'border-indigo-500 text-indigo-600'
+                ? 'border-indigo-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
@@ -238,7 +238,7 @@ const EnrollmentPipeline = () => {
             onClick={() => setActiveTab('analytics')}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'analytics'
-                ? 'border-indigo-500 text-indigo-600'
+                ? 'border-indigo-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
@@ -257,7 +257,7 @@ const EnrollmentPipeline = () => {
                 onClick={() => setSelectedStage('all')}
                 className={`px-3 py-1 rounded-md text-sm font-medium ${
                   selectedStage === 'all'
-                    ? 'bg-indigo-100 text-indigo-700'
+                    ? 'bg-primary-100 text-primary-700'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -272,7 +272,7 @@ const EnrollmentPipeline = () => {
                     onClick={() => setSelectedStage(stage)}
                     className={`px-3 py-1 rounded-md text-sm font-medium ${
                       selectedStage === stage
-                        ? 'bg-indigo-100 text-indigo-700'
+                        ? 'bg-primary-100 text-primary-700'
                         : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
@@ -343,7 +343,7 @@ const EnrollmentPipeline = () => {
                           {family.stage === 'inquiry' && (
                             <button
                               onClick={() => handleFamilyAction(family.id, 'schedule_tour')}
-                              className="text-indigo-600 hover:text-indigo-900 font-medium"
+                              className="text-primary-600 hover:text-primary-900 font-medium"
                             >
                               Schedule Tour
                             </button>
@@ -351,7 +351,7 @@ const EnrollmentPipeline = () => {
                           {family.stage === 'tour_scheduled' && (
                             <button
                               onClick={() => handleFamilyAction(family.id, 'send_tour_confirmation')}
-                              className="text-indigo-600 hover:text-indigo-900 font-medium"
+                              className="text-primary-600 hover:text-primary-900 font-medium"
                             >
                               Send Confirmation
                             </button>
@@ -359,7 +359,7 @@ const EnrollmentPipeline = () => {
                           {family.stage === 'application_pending' && (
                             <button
                               onClick={() => handleFamilyAction(family.id, 'send_followup')}
-                              className="text-indigo-600 hover:text-indigo-900 font-medium"
+                              className="text-primary-600 hover:text-primary-900 font-medium"
                             >
                               Follow Up
                             </button>
@@ -403,8 +403,8 @@ const EnrollmentPipeline = () => {
                 <div className="text-sm text-gray-600">Inquiry → Tour</div>
                 <div className="text-xs text-gray-500">Market avg: 60%</div>
               </div>
-              <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">60%</div>
+              <div className="text-center p-4 bg-primary-50 rounded-lg">
+                <div className="text-2xl font-bold text-primary-600">60%</div>
                 <div className="text-sm text-gray-600">Tour → Application</div>
                 <div className="text-xs text-green-600">Good!</div>
               </div>
@@ -477,9 +477,9 @@ const EnrollmentPipeline = () => {
                   <div className="font-medium text-yellow-900">Late Payers 3x Likely to Leave</div>
                   <div className="text-sm text-yellow-700">Monitor payment patterns closely</div>
                 </div>
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <div className="font-medium text-purple-900">Sibling Families: 2.3x LTV</div>
-                  <div className="text-sm text-purple-700">Prioritize multi-child families</div>
+                <div className="p-3 bg-primary-50 rounded-lg">
+                  <div className="font-medium text-primary-900">Sibling Families: 2.3x LTV</div>
+                  <div className="text-sm text-primary-700">Prioritize multi-child families</div>
                 </div>
               </div>
             </div>
@@ -560,7 +560,7 @@ const EnrollmentPipeline = () => {
                       type="checkbox"
                       checked={newFamily.esaEligible}
                       onChange={(e) => setNewFamily({...newFamily, esaEligible: e.target.checked})}
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-gray-300 text-primary-600 focus:ring-indigo-500"
                     />
                     <span className="ml-2 text-sm text-gray-700">ESA Eligible</span>
                   </label>
@@ -579,7 +579,7 @@ const EnrollmentPipeline = () => {
                 <div className="flex space-x-3 pt-4">
                   <button
                     type="submit"
-                    className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                    className="flex-1 bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700"
                   >
                     Add Family
                   </button>

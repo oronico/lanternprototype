@@ -112,7 +112,7 @@ export default function CleanRecruitmentPipeline() {
     const colors = {
       lead: 'bg-gray-100 text-gray-800 border-gray-300',
       interested: 'bg-blue-100 text-blue-800 border-blue-300',
-      application: 'bg-purple-100 text-purple-800 border-purple-300',
+      application: 'bg-primary-100 text-primary-800 border-purple-300',
       deposit: 'bg-yellow-100 text-yellow-800 border-yellow-300',
       contract: 'bg-orange-100 text-orange-800 border-orange-300',
       enrolled: 'bg-green-100 text-green-800 border-green-300'
@@ -223,7 +223,7 @@ export default function CleanRecruitmentPipeline() {
                           family.stage === 'enrolled' ? 'bg-green-50 border-green-500 text-green-800' :
                           family.stage === 'contract' ? 'bg-orange-50 border-orange-500 text-orange-800' :
                           family.stage === 'deposit' ? 'bg-yellow-50 border-yellow-500 text-yellow-800' :
-                          family.stage === 'application' ? 'bg-purple-50 border-purple-500 text-purple-800' :
+                          family.stage === 'application' ? 'bg-primary-50 border-purple-500 text-primary-800' :
                           family.stage === 'interested' ? 'bg-blue-50 border-blue-500 text-blue-800' :
                           'bg-gray-50 border-gray-500 text-gray-800'
                         }`}
@@ -254,10 +254,10 @@ export default function CleanRecruitmentPipeline() {
                     
                     <button
                       onClick={() => window.location.href = `mailto:${family.email}`}
-                      className="p-2 border border-gray-300 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-colors"
+                      className="p-2 border border-gray-300 rounded-lg hover:bg-primary-50 hover:border-purple-500 transition-colors"
                       title={`Email ${family.email}`}
                     >
-                      <EnvelopeIcon className="h-5 w-5 text-gray-600 hover:text-purple-600" />
+                      <EnvelopeIcon className="h-5 w-5 text-gray-600 hover:text-primary-600" />
                     </button>
                     
                     <button

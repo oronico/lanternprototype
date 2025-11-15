@@ -247,7 +247,7 @@ export default function PaymentEngines() {
           
           return (
             <div key={engine.id} className={`bg-white rounded-lg shadow p-6 border-2 ${
-              connected ? 'border-green-200' : 'border-gray-200'
+              connected ? 'border-success-300' : 'border-gray-200'
             }`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -282,7 +282,7 @@ export default function PaymentEngines() {
                   </div>
 
                   {connection.nextTranche && (
-                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="p-3 bg-blue-50 rounded-lg border border-primary-300">
                       <div className="text-xs text-blue-700 mb-1">Next Tranche Deposit</div>
                       <div className="font-medium text-blue-900">{connection.nextTranche}</div>
                       <div className="text-sm text-blue-800">${connection.trancheAmount.toLocaleString()}</div>

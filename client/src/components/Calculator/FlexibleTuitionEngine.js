@@ -523,7 +523,7 @@ const FlexibleTuitionEngine = () => {
               
               {inputs.publicFunding.annualAmount > 0 ? (
                 <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                  <div className="p-4 bg-gradient-to-r from-success-100 to-primary-100 rounded-lg border border-success-300">
                     <h4 className="font-bold text-green-900 mb-2">Public Funding Strategy</h4>
                     <div className="text-sm text-green-800 space-y-1">
                       <div><strong>Set tuition at:</strong> ${inputs.publicFunding.monthlyEquivalent}/month</div>
@@ -544,7 +544,7 @@ const FlexibleTuitionEngine = () => {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="p-4 bg-blue-50 rounded-lg border border-primary-300">
                   <h4 className="font-bold text-blue-900 mb-2">Private Pay Strategy</h4>
                   <div className="text-sm text-blue-800 space-y-1">
                     <div><strong>Recommended rate:</strong> ${sustainableTuition}/month</div>
@@ -633,9 +633,9 @@ const FlexibleTuitionEngine = () => {
 
             {inputs.programType === 'part_time' && (
               <div className="space-y-3">
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <div className="font-medium text-purple-900">Part-Time/Hybrid Strategy</div>
-                  <div className="text-sm text-purple-800">
+                <div className="p-3 bg-primary-50 rounded-lg">
+                  <div className="font-medium text-primary-900">Part-Time/Hybrid Strategy</div>
+                  <div className="text-sm text-primary-800">
                     Market to homeschool families needing structured learning {inputs.programSchedule.daysPerWeek} days/week. 
                     Price per day: ${Math.round(inputs.currentTuition / inputs.programSchedule.daysPerWeek)}
                   </div>

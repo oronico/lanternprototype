@@ -230,7 +230,7 @@ export default function BoardManagement() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <ScaleIcon className="h-8 w-8 text-indigo-600" />
+            <ScaleIcon className="h-8 w-8 text-primary-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Board Governance</h1>
               <p className="text-gray-600">
@@ -239,7 +239,7 @@ export default function BoardManagement() {
             </div>
           </div>
           
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+          <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2">
             <PlusIcon className="h-5 w-5" />
             Add Board Member
           </button>
@@ -282,7 +282,7 @@ export default function BoardManagement() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-sm text-gray-600 mb-1">Next Meeting</div>
-          <div className="text-lg font-bold text-purple-600">Oct 20</div>
+          <div className="text-lg font-bold text-primary-600">Oct 20</div>
           <div className="text-xs text-gray-500 mt-1">21 days away</div>
         </div>
 
@@ -366,7 +366,7 @@ export default function BoardManagement() {
                           <div className="text-xs text-gray-500">{member.background}</div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium">
+                          <span className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
                             {member.position}
                           </span>
                         </td>
@@ -446,7 +446,7 @@ export default function BoardManagement() {
         <div className="space-y-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Board Meetings</h3>
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
               Schedule Meeting
             </button>
           </div>
@@ -550,7 +550,7 @@ export default function BoardManagement() {
                     setShowAIGenerator(true);
                     setUploadingDocType('Bylaws');
                   }}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
                 >
                   ✨ Generate with AI
                 </button>
@@ -564,7 +564,7 @@ export default function BoardManagement() {
                   <CloudArrowUpIcon className="h-4 w-4" />
                   Upload
                 </button>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+                <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2">
                   <ArrowDownTrayIcon className="h-4 w-4" />
                   Download
                 </button>
@@ -640,7 +640,7 @@ export default function BoardManagement() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-purple-600 rounded-lg">
+                  <div className="p-3 bg-primary-600 rounded-lg">
                     <span className="text-2xl">✨</span>
                   </div>
                   <div>
@@ -653,9 +653,9 @@ export default function BoardManagement() {
                 </button>
               </div>
 
-              <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-6">
-                <h3 className="font-semibold text-purple-900 mb-3">How AI Generation Works:</h3>
-                <ol className="text-sm text-purple-800 space-y-2">
+              <div className="mb-6 bg-primary-50 border border-primary-300 rounded-lg p-6">
+                <h3 className="font-semibold text-primary-900 mb-3">How AI Generation Works:</h3>
+                <ol className="text-sm text-primary-800 space-y-2">
                   <li>1. AI pulls your school info (name, entity type, state, board members)</li>
                   <li>2. Generates professional {uploadingDocType} following legal best practices</li>
                   <li>3. You review and customize (add school-specific policies)</li>
@@ -715,7 +715,7 @@ export default function BoardManagement() {
                       setShowAIGenerator(false);
                     }, 2000);
                   }}
-                  className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center justify-center gap-2"
                 >
                   ✨ Generate {uploadingDocType} with AI
                 </button>

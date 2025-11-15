@@ -159,7 +159,7 @@ const PaymentReconciliation = () => {
       'manual-matched': { color: 'bg-blue-100 text-blue-700', label: '✓ Manual Match' },
       'needs-review': { color: 'bg-yellow-100 text-yellow-700', label: '⚠️ Needs Review' },
       'unmatched': { color: 'bg-red-100 text-red-700', label: '❌ Unmatched' },
-      'split-payment': { color: 'bg-purple-100 text-purple-700', label: '🔀 Split Payment' }
+      'split-payment': { color: 'bg-primary-100 text-primary-700', label: '🔀 Split Payment' }
     };
     return configs[status] || configs['needs-review'];
   };
@@ -167,7 +167,7 @@ const PaymentReconciliation = () => {
   const getSourceBadge = (source) => {
     const configs = {
       stripe: { color: 'bg-blue-100 text-blue-700', label: 'Stripe' },
-      omella: { color: 'bg-purple-100 text-purple-700', label: 'Omella' },
+      omella: { color: 'bg-primary-100 text-primary-700', label: 'Omella' },
       classwallet: { color: 'bg-green-100 text-green-700', label: 'ClassWallet' },
       check: { color: 'bg-gray-100 text-gray-700', label: 'Check' },
       cash: { color: 'bg-amber-100 text-amber-700', label: 'Cash' }
@@ -450,7 +450,7 @@ const PaymentReconciliation = () => {
             {selectedPayment.students.length > 0 && (
               <div className="mb-6">
                 <div className="flex items-center space-x-2 mb-3">
-                  <SparklesIcon className="h-5 w-5 text-purple-600" />
+                  <SparklesIcon className="h-5 w-5 text-primary-600" />
                   <h3 className="font-bold text-gray-900">AI Suggested Allocation</h3>
                   <span className="text-xs text-gray-500">
                     ({(selectedPayment.attributionConfidence * 100).toFixed(0)}% confidence)
@@ -459,7 +459,7 @@ const PaymentReconciliation = () => {
                 
                 <div className="space-y-2">
                   {selectedPayment.students.map((student, idx) => (
-                    <div key={idx} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div key={idx} className="p-3 bg-blue-50 rounded-lg border border-primary-300">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="font-medium text-gray-900">{student.name}</div>
@@ -527,7 +527,7 @@ const PaymentReconciliation = () => {
       )}
 
       {/* How It Works */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+      <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-6 border-2 border-primary-300">
         <h3 className="text-lg font-bold text-gray-900 mb-4">🔄 How Payment Attribution Works</h3>
         
         <div className="space-y-3 text-sm text-gray-700">
@@ -541,7 +541,7 @@ const PaymentReconciliation = () => {
           </div>
           
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            <div className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
               2
             </div>
             <div>
@@ -556,7 +556,7 @@ const PaymentReconciliation = () => {
           </div>
           
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-6 h-6 bg-pink-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            <div className="flex-shrink-0 w-6 h-6 bg-accent-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
               3
             </div>
             <div>

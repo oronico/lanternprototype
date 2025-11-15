@@ -180,7 +180,7 @@ const OperationalMetrics = () => {
       {/* Top 3 KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Contract Coverage */}
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-blue-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <DocumentCheckIcon className="h-6 w-6 text-blue-600" />
@@ -223,7 +223,7 @@ const OperationalMetrics = () => {
         </div>
 
         {/* On-Time Payment % */}
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-green-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-success-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <CreditCardIcon className="h-6 w-6 text-green-600" />
@@ -270,10 +270,10 @@ const OperationalMetrics = () => {
         </div>
 
         {/* Overall Utilization */}
-        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-purple-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border-2 border-primary-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
-              <UserGroupIcon className="h-6 w-6 text-purple-600" />
+              <UserGroupIcon className="h-6 w-6 text-primary-600" />
               <h3 className="font-bold text-gray-900">Enrollment vs. Capacity</h3>
             </div>
             {getTrendIcon(metrics.overallUtilization.trend)}
@@ -304,7 +304,7 @@ const OperationalMetrics = () => {
           
           <Link 
             to="/enrollment"
-            className="mt-4 block text-center px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200"
+            className="mt-4 block text-center px-4 py-2 bg-primary-100 text-primary-700 rounded-lg text-sm font-medium hover:bg-primary-200"
           >
             View Enrollment Pipeline
           </Link>
@@ -372,7 +372,7 @@ const OperationalMetrics = () => {
       </div>
 
       {/* Financial Impact */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+      <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-6 border-2 border-primary-300">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Financial Impact Analysis</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -405,7 +405,7 @@ const OperationalMetrics = () => {
           
           <div>
             <div className="text-sm text-gray-600 mb-1">Potential Monthly Revenue</div>
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="text-2xl font-bold text-primary-600">
               ${metrics.financialImpact.potentialMonthlyRevenue.toLocaleString()}
             </div>
             <div className="text-xs text-gray-500 mt-1">

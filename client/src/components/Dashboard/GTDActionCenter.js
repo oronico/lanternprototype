@@ -292,7 +292,7 @@ export default function GTDActionCenter() {
       status: ATTENDANCE.todayRate >= ATTENDANCE.goal ? 'celebrate' : 'focus',
       description: '2-minute check-in keeps every family in the loop.',
       href: '/attendance/daily',
-      accent: 'from-blue-500 to-cyan-500'
+      accent: 'from-primary-600 to-primary-700'
     },
     {
       id: 'cash',
@@ -314,7 +314,7 @@ export default function GTDActionCenter() {
       status: ENROLLMENT.goalProgress >= 100 ? 'celebrate' : 'focus',
       description: 'Nurture the pipeline + capture tuition contracts.',
       href: '/crm/recruitment',
-      accent: 'from-purple-500 to-pink-500'
+      accent: 'from-primary-600 to-primary-700'
     }
   ]), []);
 
@@ -348,7 +348,7 @@ export default function GTDActionCenter() {
   const rhythmColorClasses = {
     blue: 'text-blue-700 bg-blue-50',
     emerald: 'text-emerald-700 bg-emerald-50',
-    purple: 'text-purple-700 bg-purple-50',
+    purple: 'text-primary-700 bg-primary-50',
     amber: 'text-amber-700 bg-amber-50'
   };
 
@@ -432,7 +432,7 @@ export default function GTDActionCenter() {
           <div className="text-sm opacity-90">days in a row! 🔥</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-success-600 to-success-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Actions Completed</span>
             <CheckCircleIcon className="h-6 w-6" />
@@ -441,7 +441,7 @@ export default function GTDActionCenter() {
           <div className="text-sm opacity-90">today! ✅</div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Building Reserve</span>
             <SparklesIcon className="h-6 w-6" />
@@ -450,7 +450,7 @@ export default function GTDActionCenter() {
           <div className="text-sm opacity-90">days cash 💪</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Enrollment Progress</span>
             <CalendarIcon className="h-6 w-6" />
@@ -462,7 +462,7 @@ export default function GTDActionCenter() {
 
       {/* Encouragement Banner */}
       {totalActions > 0 && (
-        <div className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6">
+        <div className="mb-8 bg-gradient-to-r from-primary-100 to-primary-200 border-2 border-primary-300 rounded-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
@@ -657,7 +657,7 @@ export default function GTDActionCenter() {
       {toEmails.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-purple-600 rounded-lg">
+            <div className="p-2 bg-primary-600 rounded-lg">
               <EnvelopeIcon className="h-5 w-5 text-white" />
             </div>
             <h2 className="text-lg font-bold text-gray-900">To Email ({toEmails.length})</h2>
@@ -669,7 +669,7 @@ export default function GTDActionCenter() {
                 <input
                   type="checkbox"
                   onChange={() => handleComplete(action.id)}
-                  className="w-6 h-6 rounded border-gray-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  className="w-6 h-6 rounded border-gray-300 text-primary-600 focus:ring-purple-500 cursor-pointer"
                 />
                 <div className="flex-1">
                   <div className="font-semibold text-gray-900">{action.title}</div>
@@ -678,7 +678,7 @@ export default function GTDActionCenter() {
                 </div>
                 <button
                   onClick={() => window.location.href = `mailto:${action.email}`}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
                 >
                   <EnvelopeIcon className="h-4 w-4" />
                   Email

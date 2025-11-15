@@ -207,7 +207,7 @@ const FinancialAccounts = () => {
       </div>
 
       {/* Financial Health Score */}
-      <div className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+      <div className="mb-8 bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg p-6 border border-primary-300">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Financial Controls Score</h3>
@@ -252,7 +252,7 @@ const FinancialAccounts = () => {
           </div>
         </div>
         
-        <div className="mt-4 pt-4 border-t border-blue-200">
+        <div className="mt-4 pt-4 border-t border-primary-300">
           <div className="text-sm text-blue-900 font-medium mb-2">Next Steps to Improve Controls:</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             <div className="bg-white p-3 rounded border">
@@ -311,7 +311,7 @@ const FinancialAccounts = () => {
         
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <CreditCardIcon className="h-8 w-8 text-purple-600" />
+            <CreditCardIcon className="h-8 w-8 text-primary-600" />
             <div className="ml-4">
               <div className={`text-2xl font-bold ${(summary?.creditUtilization || 0) < 0.3 ? 'text-green-600' : 'text-red-600'}`}>
                 {Math.round((summary?.creditUtilization || 0) * 100)}%
@@ -518,7 +518,7 @@ const FinancialAccounts = () => {
       </div>
 
       {/* Financial Controls Guide Link */}
-      <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 border border-green-200">
+      <div className="mt-8 bg-gradient-to-r from-success-100 to-primary-100 rounded-lg p-6 border border-success-300">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Need Help Strengthening Financial Controls?</h3>
@@ -553,9 +553,9 @@ const FinancialAccounts = () => {
             <div className="font-medium text-blue-900">Read-Only Access</div>
             <div className="text-blue-700">Cannot move or transfer funds</div>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="font-medium text-purple-900">Multi-Factor Auth</div>
-            <div className="text-purple-700">Additional security layers</div>
+          <div className="text-center p-4 bg-primary-50 rounded-lg">
+            <div className="font-medium text-primary-900">Multi-Factor Auth</div>
+            <div className="text-primary-700">Additional security layers</div>
           </div>
         </div>
         

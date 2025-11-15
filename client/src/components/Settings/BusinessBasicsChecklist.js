@@ -373,7 +373,7 @@ const BusinessBasicsChecklist = () => {
 
       {/* Summary Alert */}
       {progress.percentage >= 90 ? (
-        <div className="mt-8 bg-green-50 rounded-lg p-6 border border-green-200">
+        <div className="mt-8 bg-green-50 rounded-lg p-6 border border-success-300">
           <div className="flex items-start space-x-3">
             <CheckCircleIcon className="h-6 w-6 text-green-600 flex-shrink-0" />
             <div>
@@ -385,7 +385,7 @@ const BusinessBasicsChecklist = () => {
           </div>
         </div>
       ) : (
-        <div className="mt-8 bg-blue-50 rounded-lg p-6 border border-blue-200">
+        <div className="mt-8 bg-blue-50 rounded-lg p-6 border border-primary-300">
           <div className="flex items-start space-x-3">
             <ClockIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
             <div>

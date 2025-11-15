@@ -413,7 +413,7 @@ export default function TaxFilingManager() {
       </div>
 
       {/* CPA Recommendation Banner */}
-      <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
+      <div className="mb-8 bg-gradient-to-r from-success-100 to-success-200 border-2 border-success-300 rounded-lg p-6">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
             <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
@@ -453,7 +453,7 @@ export default function TaxFilingManager() {
       </div>
 
       {/* Entity Type Selector */}
-      <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="mb-8 bg-blue-50 border border-primary-300 rounded-lg p-6">
         <div className="flex items-start gap-4">
           <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
           <div className="flex-1">
@@ -598,7 +598,7 @@ export default function TaxFilingManager() {
             Payroll Tax Filings
           </h2>
           
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4">
+          <div className="p-4 bg-green-50 border border-success-300 rounded-lg mb-4">
             <div className="flex items-start gap-3">
               <CheckCircleIcon className="h-6 w-6 text-green-600 flex-shrink-0" />
               <div>
@@ -627,7 +627,7 @@ export default function TaxFilingManager() {
       )}
 
       {/* Bottom CTA */}
-      <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg p-8 text-white text-center">
+      <div className="mt-8 bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-lg p-8 text-white text-center">
         <h3 className="text-2xl font-bold mb-3">Ready to File Your Taxes?</h3>
         <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
           SchoolStack organizes your data and shows what you need, but we strongly recommend

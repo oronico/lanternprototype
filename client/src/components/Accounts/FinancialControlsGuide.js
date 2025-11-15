@@ -150,8 +150,8 @@ const FinancialControlsGuide = () => {
     const colors = {
       critical: 'text-red-700 bg-red-100 border-red-200',
       warning: 'text-yellow-700 bg-yellow-100 border-yellow-200',
-      good: 'text-green-700 bg-green-100 border-green-200',
-      info: 'text-blue-700 bg-blue-100 border-blue-200'
+      good: 'text-green-700 bg-green-100 border-success-300',
+      info: 'text-blue-700 bg-blue-100 border-primary-300'
     };
     return colors[status] || 'text-gray-700 bg-gray-100 border-gray-200';
   };
@@ -179,7 +179,7 @@ const FinancialControlsGuide = () => {
         </div>
         
         {/* Control Summary */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+        <div className="bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg p-6 border border-primary-300">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-red-600">4</div>
@@ -301,7 +301,7 @@ const FinancialControlsGuide = () => {
       </div>
 
       {/* Best Practices Summary */}
-      <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 border border-green-200">
+      <div className="mt-8 bg-gradient-to-r from-success-100 to-primary-100 rounded-lg p-6 border border-success-300">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <CheckCircleIcon className="h-5 w-5 mr-2 text-green-600" />
           Financial Control Best Practices for Education Businesses

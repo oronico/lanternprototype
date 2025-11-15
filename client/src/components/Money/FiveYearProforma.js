@@ -134,7 +134,7 @@ export default function FiveYearProforma() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <ChartBarIcon className="h-8 w-8 text-purple-600" />
+            <ChartBarIcon className="h-8 w-8 text-primary-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">5-Year Financial Proforma</h1>
               <p className="text-gray-600">Strategic projections for planning and fundraising</p>
@@ -149,7 +149,7 @@ export default function FiveYearProforma() {
               <PencilIcon className="h-5 w-5" />
               Edit Assumptions
             </button>
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2">
+            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2">
               <DocumentArrowDownIcon className="h-5 w-5" />
               Export to Excel
             </button>
@@ -159,7 +159,7 @@ export default function FiveYearProforma() {
 
       {/* Assumptions Panel */}
       {showAssumptions && (
-        <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="mb-8 bg-blue-50 border border-primary-300 rounded-lg p-6">
           <h3 className="font-semibold text-blue-900 mb-4">Growth Assumptions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -244,7 +244,7 @@ export default function FiveYearProforma() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-sm text-gray-600 mb-1">Total 5-Year Profit</div>
-          <div className="text-2xl font-bold text-purple-600">
+          <div className="text-2xl font-bold text-primary-600">
             ${Math.round(projections.reduce((sum, y) => sum + y.netIncome, 0) / 1000)}k
           </div>
           <div className="text-xs text-gray-500 mt-1">
@@ -301,11 +301,11 @@ export default function FiveYearProforma() {
       </div>
 
       {/* Key Milestones */}
-      <div className="mt-8 bg-purple-50 border border-purple-200 rounded-lg p-6">
-        <h3 className="font-semibold text-purple-900 mb-4">Projected Milestones</h3>
+      <div className="mt-8 bg-primary-50 border border-primary-300 rounded-lg p-6">
+        <h3 className="font-semibold text-primary-900 mb-4">Projected Milestones</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-start gap-3">
-            <UserGroupIcon className="h-5 w-5 text-purple-600 mt-0.5" />
+            <UserGroupIcon className="h-5 w-5 text-primary-600 mt-0.5" />
             <div>
               <div className="font-medium text-gray-900">Break-even Enrollment</div>
               <div className="text-sm text-gray-600">
@@ -315,7 +315,7 @@ export default function FiveYearProforma() {
           </div>
           
           <div className="flex items-start gap-3">
-            <BanknotesIcon className="h-5 w-5 text-purple-600 mt-0.5" />
+            <BanknotesIcon className="h-5 w-5 text-primary-600 mt-0.5" />
             <div>
               <div className="font-medium text-gray-900">Cash Reserve Goal</div>
               <div className="text-sm text-gray-600">
@@ -325,7 +325,7 @@ export default function FiveYearProforma() {
           </div>
           
           <div className="flex items-start gap-3">
-            <BuildingOfficeIcon className="h-5 w-5 text-purple-600 mt-0.5" />
+            <BuildingOfficeIcon className="h-5 w-5 text-primary-600 mt-0.5" />
             <div>
               <div className="font-medium text-gray-900">Facility Expansion</div>
               <div className="text-sm text-gray-600">
@@ -335,7 +335,7 @@ export default function FiveYearProforma() {
           </div>
           
           <div className="flex items-start gap-3">
-            <UsersIcon className="h-5 w-5 text-purple-600 mt-0.5" />
+            <UsersIcon className="h-5 w-5 text-primary-600 mt-0.5" />
             <div>
               <div className="font-medium text-gray-900">Staff Growth</div>
               <div className="text-sm text-gray-600">
@@ -347,7 +347,7 @@ export default function FiveYearProforma() {
       </div>
 
       {/* Use Cases */}
-      <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-8 p-6 bg-blue-50 border border-primary-300 rounded-lg">
         <h3 className="font-semibold text-blue-900 mb-3">Use This Proforma For:</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800">
           <div>

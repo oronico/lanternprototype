@@ -124,7 +124,7 @@ const NudgeCenter = ({ schoolId }) => {
     }, 5000);
 
     toast.custom((t) => (
-      <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-4 rounded-xl shadow-xl">
+      <div className="bg-gradient-to-r from-success-600 to-success-700 text-white px-6 py-4 rounded-xl shadow-xl">
         <div className="flex items-center space-x-3">
           <TrophyIcon className="h-8 w-8" />
           <div>
@@ -422,7 +422,7 @@ const NudgeCenter = ({ schoolId }) => {
       </div>
 
       {/* Daily Affirmation */}
-      <div className="mt-8 p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl border-2 border-pink-200">
+      <div className="mt-8 p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl border-2 border-primary-300">
         <div className="flex items-start space-x-3">
           <HeartIcon className="h-6 w-6 text-pink-500 flex-shrink-0 mt-1" />
           <div>

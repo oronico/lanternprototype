@@ -62,7 +62,7 @@ export default function XPSystem({ compact = false }) {
 
   if (compact) {
     return (
-      <div className="flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg">
+      <div className="flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-lg">
         <div className="text-2xl">{currentLevelData?.icon}</div>
         <div>
           <div className="text-xs opacity-90">Level {level}</div>
@@ -83,7 +83,7 @@ export default function XPSystem({ compact = false }) {
           </div>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold text-purple-600">{xp.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-primary-600">{xp.toLocaleString()}</div>
           <div className="text-xs text-gray-500">Total XP</div>
         </div>
       </div>
@@ -93,13 +93,13 @@ export default function XPSystem({ compact = false }) {
           <div className="mb-2">
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Progress to Level {level + 1}</span>
-              <span className="font-medium text-purple-600">
+              <span className="font-medium text-primary-600">
                 {Math.round(progress)}%
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-primary-600 to-primary-700 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />
             </div>
@@ -111,7 +111,7 @@ export default function XPSystem({ compact = false }) {
       )}
 
       {!nextLevelData && (
-        <div className="text-center text-purple-600 font-semibold">
+        <div className="text-center text-primary-600 font-semibold">
           🎉 MAX LEVEL! You're a SchoolStack Legend! 💎
         </div>
       )}

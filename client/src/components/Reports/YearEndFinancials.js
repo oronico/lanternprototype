@@ -137,7 +137,7 @@ export default function YearEndFinancials() {
       </div>
 
       {/* Fiscal Year Setting */}
-      <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="mb-8 bg-blue-50 border border-primary-300 rounded-lg p-6">
         <div className="flex items-start gap-4">
           <InformationCircleIcon className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
           <div className="flex-1">
@@ -264,7 +264,7 @@ export default function YearEndFinancials() {
                       Audit Complete
                     </span>
                   ) : (
-                    <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm">
+                    <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm">
                       Schedule Audit
                     </button>
                   )}
@@ -291,9 +291,9 @@ export default function YearEndFinancials() {
       </div>
 
       {/* Helpful Info */}
-      <div className="mt-8 p-6 bg-purple-50 border border-purple-200 rounded-lg">
-        <h3 className="font-semibold text-purple-900 mb-3">Year-End Financial Requirements</h3>
-        <div className="text-sm text-purple-800 space-y-2">
+      <div className="mt-8 p-6 bg-primary-50 border border-primary-300 rounded-lg">
+        <h3 className="font-semibold text-primary-900 mb-3">Year-End Financial Requirements</h3>
+        <div className="text-sm text-primary-800 space-y-2">
           <div><strong>All entities:</strong> Profit & Loss Statement, Balance Sheet</div>
           <div><strong>501(c)(3) nonprofits:</strong> Statement of Functional Expenses (required for Form 990)</div>
           <div><strong>Audits required if:</strong> 501(c)(3) with revenue >$750k OR receiving federal grants >$750k</div>

@@ -49,8 +49,8 @@ const FinancialHealth = () => {
   };
 
   const getOverallScoreBackground = (score) => {
-    if (score >= 85) return 'bg-green-50 border-green-200';
-    if (score >= 70) return 'bg-blue-50 border-blue-200';
+    if (score >= 85) return 'bg-green-50 border-success-300';
+    if (score >= 70) return 'bg-blue-50 border-primary-300';
     if (score >= 55) return 'bg-yellow-50 border-yellow-200';
     return 'bg-red-50 border-red-200';
   };
@@ -245,8 +245,8 @@ const FinancialHealth = () => {
 const MetricCard = ({ metric, priority }) => {
   const getStatusColor = (status) => {
     const colors = {
-      excellent: 'text-green-700 bg-green-100 border-green-200',
-      good: 'text-blue-700 bg-blue-100 border-blue-200',
+      excellent: 'text-green-700 bg-green-100 border-success-300',
+      good: 'text-blue-700 bg-blue-100 border-primary-300',
       warning: 'text-yellow-700 bg-yellow-100 border-yellow-200',
       danger: 'text-red-700 bg-red-100 border-red-200'
     };
@@ -311,8 +311,8 @@ const getInsightColor = (type) => {
   const colors = {
     critical: 'bg-red-50 border-red-200',
     warning: 'bg-yellow-50 border-yellow-200',
-    opportunity: 'bg-blue-50 border-blue-200',
-    positive: 'bg-green-50 border-green-200'
+    opportunity: 'bg-blue-50 border-primary-300',
+    positive: 'bg-green-50 border-success-300'
   };
   return colors[type] || 'bg-gray-50 border-gray-200';
 };

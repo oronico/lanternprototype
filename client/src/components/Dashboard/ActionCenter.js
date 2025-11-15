@@ -431,7 +431,7 @@ export default function ActionCenter() {
                     {action.actions.includes('email') && (
                       <button
                         onClick={() => sendEmail(action)}
-                        className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-purple-500 hover:text-purple-600 transition-colors"
+                        className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-purple-500 hover:text-primary-600 transition-colors"
                         title={`Email ${action.email}`}
                       >
                         <EnvelopeIcon className="h-5 w-5" />
@@ -464,7 +464,7 @@ export default function ActionCenter() {
                         toast.success('Opening calendar...');
                         markComplete(action.id);
                       }}
-                      className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+                      className="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
                     >
                       Schedule
                     </button>
@@ -473,7 +473,7 @@ export default function ActionCenter() {
                   {action.actions.includes('sendCard') && (
                     <button
                       onClick={() => sendCard(action)}
-                      className="px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 text-sm font-medium"
+                      className="px-3 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700 text-sm font-medium"
                     >
                       Send Card
                     </button>

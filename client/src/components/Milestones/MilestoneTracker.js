@@ -160,24 +160,24 @@ const MilestoneTracker = ({ schoolId, onMilestoneAchieved }) => {
     const colors = {
       blue: {
         bg: 'bg-blue-50',
-        border: 'border-blue-200',
+        border: 'border-primary-300',
         text: 'text-blue-700',
         progress: 'bg-blue-500',
         icon: 'text-blue-600'
       },
       green: {
         bg: 'bg-green-50',
-        border: 'border-green-200',
+        border: 'border-success-300',
         text: 'text-green-700',
         progress: 'bg-green-500',
         icon: 'text-green-600'
       },
       purple: {
-        bg: 'bg-purple-50',
-        border: 'border-purple-200',
-        text: 'text-purple-700',
-        progress: 'bg-purple-500',
-        icon: 'text-purple-600'
+        bg: 'bg-primary-50',
+        border: 'border-primary-300',
+        text: 'text-primary-700',
+        progress: 'bg-primary-500',
+        icon: 'text-primary-600'
       },
       yellow: {
         bg: 'bg-yellow-50',
@@ -273,7 +273,7 @@ const MilestoneTracker = ({ schoolId, onMilestoneAchieved }) => {
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-success-600 to-success-700 h-3 rounded-full transition-all duration-500"
             style={{ width: `${completionRate}%` }}
           />
         </div>
@@ -389,7 +389,7 @@ const MilestoneTracker = ({ schoolId, onMilestoneAchieved }) => {
               return (
                 <div
                   key={milestone.id}
-                  className="relative p-5 rounded-xl bg-green-50 border-2 border-green-200 opacity-75"
+                  className="relative p-5 rounded-xl bg-green-50 border-2 border-success-300 opacity-75"
                 >
                   {/* Checkmark */}
                   <div className="absolute top-4 right-4">
@@ -421,7 +421,7 @@ const MilestoneTracker = ({ schoolId, onMilestoneAchieved }) => {
 
       {/* Encouragement Message */}
       {activeMilestones.length > 0 && (
-        <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200">
+        <div className="mt-8 p-6 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl border-2 border-primary-300">
           <div className="flex items-start space-x-3">
             <SparklesIcon className="h-6 w-6 text-blue-500 flex-shrink-0 mt-1" />
             <div>

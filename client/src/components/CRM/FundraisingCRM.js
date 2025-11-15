@@ -354,7 +354,7 @@ const FundraisingCRM = () => {
     return (
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow p-8 text-center">
-          <div className="animate-spin mx-auto h-8 w-8 border-2 border-purple-200 border-t-purple-600 rounded-full mb-4"></div>
+          <div className="animate-spin mx-auto h-8 w-8 border-2 border-primary-300 border-t-purple-600 rounded-full mb-4"></div>
           <p className="text-sm text-gray-600">Loading fundraising workspace…</p>
         </div>
       </div>
@@ -365,7 +365,7 @@ const FundraisingCRM = () => {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-8">
         <div className="flex items-center gap-3">
-          <UserGroupIcon className="h-10 w-10 text-purple-600" />
+          <UserGroupIcon className="h-10 w-10 text-primary-600" />
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Fundraising</h1>
             <p className="text-sm text-gray-600">
@@ -376,7 +376,7 @@ const FundraisingCRM = () => {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 shadow-sm"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 shadow-sm"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             New Opportunity
@@ -461,7 +461,7 @@ const FundraisingCRM = () => {
               <p className="text-green-600 font-semibold">Restricted</p>
               <p className="text-gray-600 mt-1">Audit-ready, tied to program delivery.</p>
             </div>
-            <div className="p-3 rounded-lg bg-blue-50 border border-blue-100">
+            <div className="p-3 rounded-lg bg-blue-50 border border-primary-200">
               <p className="text-blue-600 font-semibold">Unrestricted</p>
               <p className="text-gray-600 mt-1">Flexible ops + cash runway.</p>
             </div>
@@ -488,8 +488,8 @@ const FundraisingCRM = () => {
           onClick={() => setSelectedStageFilter('all')}
           className={`px-4 py-2 rounded-full text-sm font-medium border ${
             selectedStageFilter === 'all'
-              ? 'bg-purple-600 text-white border-purple-600'
-              : 'text-gray-600 border-gray-200 hover:border-purple-300 hover:text-purple-600'
+              ? 'bg-primary-600 text-white border-purple-600'
+              : 'text-gray-600 border-gray-200 hover:border-purple-300 hover:text-primary-600'
           }`}
         >
           All Opportunities ({opportunities.length})
@@ -557,7 +557,7 @@ const FundraisingCRM = () => {
                       </select>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                      <span className="px-2 py-1 rounded-full bg-purple-50 text-purple-700 font-semibold">
+                      <span className="px-2 py-1 rounded-full bg-primary-50 text-primary-700 font-semibold">
                         Ask: {formatCurrency(opportunity.askAmount)}
                       </span>
                       <span className={`px-2 py-1 rounded-full bg-${opportunity.pursuitType === 'event' ? 'amber' : 'blue'}-50 text-${opportunity.pursuitType === 'event' ? 'amber' : 'blue'}-700 capitalize`}>
@@ -579,7 +579,7 @@ const FundraisingCRM = () => {
                           min="0"
                           value={opportunity.amountAwarded ?? ''}
                           onChange={(e) => handleAmountAwardedChange(opportunity, e.target.value)}
-                          className="w-full sm:w-32 px-2 py-1 text-xs border border-green-200 rounded-md focus:ring-1 focus:ring-green-500"
+                          className="w-full sm:w-32 px-2 py-1 text-xs border border-success-300 rounded-md focus:ring-1 focus:ring-green-500"
                           placeholder="Update amount"
                         />
                       </div>
@@ -615,7 +615,7 @@ const FundraisingCRM = () => {
         <div className="bg-white rounded-2xl shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Automation & reminders</h3>
-            <SparklesIcon className="h-6 w-6 text-purple-500" />
+            <SparklesIcon className="h-6 w-6 text-primary-500" />
           </div>
           {automationQueue.length === 0 ? (
             <p className="text-sm text-gray-500">All prospects are on schedule. Great job!</p>
@@ -762,7 +762,7 @@ const FundraisingCRM = () => {
         <div className="bg-white rounded-2xl shadow p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Relationship contacts</h3>
-            <UserGroupIcon className="h-6 w-6 text-purple-600" />
+            <UserGroupIcon className="h-6 w-6 text-primary-600" />
           </div>
           <div className="table-scroll">
             <table className="min-w-full text-sm">
@@ -789,7 +789,7 @@ const FundraisingCRM = () => {
                       <p className="text-xs text-gray-500">{contact.stage.replace('_', ' ')}</p>
                     </td>
                     <td className="py-2 text-xs text-gray-600">{contact.organization}</td>
-                    <td className="py-2 text-xs text-indigo-600">{contact.email}</td>
+                    <td className="py-2 text-xs text-primary-600">{contact.email}</td>
                     <td className="py-2 text-xs text-gray-600">{contact.phone}</td>
                   </tr>
                 ))}
@@ -981,7 +981,7 @@ const FundraisingCRM = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-semibold text-white bg-purple-600 rounded-lg hover:bg-purple-700 shadow-sm"
+                  className="px-5 py-2 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-sm"
                   disabled={creatingOpportunity}
                 >
                   {creatingOpportunity ? 'Saving…' : 'Save Opportunity'}

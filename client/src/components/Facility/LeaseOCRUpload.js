@@ -300,7 +300,7 @@ export default function LeaseOCRUpload({ onComplete }) {
                 <span>Secure & Private</span>
               </div>
               <div className="flex items-center gap-2">
-                <SparklesIcon className="h-5 w-5 text-purple-500" />
+                <SparklesIcon className="h-5 w-5 text-primary-500" />
                 <span>AI-Powered</span>
               </div>
               <div className="flex items-center gap-2">
@@ -355,7 +355,7 @@ export default function LeaseOCRUpload({ onComplete }) {
         <div className="space-y-6">
           {/* Confidence Banner */}
           <div className={`rounded-lg p-4 ${
-            confidence >= 90 ? 'bg-green-50 border border-green-200' :
+            confidence >= 90 ? 'bg-green-50 border border-success-300' :
             confidence >= 75 ? 'bg-yellow-50 border border-yellow-200' :
             'bg-red-50 border border-red-200'
           }`}>

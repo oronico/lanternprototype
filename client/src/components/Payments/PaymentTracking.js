@@ -56,10 +56,10 @@ const PaymentTracking = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      connected: 'text-green-700 bg-green-100 border-green-200',
+      connected: 'text-green-700 bg-green-100 border-success-300',
       available: 'text-gray-700 bg-gray-100 border-gray-200',
       setup_needed: 'text-yellow-700 bg-yellow-100 border-yellow-200',
-      monitoring: 'text-blue-700 bg-blue-100 border-blue-200',
+      monitoring: 'text-blue-700 bg-blue-100 border-primary-300',
       error: 'text-red-700 bg-red-100 border-red-200'
     };
     return colors[status] || 'text-gray-700 bg-gray-100 border-gray-200';
@@ -167,7 +167,7 @@ const PaymentTracking = () => {
         
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <LinkIcon className="h-8 w-8 text-purple-600" />
+            <LinkIcon className="h-8 w-8 text-primary-600" />
             <div className="ml-4">
               <div className="text-2xl font-bold text-gray-900">
                 {integrations?.summary?.connectedIntegrations || 0}/{integrations?.summary?.totalIntegrations || 0}
@@ -179,7 +179,7 @@ const PaymentTracking = () => {
         
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <ClockIcon className="h-8 w-8 text-indigo-600" />
+            <ClockIcon className="h-8 w-8 text-primary-600" />
             <div className="ml-4">
               <div className="text-2xl font-bold text-gray-900">
                 {integrations?.summary?.dataFreshness || 'Real-time'}

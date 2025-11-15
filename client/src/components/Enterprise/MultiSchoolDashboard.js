@@ -297,7 +297,7 @@ export default function MultiSchoolDashboard() {
               <option value="year">This Year</option>
             </select>
             
-            <span className="touch-target w-full sm:w-auto px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full text-center">
+            <span className="touch-target w-full sm:w-auto px-3 py-1 bg-primary-100 text-primary-800 text-sm font-medium rounded-full text-center">
               Enterprise
             </span>
           </div>
@@ -323,7 +323,7 @@ export default function MultiSchoolDashboard() {
 
         <div className="bg-white rounded-lg shadow p-4">
           <div className="text-xs text-gray-600 mb-1">Utilization</div>
-          <div className="text-2xl font-bold text-purple-600">{networkTotals.avgUtilization}%</div>
+          <div className="text-2xl font-bold text-primary-600">{networkTotals.avgUtilization}%</div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-4">
@@ -343,7 +343,7 @@ export default function MultiSchoolDashboard() {
 
         <div className="bg-white rounded-lg shadow p-4">
           <div className="text-xs text-gray-600 mb-1">Health Score</div>
-          <div className="text-2xl font-bold text-indigo-600">{networkTotals.avgHealthScore}</div>
+          <div className="text-2xl font-bold text-primary-600">{networkTotals.avgHealthScore}</div>
         </div>
       </div>
 
@@ -437,7 +437,7 @@ export default function MultiSchoolDashboard() {
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                       school.status === 'excellent' ? 'bg-green-100 text-green-800' :
                       school.status === 'healthy' ? 'bg-blue-100 text-blue-800' :
-                      school.status === 'growing' ? 'bg-purple-100 text-purple-800' :
+                      school.status === 'growing' ? 'bg-primary-100 text-primary-800' :
                       'bg-red-100 text-red-800'
                     }`}>
                       {statusLabel}
@@ -501,12 +501,12 @@ export default function MultiSchoolDashboard() {
                   <div className="text-xs text-green-600">{selectedSchool.financial.healthScore} health score</div>
                 </div>
                 
-                <div className="bg-purple-50 rounded-lg p-4 text-center">
-                  <div className="text-sm text-purple-700">Days Cash</div>
-                  <div className="text-2xl font-bold text-purple-900">
+                <div className="bg-primary-50 rounded-lg p-4 text-center">
+                  <div className="text-sm text-primary-700">Days Cash</div>
+                  <div className="text-2xl font-bold text-primary-900">
                     {selectedSchool.financial.daysCash}
                   </div>
-                  <div className="text-xs text-purple-600">Goal: 30+ days</div>
+                  <div className="text-xs text-primary-600">Goal: 30+ days</div>
                 </div>
               </div>
 

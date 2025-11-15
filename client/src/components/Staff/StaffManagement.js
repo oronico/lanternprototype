@@ -217,7 +217,7 @@ export default function StaffManagement() {
             ) : (
               <button
                 onClick={handleConnectGusto}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
               >
                 <LinkIcon className="h-5 w-5" />
                 Connect Gusto
@@ -237,7 +237,7 @@ export default function StaffManagement() {
 
       {/* Gusto Connection Status */}
       {gustoConnected && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div className="mb-6 p-4 bg-green-50 border border-success-300 rounded-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <CheckCircleIcon className="h-6 w-6 text-green-600" />
@@ -270,7 +270,7 @@ export default function StaffManagement() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-sm text-gray-600 mb-1">1099 Contractors</div>
-          <div className="text-3xl font-bold text-purple-600">{contractor1099Count}</div>
+          <div className="text-3xl font-bold text-primary-600">{contractor1099Count}</div>
           <div className="text-xs text-gray-500 mt-1">
             ${total1099Payments.toLocaleString()}/mo
           </div>
@@ -311,8 +311,8 @@ export default function StaffManagement() {
           onClick={() => setSelectedType('1099')}
           className={`px-4 py-2 rounded-lg font-medium ${
             selectedType === '1099'
-              ? 'bg-purple-600 text-white'
-              : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+              ? 'bg-primary-600 text-white'
+              : 'bg-primary-100 text-primary-700 hover:bg-primary-200'
           }`}
         >
           1099 Contractors ({contractor1099Count})
@@ -359,7 +359,7 @@ export default function StaffManagement() {
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                     person.type === 'w2'
                       ? 'bg-blue-100 text-blue-800'
-                      : 'bg-purple-100 text-purple-800'
+                      : 'bg-primary-100 text-primary-800'
                   }`}>
                     {person.type === 'w2' ? 'W-2 Employee' : '1099 Contractor'}
                   </span>
@@ -421,7 +421,7 @@ export default function StaffManagement() {
                     {person.type === '1099' && (
                       <button
                         onClick={() => handleGenerate1099(person.id)}
-                        className="text-sm text-purple-600 hover:text-purple-800 text-left"
+                        className="text-sm text-primary-600 hover:text-primary-800 text-left"
                       >
                         Generate 1099
                       </button>
@@ -467,7 +467,7 @@ export default function StaffManagement() {
           </div>
 
           {gustoConnected && (
-            <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+            <div className="mt-6 p-4 bg-green-50 rounded-lg border border-success-300">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium text-green-900">Next Payroll Run</div>
@@ -489,7 +489,7 @@ export default function StaffManagement() {
       {selectedType === 'all' || selectedType === '1099' ? (
         <div className="mt-8 bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <DocumentTextIcon className="h-6 w-6 text-purple-500" />
+            <DocumentTextIcon className="h-6 w-6 text-primary-500" />
             1099 Contractor Summary
           </h3>
           

@@ -67,7 +67,7 @@ export default function BusinessHealthDashboard() {
       </div>
 
       {/* 1. FINANCIAL */}
-      <div className="mb-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-100">
+      <div className="mb-8 bg-gradient-to-br from-success-100 to-success-200 rounded-xl p-6 border-2 border-green-100">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-green-600 rounded-lg">
             <BanknotesIcon className="h-6 w-6 text-white" />
@@ -253,7 +253,7 @@ export default function BusinessHealthDashboard() {
       </div>
 
       {/* 3. STUDENTS */}
-      <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-100">
+      <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-primary-200">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-blue-600 rounded-lg">
             <UserGroupIcon className="h-6 w-6 text-white" />
@@ -344,7 +344,7 @@ export default function BusinessHealthDashboard() {
       {/* 4. STAFF */}
       <div className="mb-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border-2 border-indigo-100">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 bg-indigo-600 rounded-lg">
+          <div className="p-3 bg-primary-600 rounded-lg">
             <UsersIcon className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900">👨‍🏫 Staff</h2>
@@ -399,9 +399,9 @@ export default function BusinessHealthDashboard() {
       </div>
 
       {/* 5. FUTURE READY */}
-      <div className="mb-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-100">
+      <div className="mb-8 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl p-6 border-2 border-primary-200">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-3 bg-purple-600 rounded-lg">
+          <div className="p-3 bg-primary-600 rounded-lg">
             <RocketLaunchIcon className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900">🔮 Future Ready</h2>

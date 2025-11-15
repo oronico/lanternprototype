@@ -8,7 +8,7 @@ const Header = ({ user, onLogout }) => {
       
       <div className="flex-1 px-6 flex justify-between items-center">
         <div className="flex-1 flex items-center">
-          <div className="flex items-center space-x-3 bg-green-50 px-3 py-1.5 rounded-lg border border-green-200">
+          <div className="flex items-center space-x-3 bg-green-50 px-3 py-1.5 rounded-lg border border-success-300">
             <div className="animate-pulse-slow w-2 h-2 bg-green-500 rounded-full shadow-sm"></div>
             <span className="text-sm font-medium text-green-700">
               All systems synced

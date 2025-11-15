@@ -429,15 +429,15 @@ export default function EnrollmentDashboard() {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Retention Rate</span>
-            <HeartIcon className="h-5 w-5 text-purple-500" />
+            <HeartIcon className="h-5 w-5 text-primary-500" />
           </div>
-          <div className="text-3xl font-bold text-purple-600">{retentionRate}%</div>
+          <div className="text-3xl font-bold text-primary-600">{retentionRate}%</div>
           <div className="text-xs text-gray-500 mt-1">returned this year</div>
         </div>
       </div>
 
       {/* Relationship Nurturing Ideas */}
-      <div className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg shadow p-6">
+      <div className="mb-8 bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <HeartIcon className="h-6 w-6 text-pink-500" />
           Family Relationship Ideas

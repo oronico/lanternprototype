@@ -141,7 +141,7 @@ export default function FeatureAdmin() {
                         </span>
                       )}
                       {config?.beta && (
-                        <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">
+                        <span className="px-2 py-0.5 bg-primary-100 text-primary-800 text-xs rounded-full font-medium">
                           Beta
                         </span>
                       )}
@@ -195,7 +195,7 @@ export default function FeatureAdmin() {
         </div>
 
         {/* Info Box */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="mt-6 bg-blue-50 border border-primary-300 rounded-lg p-4">
           <h3 className="font-semibold text-blue-900 mb-2">How to use:</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Toggle features on/off to test different states</li>

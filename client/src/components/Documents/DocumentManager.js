@@ -94,9 +94,9 @@ const DocumentManager = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      signed: 'bg-green-100 text-green-800 border-green-200',
+      signed: 'bg-green-100 text-green-800 border-success-300',
       pending_signature: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      ready_to_send: 'bg-blue-100 text-blue-800 border-blue-200',
+      ready_to_send: 'bg-blue-100 text-blue-800 border-primary-300',
       draft: 'bg-gray-100 text-gray-800 border-gray-200'
     };
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
@@ -152,7 +152,7 @@ const DocumentManager = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <DocumentTextIcon className="h-8 w-8 text-indigo-600" />
+            <DocumentTextIcon className="h-8 w-8 text-primary-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Document Management</h1>
               <p className="text-gray-600">Generate contracts, track signatures, and link to payment processing</p>
@@ -161,7 +161,7 @@ const DocumentManager = () => {
           
           <button
             onClick={() => setShowCreateContract(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
           >
             <PencilIcon className="h-4 w-4 mr-2" />
             Generate New Contract
@@ -296,7 +296,7 @@ const DocumentManager = () => {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => setSelectedContract(contract)}
-                        className="text-indigo-600 hover:text-indigo-900 font-medium"
+                        className="text-primary-600 hover:text-primary-900 font-medium"
                       >
                         <EyeIcon className="h-4 w-4" />
                       </button>
@@ -518,9 +518,9 @@ const DocumentManager = () => {
             <div className="text-sm text-green-700">Completion Rate</div>
             <div className="text-xs text-gray-500">Families complete signing</div>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">100%</div>
-            <div className="text-sm text-purple-700">Legal Validity</div>
+          <div className="text-center p-4 bg-primary-50 rounded-lg">
+            <div className="text-2xl font-bold text-primary-600">100%</div>
+            <div className="text-sm text-primary-700">Legal Validity</div>
             <div className="text-xs text-gray-500">Court-admissible signatures</div>
           </div>
         </div>

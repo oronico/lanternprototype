@@ -559,7 +559,7 @@ const SchoolSettings = () => {
             </div>
             
             {/* Total Calculation */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-primary-300">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-blue-900">Total Monthly Operating Costs:</span>
                 <span className="text-2xl font-bold text-blue-600">${calculateTotalMonthlyCosts().toLocaleString()}</span>
@@ -748,7 +748,7 @@ const SchoolSettings = () => {
       )}
 
       {/* Help Text */}
-      <div className="mt-8 bg-blue-50 rounded-lg p-6 border border-blue-200">
+      <div className="mt-8 bg-blue-50 rounded-lg p-6 border border-primary-300">
         <div className="flex items-start space-x-3">
           <ExclamationTriangleIcon className="h-6 w-6 text-blue-600 flex-shrink-0" />
           <div>

@@ -111,12 +111,12 @@ const AIAssistant = () => {
 
   const getCategoryColor = (category) => {
     const colors = {
-      governance: 'text-purple-600 bg-purple-100',
+      governance: 'text-primary-600 bg-primary-100',
       operations: 'text-blue-600 bg-blue-100', 
       legal: 'text-red-600 bg-red-100',
       marketing: 'text-green-600 bg-green-100',
       financial: 'text-yellow-600 bg-yellow-100',
-      facility: 'text-indigo-600 bg-indigo-100',
+      facility: 'text-primary-600 bg-primary-100',
       compliance: 'text-orange-600 bg-orange-100'
     };
     return colors[category] || 'text-gray-600 bg-gray-100';
@@ -133,7 +133,7 @@ const AIAssistant = () => {
 
   const getSeverityColor = (severity) => {
     const colors = {
-      low: 'text-green-700 bg-green-100 border-green-200',
+      low: 'text-green-700 bg-green-100 border-success-300',
       medium: 'text-yellow-700 bg-yellow-100 border-yellow-200',
       high: 'text-red-700 bg-red-100 border-red-200'
     };
@@ -146,7 +146,7 @@ const AIAssistant = () => {
       <div className="mb-8">
         <div className="flex items-center space-x-3 mb-4">
           <div className="flex-shrink-0">
-            <SparklesIcon className="h-8 w-8 text-purple-600" />
+            <SparklesIcon className="h-8 w-8 text-primary-600" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">AI Assistant</h1>
@@ -161,7 +161,7 @@ const AIAssistant = () => {
               onClick={() => setActiveTab('generate')}
               className={`py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'generate'
-                  ? 'border-purple-500 text-purple-600'
+                  ? 'border-purple-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -171,7 +171,7 @@ const AIAssistant = () => {
               onClick={() => setActiveTab('review')}
               className={`py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'review'
-                  ? 'border-purple-500 text-purple-600'
+                  ? 'border-purple-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -224,7 +224,7 @@ const AIAssistant = () => {
                           onClick={() => setSelectedTemplate(key)}
                           className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
                             selectedTemplate === key
-                              ? 'border-purple-500 bg-purple-50'
+                              ? 'border-purple-500 bg-primary-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -331,7 +331,7 @@ const AIAssistant = () => {
               <button
                 onClick={generateDocument}
                 disabled={!selectedTemplate || generating}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {generating ? (
                   <>
@@ -397,7 +397,7 @@ const AIAssistant = () => {
                   <button className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
                     Download PDF
                   </button>
-                  <button className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700">
+                  <button className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700">
                     Copy to Clipboard
                   </button>
                 </div>
@@ -455,7 +455,7 @@ const AIAssistant = () => {
               <button
                 onClick={reviewDocument}
                 disabled={!reviewContent.trim() || reviewing}
-                className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {reviewing ? (
                   <>
@@ -480,7 +480,7 @@ const AIAssistant = () => {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">Review Results</h3>
                     <div className="flex items-center">
-                      <span className="text-2xl font-bold text-purple-600">
+                      <span className="text-2xl font-bold text-primary-600">
                         {reviewResult.review.overallScore}
                       </span>
                       <span className="text-sm text-gray-500 ml-1">/100</span>
@@ -533,7 +533,7 @@ const AIAssistant = () => {
                     <ol className="space-y-2">
                       {reviewResult.nextActions.map((action, index) => (
                         <li key={index} className="flex items-start text-sm">
-                          <span className="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">
+                          <span className="flex-shrink-0 w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">
                             {index + 1}
                           </span>
                           {action}

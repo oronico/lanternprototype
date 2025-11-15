@@ -341,7 +341,7 @@ const Sidebar = () => {
                           <div className="flex items-center justify-between">
                             <span>{subItem.name}</span>
                             {subItem.badge && (
-                              <span className="px-2 py-0.5 text-xs font-bold bg-purple-100 text-purple-700 rounded-full">
+                              <span className="px-2 py-0.5 text-xs font-bold bg-primary-100 text-primary-700 rounded-full">
                                 {subItem.badge}
                               </span>
                             )}

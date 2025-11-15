@@ -238,7 +238,7 @@ export default function UnifiedCommandCenter() {
           <div className="text-sm opacity-90">days in a row! 🔥</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-success-600 to-success-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Attendance Taken</span>
             <CalendarIcon className="h-6 w-6" />
@@ -247,7 +247,7 @@ export default function UnifiedCommandCenter() {
           <div className="text-sm opacity-90">days straight ✅</div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Building Reserve</span>
             <BanknotesIcon className="h-6 w-6" />
@@ -256,7 +256,7 @@ export default function UnifiedCommandCenter() {
           <div className="text-sm opacity-90">days improving 💪</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm opacity-90">Enrollment Progress</span>
             <UserGroupIcon className="h-6 w-6" />
@@ -384,10 +384,10 @@ export default function UnifiedCommandCenter() {
                   const Icon = nudge.icon;
                   
                   return (
-                    <div key={nudge.id} className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-5">
+                    <div key={nudge.id} className="bg-gradient-to-br from-primary-100 to-primary-200 border border-primary-300 rounded-lg p-5">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <Icon className="h-6 w-6 text-purple-600" />
+                          <Icon className="h-6 w-6 text-primary-600" />
                           <div className="font-semibold text-gray-900">{nudge.title}</div>
                         </div>
                         <button
@@ -404,7 +404,7 @@ export default function UnifiedCommandCenter() {
                             if (nudge.actionUrl) window.location.href = nudge.actionUrl;
                             dismissNudge(nudge.id);
                           }}
-                          className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                          className="text-sm text-primary-600 hover:text-primary-800 font-medium"
                         >
                           {nudge.action} →
                         </button>
@@ -496,7 +496,7 @@ export default function UnifiedCommandCenter() {
       {activeTab === 'milestones' && (
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <RocketLaunchIcon className="h-6 w-6 text-purple-500" />
+            <RocketLaunchIcon className="h-6 w-6 text-primary-500" />
             Your Journey
           </h2>
 
@@ -538,7 +538,7 @@ export default function UnifiedCommandCenter() {
               <h3 className="font-semibold text-gray-900 mb-4">Completed 🎉</h3>
               <div className="space-y-3">
                 {completedMilestones.map(milestone => (
-                  <div key={milestone.id} className="bg-green-50 rounded-lg border border-green-200 p-4 flex items-center gap-3">
+                  <div key={milestone.id} className="bg-green-50 rounded-lg border border-success-300 p-4 flex items-center gap-3">
                     <CheckCircleIcon className="h-6 w-6 text-green-600 flex-shrink-0" />
                     <div className="flex-1">
                       <div className="font-medium text-gray-900">{milestone.title}</div>
