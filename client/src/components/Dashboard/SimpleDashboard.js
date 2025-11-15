@@ -283,6 +283,7 @@ export default function SimpleDashboard() {
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
       <CoachGreeting />
       <HealthScoreCard score={FINANCIAL.healthScore} />
+      <MovesThatMatter />
       <CategoryScorecard
         categories={healthCategories}
         expandedCategory={expandedCategory}
@@ -301,6 +302,15 @@ export default function SimpleDashboard() {
 }
 
 const CoachGreeting = () => {
+  const [userName, setUserName] = useState('Director');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedName = window.localStorage.getItem('userFirstName') || 'Director';
+      setUserName(storedName);
+    }
+  }, []);
+
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -317,7 +327,7 @@ const CoachGreeting = () => {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-wide text-gray-500">Welcome back</p>
-          <h1 className="text-3xl font-bold text-gray-900">Your business is covered.</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Hello, {userName}. Your business is covered.</h1>
           <p className="text-gray-600">{today}</p>
         </div>
         <div className="bg-primary-50 border border-primary-100 rounded-xl px-5 py-3">
@@ -329,30 +339,136 @@ const CoachGreeting = () => {
   );
 };
 
-const HealthScoreCard = ({ score }) => {
-  const status = score >= 80 ? 'excellent' : score >= 65 ? 'good' : 'needs work';
-  const color = score >= 80 ? 'text-green-600' : score >= 65 ? 'text-yellow-600' : 'text-red-600';
-  const bg = score >= 80 ? 'bg-green-50' : score >= 65 ? 'bg-yellow-50' : 'bg-red-50';
-  const borderColor = score >= 80 ? 'border-green-200' : score >= 65 ? 'border-yellow-200' : 'border-red-200';
+const MovesThatMatter = () => {
+  const moves = [
+    {
+      id: 'enrollment',
+      priority: 1,
+      title: 'Hit 100% Enrollment',
+      current: `${ENROLLMENT.goalProgress}%`,
+      target: `${ENROLLMENT.current}/${ENROLLMENT.target} students`,
+      status: getStatus(ENROLLMENT.goalProgress, 100, 90),
+      action: 'View recruitment pipeline',
+      href: '/crm/recruitment',
+      why: 'Revenue is tied to enrollment—every empty seat costs you tuition.'
+    },
+    {
+      id: 'attrition',
+      priority: 2,
+      title: 'Keep Attrition Below 10%',
+      current: `${ENROLLMENT.attritionRate}%`,
+      target: 'Target: <10%',
+      status: getStatus(ENROLLMENT.attritionRate, 10, 15, true),
+      action: 'Review student retention',
+      href: '/students',
+      why: 'Replacing students is expensive—retention protects your margins.'
+    },
+    {
+      id: 'retention',
+      priority: 3,
+      title: 'Maintain 90%+ Retention',
+      current: `${ENROLLMENT.retentionRate}%`,
+      target: 'Target: ≥90%',
+      status: getStatus(ENROLLMENT.retentionRate, 90, 85),
+      action: 'Track family satisfaction',
+      href: '/students',
+      why: 'Happy families renew and refer—your best marketing channel.'
+    },
+    {
+      id: 'attendance',
+      priority: 4,
+      title: 'Maintain 95%+ Attendance',
+      current: `${ATTENDANCE.ytdRate}%`,
+      target: 'Target: ≥95%',
+      status: getStatus(ATTENDANCE.ytdRate, 95, 92),
+      action: 'Review attendance patterns',
+      href: '/students',
+      why: 'Lenders watch attendance—it signals program quality and stability.'
+    },
+    {
+      id: 'autopay',
+      priority: 5,
+      title: 'Set Up Automated Tuition Collection',
+      current: 'Manual invoicing',
+      target: 'Stripe, Omella, or ClassWallet',
+      status: 'warning',
+      action: 'Connect payment provider',
+      href: '/payments',
+      why: 'Autopay improves collections from 85% to 98%—lenders require it for underwriting.'
+    }
+  ];
 
   return (
-    <section className={`${bg} border-2 ${borderColor} rounded-2xl p-6 shadow-sm`}>
+    <section className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-primary-600 rounded-lg">
+          <SparklesIcon className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold">Financial Health Drivers</p>
+          <h3 className="text-xl font-bold text-gray-900">The Moves That Matter Most</h3>
+          <p className="text-sm text-gray-600">Focus on these to unlock loan-readiness and profitability.</p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {moves.map(move => {
+          const statusInfo = statusMeta[move.status] || statusMeta.good;
+          return (
+            <div key={move.id} className="border border-gray-100 rounded-xl p-4 bg-gray-50 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-start gap-3 flex-1">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm">
+                  {move.priority}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="text-base font-semibold text-gray-900">{move.title}</h4>
+                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.class}`}>
+                      {statusInfo.text}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-1">
+                    <span className="font-semibold">Current:</span> {move.current} • {move.target}
+                  </p>
+                  <p className="text-xs text-gray-600 italic">{move.why}</p>
+                </div>
+              </div>
+              <Link
+                to={move.href}
+                className="text-sm font-semibold text-primary-600 hover:text-primary-800 flex items-center gap-1"
+              >
+                {move.action}
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
+const HealthScoreCard = ({ score }) => {
+  const status = score >= 80 ? 'excellent' : score >= 65 ? 'good' : 'needs work';
+  const color = score >= 80 ? 'text-teal-700' : score >= 65 ? 'text-teal-600' : 'text-teal-600';
+
+  return (
+    <section className="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-200 rounded-2xl p-6 shadow-sm">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-white rounded-xl shadow">
-            <SparklesIcon className="h-8 w-8 text-primary-600" />
+            <SparklesIcon className="h-8 w-8 text-teal-600" />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Business Health Score</p>
+            <p className="text-xs uppercase tracking-wide text-teal-700 font-semibold">Business Health Score</p>
             <h2 className="text-4xl font-bold text-gray-900">{score}<span className="text-2xl text-gray-500">/100</span></h2>
-            <p className="text-sm text-gray-700">Based on 22 years of underwriting microschools</p>
+            <p className="text-sm text-teal-800">Based on 22 years of underwriting microschools</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <p className={`text-lg font-semibold ${color} capitalize`}>{status}</p>
           <Link
             to="/health"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-800"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 hover:text-teal-900"
           >
             View full scorecard
             <ArrowRightIcon className="h-4 w-4" />
