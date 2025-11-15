@@ -108,9 +108,9 @@ const buildHealthCategories = () => {
       id: 'students',
       name: 'Students',
       icon: UserGroupIcon,
-      gradient: 'from-blue-50 to-indigo-50',
-      border: 'border-blue-100',
-      iconBg: 'bg-blue-600',
+      gradient: 'from-primary-50 to-primary-100',
+      border: 'border-primary-200',
+      iconBg: 'bg-primary-600',
       cta: { label: 'View Students', href: '/students' },
       metrics: [
         {
@@ -193,9 +193,9 @@ const buildHealthCategories = () => {
       id: 'staff',
       name: 'Staff',
       icon: UsersIcon,
-      gradient: 'from-purple-50 to-fuchsia-50',
-      border: 'border-purple-100',
-      iconBg: 'bg-purple-600',
+      gradient: 'from-gray-50 to-gray-100',
+      border: 'border-gray-200',
+      iconBg: 'bg-gray-600',
       cta: { label: 'View Staff', href: '/payroll' },
       metrics: [
         {
@@ -225,9 +225,9 @@ const buildHealthCategories = () => {
       id: 'outlook',
       name: 'Outlook',
       icon: RocketLaunchIcon,
-      gradient: 'from-indigo-50 to-slate-50',
-      border: 'border-indigo-100',
-      iconBg: 'bg-indigo-600',
+      gradient: 'from-accent-50 to-amber-50',
+      border: 'border-accent-200',
+      iconBg: 'bg-accent-600',
       cta: { label: 'View Full Scorecard', href: '/health' },
       metrics: [
         {
@@ -586,24 +586,24 @@ const CoachingNudges = ({ nudges }) => (
 );
 
 const DailyMomentum = ({ streaks, dailyWins, winsGoal, winsProgress, onLogWin }) => (
-  <section className="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-2xl p-6 space-y-4 shadow-sm">
+  <section className="bg-gradient-to-r from-success-50 to-success-100 border-2 border-success-200 rounded-2xl p-6 space-y-4 shadow-sm">
     <div className="flex items-center gap-3">
-      <SparklesIcon className="h-6 w-6 text-emerald-600" />
+      <SparklesIcon className="h-6 w-6 text-success-600" />
       <div>
-        <p className="text-xs uppercase tracking-wide text-emerald-700 font-semibold">Daily Momentum</p>
+        <p className="text-xs uppercase tracking-wide text-success-700 font-semibold">Daily Momentum</p>
         <p className="text-sm text-gray-700">Small wins compound into big results.</p>
       </div>
     </div>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {Object.entries(streaks).map(([key, value]) => (
-        <div key={key} className="bg-white rounded-xl border border-emerald-100 shadow-sm p-4">
+        <div key={key} className="bg-white rounded-xl border border-success-100 shadow-sm p-4">
           <p className="text-xs uppercase tracking-wide text-gray-500">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
           <p className="text-xs text-gray-500">day streak</p>
         </div>
       ))}
     </div>
-    <div className="bg-white rounded-xl border border-emerald-100 p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div className="bg-white rounded-xl border border-success-100 p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div>
         <p className="text-sm font-semibold text-gray-900">Daily Wins ({dailyWins}/{winsGoal})</p>
         <p className="text-xs text-gray-500">Log three wins to unlock tomorrow's insight.</p>
@@ -611,7 +611,7 @@ const DailyMomentum = ({ streaks, dailyWins, winsGoal, winsProgress, onLogWin })
       <div className="flex-1 md:px-6">
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
           <div
-            className="h-2 bg-emerald-500 rounded-full transition-all"
+            className="h-2 bg-success-500 rounded-full transition-all"
             style={{ width: `${winsProgress}%` }}
           />
         </div>
@@ -622,7 +622,7 @@ const DailyMomentum = ({ streaks, dailyWins, winsGoal, winsProgress, onLogWin })
         className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
           dailyWins >= winsGoal
             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            : 'bg-emerald-600 text-white hover:bg-emerald-700'
+            : 'bg-success-600 text-white hover:bg-success-700'
         }`}
       >
         {dailyWins >= winsGoal ? '✓ Wins logged' : 'Log a win'}

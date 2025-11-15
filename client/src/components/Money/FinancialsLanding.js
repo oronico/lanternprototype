@@ -272,11 +272,11 @@ const FinancialsLanding = () => {
       </header>
 
       {coachInsights.length > 0 && (
-        <section className="bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 flex flex-col gap-4">
+        <section className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-2xl p-5 flex flex-col gap-4">
           <div className="flex items-start gap-3">
-            <SparklesIcon className="h-8 w-8 text-indigo-500" />
+            <SparklesIcon className="h-8 w-8 text-primary-600" />
             <div>
-              <p className="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Built-in Consultant</p>
+              <p className="text-xs uppercase tracking-wide text-primary-700 font-semibold">Built-in Consultant</p>
               <p className="text-sm text-gray-700">AI coach is watching your books and highlighting what matters most today.</p>
             </div>
           </div>
