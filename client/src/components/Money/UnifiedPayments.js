@@ -96,7 +96,8 @@ export default function UnifiedPayments() {
         status: 'mapped',
         requiresSplit: false,
         reconciled: true,
-        students: [{ name: 'Emma Johnson', amount: 1200 }]
+        students: [{ name: 'Emma Johnson', amount: 1200 }],
+        allowLea: false
       },
       {
         id: 2,
@@ -110,7 +111,8 @@ export default function UnifiedPayments() {
         status: 'needs_split',
         requiresSplit: true,
         reconciled: false,
-        statementId: 'stmt_sep_operating'
+        statementId: 'stmt_sep_operating',
+        allowLea: true
       },
       {
         id: 3,
@@ -124,7 +126,8 @@ export default function UnifiedPayments() {
         status: 'mapped',
         requiresSplit: false,
         reconciled: true,
-        students: [{ name: 'Noah Williams', amount: 1200 }]
+        students: [{ name: 'Noah Williams', amount: 1200 }],
+        allowLea: false
       },
       {
         id: 4,
@@ -141,7 +144,8 @@ export default function UnifiedPayments() {
         students: [
           { name: 'Olivia Brown', amount: 414 },
           { name: 'Ethan Brown', amount: 414 }
-        ]
+        ],
+        allowLea: false
       },
       {
         id: 5,
@@ -155,7 +159,8 @@ export default function UnifiedPayments() {
         status: 'needs_category',
         reconciled: false,
         vendor: 'Supplies Co',
-        memo: 'STEM classroom kits'
+        memo: 'STEM classroom kits',
+        allowLea: false
       }
     ]);
 
@@ -238,6 +243,17 @@ export default function UnifiedPayments() {
     } catch (error) {
       console.error('Failed to mark categorized', error);
       setActivityError('Unable to update transaction. Try again.');
+    }
+  };
+
+  const handleMarkAsLEA = async (txnId) => {
+    try {
+      await financialsAPI.markAsLEADeposit(txnId);
+      await loadActivityFeed();
+      toast.success('Marked as LEA / state funding');
+    } catch (error) {
+      console.error('Failed to mark LEA deposit', error);
+      setActivityError('Unable to update deposit. Try again.');
     }
   };
 
@@ -538,15 +554,22 @@ export default function UnifiedPayments() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      <div className="space-y-1">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                         txn.status === 'mapped' && !txn.requiresSplit
                           ? 'bg-green-100 text-green-800'
                           : txn.status === 'needs_category'
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-orange-100 text-orange-800'
-                      }`}>
-                        {txn.status === 'mapped' && !txn.requiresSplit ? 'Ready' : txn.status === 'needs_category' ? 'Needs category' : 'Needs split'}
-                      </span>
+                        }`}>
+                          {txn.status === 'mapped' && !txn.requiresSplit ? 'Ready' : txn.status === 'needs_category' ? 'Needs category' : 'Needs split'}
+                        </span>
+                        {txn.allocationType === 'lea' && (
+                          <div className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 inline-flex">
+                            LEA / State Funding
+                          </div>
+                        )}
+                      </div>
                       {!txn.reconciled && (
                         <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
                           Unreconciled
@@ -561,6 +584,14 @@ export default function UnifiedPayments() {
                             className="touch-target px-3 py-2 text-xs font-semibold bg-primary-600 text-white rounded-lg"
                           >
                             Split per student
+                          </button>
+                        )}
+                        {txn.requiresSplit && txn.allowLea && (
+                          <button
+                            onClick={() => handleMarkAsLEA(txn.id)}
+                            className="touch-target px-3 py-2 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg"
+                          >
+                            Mark LEA / State
                           </button>
                         )}
                         {txn.status === 'needs_category' && (
@@ -719,6 +750,11 @@ export default function UnifiedPayments() {
                           Categorize this transaction before reconciling.
                         </div>
                       )}
+                      {txn.allocationType === 'lea' && (
+                        <div className="mt-2 text-xs text-blue-700">
+                          Marked as LEA / state funding deposit.
+                        </div>
+                      )}
                     </div>
                     <div className="flex gap-3 flex-wrap">
                       {txn.requiresSplit && (
@@ -727,6 +763,14 @@ export default function UnifiedPayments() {
                           className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                         >
                           Split deposit
+                        </button>
+                      )}
+                      {txn.requiresSplit && txn.allowLea && (
+                        <button
+                          onClick={() => handleMarkAsLEA(txn.id)}
+                          className="px-4 py-2 border border-blue-200 rounded-lg text-blue-700 hover:bg-blue-50"
+                        >
+                          Mark LEA / State
                         </button>
                       )}
                       {txn.status === 'needs_category' && !txn.requiresSplit && (

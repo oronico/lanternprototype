@@ -7,7 +7,6 @@ import {
   DocumentTextIcon,
   CheckBadgeIcon,
   CurrencyDollarIcon,
-  ClipboardDocumentCheckIcon,
   CreditCardIcon,
   BoltIcon,
   SparklesIcon
@@ -24,6 +23,7 @@ import {
 } from '../../utils/financials';
 
 const defaultSplitModalState = { open: false, transaction: null, allocations: [], error: '', saving: false };
+const COST_CENTERS = ['Instruction', 'Operations', 'Facilities', 'Administration', 'Development', 'Student Support', 'Technology'];
 
 const FinancialsLanding = () => {
   const nudges = generateNudges().filter(n => ['payment', 'financial', 'fundraising'].includes(n.type)).slice(0, 3);
@@ -183,6 +183,17 @@ const FinancialsLanding = () => {
     }
   };
 
+  const handleMarkAsLEA = async (txnId) => {
+    try {
+      await financialsAPI.markAsLEADeposit(txnId);
+      await loadActivity();
+      toast.success('Marked as LEA / state funding deposit');
+    } catch (error) {
+      console.error('Failed to mark LEA deposit', error);
+      setActivityError('Unable to update deposit. Try again.');
+    }
+  };
+
   const handleChecklistToggle = async (stepId, completed) => {
     try {
       const { data } = await financialsAPI.updateChecklistStep(stepId, completed);
@@ -292,18 +303,18 @@ const FinancialsLanding = () => {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FinancialColumn
           title="Receivables · Tuition & Funding"
-          description="Auto-ingest Plaid transactions, split deposits per student, reconcile donor activity."
+          description="Track private-pay tuition, ESA reimbursements, and LEA/state deposits with the right reconciliation rules."
           cards={[
             {
-              title: 'Receivables & Plaid Feed',
-              description: 'Review bank/credit card activity, split amounts per student, sync to ledger.',
+              title: 'Cash & Collections (Private Tuition)',
+              description: 'Map family payments per student, unbundle siblings, and chase on-time collections.',
               href: '/payments',
               icon: BanknotesIcon
             },
             {
-              title: 'Fundraising (501c3)',
-              description: 'Pipeline, award mix, finance sync queue—visible only when entity type allows.',
-              href: '/crm/fundraising',
+              title: 'ESA & LEA Funding',
+              description: 'Handle batch deposits from ESAs or local education agencies—mark as LEA when per-student splits aren’t required.',
+              href: '/payments?program=esa',
               icon: CurrencyDollarIcon
             },
             {
@@ -315,12 +326,12 @@ const FinancialsLanding = () => {
           ]}
         />
         <FinancialColumn
-          title="Expenses · Accounting & Payroll"
-          description="Categorize Plaid expenses, attach statements, guide month-end close."
+          title="Expenses · Bookkeeping & Payroll"
+          description="Bookkeeping, cost centers, and payroll guidance in one lane."
           cards={[
             {
-              title: 'Accounting & Bookkeeping',
-              description: 'Categorize expenses, attach receipts & statements, sync to chart of accounts.',
+              title: 'Bookkeeping',
+              description: 'Categorize expenses, enforce cost centers, attach receipts & statements.',
               href: '/bookkeeping',
               icon: DocumentTextIcon
             },
@@ -345,7 +356,7 @@ const FinancialsLanding = () => {
           <CreditCardIcon className="h-6 w-6 text-primary-500" />
           <h2 className="text-lg font-semibold text-gray-900">Unified Activity Feed</h2>
         </div>
-        <p className="text-sm text-gray-600">Pulls Plaid bank + credit card feeds + uploaded statements into one queue with AI-suggested mappings.</p>
+        <p className="text-sm text-gray-600">Pulls Plaid bank + credit card feeds + uploaded statements into one queue with AI-suggested mappings. Private-pay tuition must be mapped per student; ESA or LEA/state funding can be marked accordingly.</p>
         <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-4">
           <span className="px-3 py-1.5 rounded-full bg-gray-100">{reviewCount} transactions need review</span>
           <span className="px-3 py-1.5 rounded-full bg-gray-100">{splitCount} deposits need split per student</span>
@@ -367,7 +378,7 @@ const FinancialsLanding = () => {
                   </p>
                   <p className="text-xs text-gray-500">{txn.date} • {txn.account} • {txn.source}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-right space-y-1">
                   <p className={`text-base font-bold ${txn.direction === 'inbound' ? 'text-emerald-600' : 'text-red-600'}`}>
                     {txn.direction === 'inbound' ? '+' : '-'}${txn.amount.toLocaleString()}
                   </p>
@@ -378,6 +389,11 @@ const FinancialsLanding = () => {
                   }`}>
                     {txn.status === 'mapped' ? 'Mapped' : txn.status === 'needs_category' ? 'Needs category' : 'Needs split'}
                   </span>
+                  {txn.allocationType === 'lea' && (
+                    <div className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 inline-flex items-center gap-1">
+                      <span className="font-semibold">LEA / State Funding</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="text-xs text-gray-600 flex flex-wrap gap-3">
@@ -408,6 +424,14 @@ const FinancialsLanding = () => {
                     Split per student
                   </button>
                 )}
+                {txn.requiresSplit && txn.allowLea && (
+                  <button
+                    className="px-3 py-1.5 text-xs font-semibold border border-blue-200 text-blue-700 rounded-lg"
+                    onClick={() => handleMarkAsLEA(txn.id)}
+                  >
+                    Mark as LEA / State
+                  </button>
+                )}
                 {txn.status === 'needs_category' && (
                   <button
                     className="px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-lg"
@@ -427,6 +451,7 @@ const FinancialsLanding = () => {
           error={statementError}
           onMarkStatus={handleStatementStatusChange}
           onAttachReceipt={handleAttachReceipt}
+          onUpdateLine={handleStatementLineUpdate}
         />
       </section>
 
@@ -520,7 +545,7 @@ const MonthCloseChecklist = ({ steps, loading, progress, onToggle }) => (
   </>
 );
 
-const StatementReconciliationTray = ({ statements, loading, error, onMarkStatus, onAttachReceipt }) => {
+const StatementReconciliationTray = ({ statements, loading, error, onMarkStatus, onAttachReceipt, onUpdateLine }) => {
   const openStatement = (file) => {
     if (file) window.open(file, '_blank');
   };
@@ -528,6 +553,9 @@ const StatementReconciliationTray = ({ statements, loading, error, onMarkStatus,
   return (
     <div className="mt-6">
       <p className="text-sm font-semibold text-gray-900 mb-2">Credit Card & Statement Reconciliation</p>
+      <p className="text-xs text-gray-500 mb-3">
+        Think Expensify: tag every expense to a cost center, add context, attach receipts, and mark when it’s reconciled.
+      </p>
       {loading ? (
         <div className="text-xs text-gray-500">Syncing statements...</div>
       ) : statements.length === 0 ? (
@@ -577,6 +605,25 @@ const StatementReconciliationTray = ({ statements, loading, error, onMarkStatus,
                       {line.receiptAttached && (
                         <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">Receipt</span>
                       )}
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
+                      <select
+                        value={line.costCenter || ''}
+                        onChange={(e) => onUpdateLine(stmt.id, line.id, { costCenter: e.target.value }, 'Cost center saved')}
+                        className="px-3 py-1.5 text-xs border border-gray-300 rounded-lg bg-white"
+                      >
+                        <option value="">Cost center</option>
+                        {COST_CENTERS.map(center => (
+                          <option key={center} value={center}>{center}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        defaultValue={line.note || ''}
+                        onBlur={(e) => onUpdateLine(stmt.id, line.id, { note: e.target.value }, 'Note saved')}
+                        placeholder="Add description"
+                        className="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded-lg"
+                      />
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {line.status !== 'matched' && (

@@ -53,7 +53,7 @@ const navigationGroups = [
         href: '/payments'
       },
       {
-        name: 'Accounting & Bookkeeping',
+        name: 'Bookkeeping',
         href: '/bookkeeping',
         badge: 'Pro'
       },

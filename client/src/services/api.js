@@ -526,6 +526,17 @@ export const financialsAPI = {
     }
     return api.post(`/financials/activity/${activityId}/mark-categorized`);
   },
+  markAsLEADeposit: (activityId) => {
+    if (USE_MOCK_DATA) {
+      mockFinancialsState.activity = mockFinancialsState.activity.map(txn =>
+        txn.id === activityId
+          ? { ...txn, requiresSplit: false, status: 'mapped', allocationType: 'lea' }
+          : txn
+      );
+      return Promise.resolve({ data: { success: true } });
+    }
+    return api.post(`/financials/activity/${activityId}/mark-lea`);
+  },
   getMonthCloseChecklist: () => {
     if (USE_MOCK_DATA) {
       return Promise.resolve({

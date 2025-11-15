@@ -300,7 +300,9 @@ export const mockData = {
         family: 'Lopez',
         requiresSplit: true,
         status: 'needs_split',
-        source: 'Plaid'
+        source: 'Plaid',
+        allocationType: 'student',
+        allowLea: true
       },
       {
         id: 'txn_002',
@@ -316,7 +318,8 @@ export const mockData = {
         students: [
           { name: 'Emma Johnson', amount: 1200 }
         ],
-        source: 'Plaid'
+        source: 'Plaid',
+        allocationType: 'student'
       },
       {
         id: 'txn_003',
@@ -330,7 +333,8 @@ export const mockData = {
         requiresSplit: false,
         status: 'needs_category',
         source: 'Statement',
-        statementId: 'stmt_sep_card'
+        statementId: 'stmt_sep_card',
+        allocationType: 'student'
       },
       {
         id: 'txn_004',
@@ -342,7 +346,8 @@ export const mockData = {
         memo: 'Payroll batch 09/24',
         requiresSplit: false,
         status: 'mapped',
-        source: 'Plaid'
+        source: 'Plaid',
+        allocationType: 'student'
       }
     ],
     statements: [
@@ -354,9 +359,9 @@ export const mockData = {
         status: 'uploaded',
         type: 'credit_card',
         lines: [
-          { id: 'line_card_1', date: '2024-09-22', description: 'Staples Store 885', amount: 218, category: 'Classroom Supplies', status: 'needs_review', receiptAttached: false },
-          { id: 'line_card_2', date: '2024-09-20', description: 'Home Depot #442', amount: 146, category: 'Facilities', status: 'matched', receiptAttached: true },
-          { id: 'line_card_3', date: '2024-09-18', description: 'Uber Trip', amount: 32, category: 'Travel', status: 'flagged', receiptAttached: false }
+          { id: 'line_card_1', date: '2024-09-22', description: 'Staples Store 885', amount: 218, category: 'Classroom Supplies', costCenter: 'Instruction', note: 'STEM kits', status: 'needs_review', receiptAttached: false },
+          { id: 'line_card_2', date: '2024-09-20', description: 'Home Depot #442', amount: 146, category: 'Facilities', costCenter: 'Facilities', note: 'Paint touch-up', status: 'matched', receiptAttached: true },
+          { id: 'line_card_3', date: '2024-09-18', description: 'Uber Trip', amount: 32, category: 'Travel', costCenter: 'Operations', note: '', status: 'flagged', receiptAttached: false }
         ]
       },
       {
@@ -367,8 +372,8 @@ export const mockData = {
         status: 'processing',
         type: 'bank',
         lines: [
-          { id: 'line_bank_1', date: '2024-09-27', description: 'ACH CLASSWALLET BATCH', amount: 2332, category: 'Tuition Deposits', status: 'needs_review', receiptAttached: false },
-          { id: 'line_bank_2', date: '2024-09-24', description: 'Gusto Payroll Debit', amount: 8421, category: 'Payroll', status: 'matched', receiptAttached: false }
+          { id: 'line_bank_1', date: '2024-09-27', description: 'ACH CLASSWALLET BATCH', amount: 2332, category: 'Tuition Deposits', costCenter: 'Instruction', note: '', status: 'needs_review', receiptAttached: false },
+          { id: 'line_bank_2', date: '2024-09-24', description: 'Gusto Payroll Debit', amount: 8421, category: 'Payroll', costCenter: 'Staffing', note: '', status: 'matched', receiptAttached: false }
         ]
       }
     ],

@@ -13,7 +13,9 @@ const financialActivity = [
     family: 'Lopez',
     requiresSplit: true,
     status: 'needs_split',
-    source: 'Plaid'
+    source: 'Plaid',
+    allocationType: 'student',
+    allowLea: true
   },
   {
     id: 'txn_002',
@@ -27,7 +29,8 @@ const financialActivity = [
     requiresSplit: false,
     status: 'mapped',
     students: [{ name: 'Emma Johnson', amount: 1200 }],
-    source: 'Plaid'
+    source: 'Plaid',
+    allocationType: 'student'
   },
   {
     id: 'txn_003',
@@ -41,7 +44,8 @@ const financialActivity = [
     requiresSplit: false,
     status: 'needs_category',
     source: 'Statement',
-    statementId: 'stmt_sep_card'
+    statementId: 'stmt_sep_card',
+    allocationType: 'student'
   },
   {
     id: 'txn_004',
@@ -53,7 +57,8 @@ const financialActivity = [
     memo: 'Payroll batch 09/24',
     requiresSplit: false,
     status: 'mapped',
-    source: 'Plaid'
+    source: 'Plaid',
+    allocationType: 'student'
   }
 ];
 
@@ -172,6 +177,25 @@ router.post('/activity/:activityId/mark-categorized', (req, res) => {
   }
 
   transaction.status = 'mapped';
+
+  res.json({
+    success: true,
+    transaction,
+    summary: summarizeActivity()
+  });
+});
+
+router.post('/activity/:activityId/mark-lea', (req, res) => {
+  const { activityId } = req.params;
+  const transaction = financialActivity.find(txn => txn.id === activityId);
+
+  if (!transaction) {
+    return res.status(404).json({ error: 'Transaction not found' });
+  }
+
+  transaction.requiresSplit = false;
+  transaction.status = 'mapped';
+  transaction.allocationType = 'lea';
 
   res.json({
     success: true,

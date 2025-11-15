@@ -1,10 +1,15 @@
 import React from 'react';
-import { 
+import {
   BanknotesIcon,
   UserGroupIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  BuildingOfficeIcon,
+  UsersIcon,
+  RocketLaunchIcon,
+  SparklesIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline';
 import { ENROLLMENT, FINANCIAL, ATTENDANCE, OPERATIONS, STAFF, FACILITY } from '../../data/centralizedMetrics';
 import { CoachingAlert } from '../Gamification/CoachingAlerts';
@@ -16,7 +21,87 @@ import { CoachingAlert } from '../Gamification/CoachingAlerts';
  * No loading states, no conditionals, just works
  */
 
+const getStatus = (value, goodThreshold, warningThreshold, invert = false) => {
+  if (invert) {
+    if (value <= goodThreshold) return 'good';
+    if (value <= warningThreshold) return 'warning';
+    return 'alarm';
+  }
+  if (value >= goodThreshold) return 'good';
+  if (value >= warningThreshold) return 'warning';
+  return 'alarm';
+};
+
+const statusMeta = {
+  good: { text: 'On Track', badge: 'bg-green-100 text-green-800', icon: <CheckCircleIcon className="h-4 w-4 text-green-600" /> },
+  warning: { text: 'Needs Work', badge: 'bg-yellow-100 text-yellow-800', icon: <ExclamationTriangleIcon className="h-4 w-4 text-yellow-500" /> },
+  alarm: { text: 'Alarm', badge: 'bg-red-100 text-red-800', icon: <XCircleIcon className="h-4 w-4 text-red-600" /> }
+};
+
+const buildHealthCategories = () => ([
+  {
+    id: 'financial',
+    name: 'Financial Fitness',
+    icon: BanknotesIcon,
+    accent: 'green',
+    cta: { label: 'Open Financials', href: '/financials' },
+    metrics: [
+      { label: 'Days Cash on Hand', value: `${FINANCIAL.daysCash} days`, status: getStatus(FINANCIAL.daysCash, 30, 20) },
+      { label: 'Collections', value: `${OPERATIONS.onTimePayment}%`, status: getStatus(OPERATIONS.onTimePayment, 95, 90) },
+      { label: 'Profit Margin', value: `${FINANCIAL.profitMargin}%`, status: getStatus(FINANCIAL.profitMargin, 12, 8) }
+    ]
+  },
+  {
+    id: 'facility',
+    name: 'Facility & Safety',
+    icon: BuildingOfficeIcon,
+    accent: 'purple',
+    cta: { label: 'View Facility Plan', href: '/facility' },
+    metrics: [
+      { label: 'Rent to Revenue', value: `${Math.round(FINANCIAL.facilityBurden * 100)}%`, status: getStatus(FINANCIAL.facilityBurden * 100, 20, 25, true) },
+      { label: 'Occupancy', value: `${FACILITY.facilityCapacityUtilization}%`, status: getStatus(FACILITY.facilityCapacityUtilization, 85, 70) },
+      { label: 'Compliance Docs', value: FACILITY.fireInspectionsCurrent ? 'Up to date' : 'Needs update', status: FACILITY.fireInspectionsCurrent ? 'good' : 'warning' }
+    ]
+  },
+  {
+    id: 'students',
+    name: 'Students & Enrollment',
+    icon: UserGroupIcon,
+    accent: 'blue',
+    cta: { label: 'Open Enrollment', href: '/crm/recruitment' },
+    metrics: [
+      { label: 'Enrollment to Goal', value: `${ENROLLMENT.goalProgress}%`, status: getStatus(ENROLLMENT.goalProgress, 90, 80) },
+      { label: 'Attendance', value: `${ATTENDANCE.ytdRate}%`, status: getStatus(ATTENDANCE.ytdRate, 95, 92) },
+      { label: 'Retention', value: `${ENROLLMENT.retentionRate}%`, status: getStatus(ENROLLMENT.retentionRate, 90, 85) }
+    ]
+  },
+  {
+    id: 'staff',
+    name: 'People & Payroll',
+    icon: UsersIcon,
+    accent: 'orange',
+    cta: { label: 'Review Staffing', href: '/staff' },
+    metrics: [
+      { label: 'Labor Cost %', value: `${Math.round(STAFF.staffingRatio * 100)}%`, status: getStatus(STAFF.staffingRatio * 100, 55, 60, true) },
+      { label: 'Next Payroll', value: STAFF.nextPayrollDate || 'N/A', status: 'good' },
+      { label: 'Open Roles', value: STAFF.openRoles || 0, status: STAFF.openRoles > 0 ? 'warning' : 'good' }
+    ]
+  },
+  {
+    id: 'future',
+    name: 'Future Ready',
+    icon: RocketLaunchIcon,
+    accent: 'indigo',
+    cta: { label: 'See Future Ready', href: '/health' },
+    metrics: [
+      { label: 'Innovation Funded', value: `${FINANCIAL.fundraisingSecuredYTD ? `$${(FINANCIAL.fundraisingSecuredYTD / 1000).toFixed(1)}k` : '$0'}`, status: FINANCIAL.fundraisingSecuredYTD > 0 ? 'good' : 'warning' },
+      { label: 'Strategic Projects', value: OPERATIONS.projectsOnTrack ? 'On track' : 'Needs attention', status: OPERATIONS.projectsOnTrack ? 'good' : 'warning' }
+    ]
+  }
+]);
+
 export default function SimpleDashboard() {
+  const healthCategories = buildHealthCategories();
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
@@ -133,6 +218,8 @@ export default function SimpleDashboard() {
         </div>
       </div>
 
+      <HealthOverview categories={healthCategories} />
+
       {/* Coaching Alerts - Gamified! */}
       {FINANCIAL.daysCash < 30 && (
         <div className="mb-8">
@@ -153,107 +240,6 @@ export default function SimpleDashboard() {
           />
         </div>
       )}
-
-      {/* Metrics by Category - Improved Design */}
-      <div className="mb-8">
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Your School at a Glance</h3>
-        
-        {/* Students & Enrollment */}
-        <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <UserGroupIcon className="h-6 w-6 text-white" />
-            </div>
-            <h4 className="text-lg font-bold text-gray-900">Students & Enrollment</h4>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Enrolled</div>
-              <div className="text-2xl font-bold text-blue-600">{ENROLLMENT.current}</div>
-              <div className="text-xs text-gray-500">of {ENROLLMENT.target} goal</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Capacity</div>
-              <div className="text-2xl font-bold text-gray-900">{ENROLLMENT.utilization}%</div>
-              <div className="text-xs text-gray-500">{ENROLLMENT.current}/{ENROLLMENT.capacity}</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Attendance</div>
-              <div className="text-2xl font-bold text-green-600">{ATTENDANCE.ytdRate}%</div>
-              <div className="text-xs text-gray-500">YTD average</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Retention</div>
-              <div className="text-2xl font-bold text-purple-600">{ENROLLMENT.retentionRate}%</div>
-              <div className="text-xs text-gray-500">students returned</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Money & Finance */}
-        <div className="mb-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-green-600 rounded-lg">
-              <BanknotesIcon className="h-6 w-6 text-white" />
-            </div>
-            <h4 className="text-lg font-bold text-gray-900">Money & Finance</h4>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Operating Cash</div>
-              <div className="text-2xl font-bold text-green-600">${(FINANCIAL.operatingCash / 1000).toFixed(1)}k</div>
-              <div className="text-xs text-gray-500">{FINANCIAL.daysCash} days</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Monthly Revenue</div>
-              <div className="text-2xl font-bold text-gray-900">${(FINANCIAL.monthlyRevenue / 1000).toFixed(1)}k</div>
-              <div className="text-xs text-gray-500">tuition income</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Monthly Expenses</div>
-              <div className="text-2xl font-bold text-gray-900">${(FINANCIAL.monthlyExpenses / 1000).toFixed(1)}k</div>
-              <div className="text-xs text-gray-500">total costs</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Net Income</div>
-              <div className="text-2xl font-bold text-green-600">${(FINANCIAL.netIncome / 1000).toFixed(1)}k</div>
-              <div className="text-xs text-gray-500">{FINANCIAL.profitMargin}% margin</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Operations */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-indigo-600 rounded-lg">
-              <ChartBarIcon className="h-6 w-6 text-white" />
-            </div>
-            <h4 className="text-lg font-bold text-gray-900">Operations & Compliance</h4>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Contracts Signed</div>
-              <div className="text-2xl font-bold text-indigo-600">{OPERATIONS.contractCoverage}%</div>
-              <div className="text-xs text-gray-500">{ENROLLMENT.current - OPERATIONS.missingContracts}/{ENROLLMENT.current}</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">On-Time Payments</div>
-              <div className="text-2xl font-bold text-green-600">{OPERATIONS.onTimePayment}%</div>
-              <div className="text-xs text-gray-500">{ENROLLMENT.current - 1}/{ENROLLMENT.current} families</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Staff</div>
-              <div className="text-2xl font-bold text-gray-900">{STAFF.total}</div>
-              <div className="text-xs text-gray-500">{STAFF.w2Employees}W-2 + {STAFF.contractors1099}1099</div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-xs text-gray-600 mb-1">Facility Burden</div>
-              <div className="text-2xl font-bold text-orange-600">{Math.round(FACILITY.facilityBurden * 100)}%</div>
-              <div className="text-xs text-gray-500">of revenue</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
 
       {/* Quick Links */}
@@ -317,4 +303,83 @@ export default function SimpleDashboard() {
     </div>
   );
 }
+
+const HealthOverview = ({ categories }) => (
+  <section className="mb-10">
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-primary-600 rounded-lg">
+          <SparklesIcon className="h-5 w-5 text-white" />
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold">Financial Health</p>
+          <h3 className="text-xl font-bold text-gray-900">Scorecard Snapshot</h3>
+        </div>
+      </div>
+      <a
+        href="/health"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600"
+      >
+        View full scorecard
+        <ArrowRightIcon className="h-4 w-4" />
+      </a>
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      {categories.map(category => (
+        <HealthCategoryCard key={category.id} category={category} />
+      ))}
+    </div>
+  </section>
+);
+
+const accentClasses = {
+  green: { bg: 'from-green-50 to-emerald-50', border: 'border-green-100' },
+  purple: { bg: 'from-purple-50 to-fuchsia-50', border: 'border-purple-100' },
+  blue: { bg: 'from-blue-50 to-indigo-50', border: 'border-blue-100' },
+  orange: { bg: 'from-amber-50 to-orange-50', border: 'border-orange-100' },
+  indigo: { bg: 'from-slate-50 to-indigo-50', border: 'border-indigo-100' }
+};
+
+const HealthCategoryCard = ({ category }) => {
+  const Icon = category.icon;
+  const accent = accentClasses[category.accent] || accentClasses.green;
+
+  return (
+    <div className={`rounded-2xl border ${accent.border} bg-gradient-to-br ${accent.bg} p-5 flex flex-col gap-4`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-white shadow">
+            <Icon className="h-6 w-6 text-gray-700" />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-gray-500">Category</p>
+            <h4 className="text-lg font-semibold text-gray-900">{category.name}</h4>
+          </div>
+        </div>
+        {category.cta && (
+          <a href={category.cta.href} className="text-xs font-semibold text-primary-600 hover:text-primary-800">
+            {category.cta.label}
+          </a>
+        )}
+      </div>
+      <div className="space-y-3">
+        {category.metrics.map(metric => {
+          const status = statusMeta[metric.status] || statusMeta.good;
+          return (
+            <div key={metric.label} className="bg-white rounded-xl p-4 flex items-center justify-between shadow-sm">
+              <div>
+                <p className="text-xs text-gray-500">{metric.label}</p>
+                <p className="text-lg font-semibold text-gray-900">{metric.value}</p>
+              </div>
+              <div className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full ${status.badge}`}>
+                {status.icon}
+                {status.text}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
