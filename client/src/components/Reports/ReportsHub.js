@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChartBarIcon,
   DocumentTextIcon,
@@ -9,9 +9,11 @@ import {
   ExclamationTriangleIcon,
   ArrowDownTrayIcon,
   ClockIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
+import TaxFilingManager from '../Tax/TaxFilingManager';
 
 /**
  * Reports Hub
@@ -26,6 +28,14 @@ import { Link } from 'react-router-dom';
 
 export default function ReportsHub() {
   const [activeTab, setActiveTab] = useState('monthly'); // monthly, quarterly, yearend, tax
+  const [entityType, setEntityType] = useState('llc-single');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('entityType') || 'llc-single';
+      setEntityType(stored);
+    }
+  }, []);
 
   // Mock data for Hank's review
   const hankReview = {
@@ -252,53 +262,52 @@ export default function ReportsHub() {
       {/* Tax Filings */}
       {activeTab === 'tax' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow border p-6">
-            <h3 className="text-lg font-semibold mb-4">Tax Filings & Compliance</h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Federal and state tax returns with Hank's pre-filing review.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ReportCard
-                title="Form 990 (Nonprofit)"
-                description="Annual IRS filing for 501(c)(3) organizations"
-                period="2023 Tax Year"
-                status="needs_work"
-                nonprofit
-                deadline="May 15, 2024"
-              />
-              <ReportCard
-                title="1120 / 1120S (For-Profit)"
-                description="Corporate income tax return"
-                period="2023 Tax Year"
-                status="ready"
-                deadline="Mar 15, 2024"
-              />
-              <ReportCard
-                title="State Income Tax"
-                description="State-level tax filing"
-                period="2023 Tax Year"
-                status="ready"
-              />
-              <ReportCard
-                title="Sales Tax Returns"
-                description="Monthly/quarterly sales tax filings"
-                period="Q3 2024"
-                status="ready"
-              />
+          {/* Entity Type Reminder */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+            <InformationCircleIcon className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="text-sm font-semibold text-blue-900 mb-1">
+                Current Entity Type: {entityType === '501c3' ? '501(c)(3) Nonprofit' :
+                                      entityType === 'scorp' ? 'S Corporation' :
+                                      entityType === 'ccorp' ? 'C Corporation' :
+                                      entityType === 'llc-partnership' ? 'Multi-Member LLC (Partnership)' :
+                                      'Single-Member LLC'}
+              </div>
+              <div className="text-xs text-blue-800">
+                Tax requirements below are customized for your entity type. Change in <Link to="/settings" className="underline font-semibold">Settings</Link>.
+              </div>
             </div>
           </div>
 
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-            <h3 className="font-semibold text-purple-900 mb-3">Hank's Tax Prep Checklist</h3>
-            <div className="space-y-2 text-sm">
-              <ChecklistItem complete label="All revenue categorized by source (tuition, grants, etc.)" />
-              <ChecklistItem complete label="Expenses allocated to GL codes" />
-              <ChecklistItem complete label="Restricted vs. unrestricted tracked (nonprofit)" />
-              <ChecklistItem complete={false} label="Depreciation schedule updated" />
-              <ChecklistItem complete label="Payroll reports reconciled" />
-              <ChecklistItem complete={false} label="Form 1099s issued to contractors" />
+          {/* Hank's Encouragement */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <SparklesIcon className="h-6 w-6 text-purple-600" />
+              <div>
+                <h3 className="font-semibold text-purple-900 mb-2">Hank's AI Tax Prep Coach</h3>
+                <p className="text-sm text-purple-800 mb-3">
+                  Hank helps you organize your books so tax season is smooth. Your CPA will thank you! 💙
+                </p>
+                <div className="space-y-2 text-sm">
+                  <ChecklistItem complete label="All revenue categorized by source (tuition, grants, fundraising)" />
+                  <ChecklistItem complete label="Expenses allocated to GL codes with descriptions" />
+                  <ChecklistItem complete label="Receipts attached to transactions" />
+                  {entityType === '501c3' && (
+                    <ChecklistItem complete label="Restricted vs. unrestricted revenue tracked" />
+                  )}
+                  <ChecklistItem complete={false} label="Depreciation schedule updated (consult your CPA)" />
+                  <ChecklistItem complete label="Payroll reports reconciled via Gusto/ADP" />
+                  <ChecklistItem complete={false} label="Form 1099s issued to contractors (your CPA can help)" />
+                </div>
+                <p className="text-xs text-purple-700 italic mt-4">
+                  💡 Hank is an AI assistant. Always work with a licensed CPA or tax professional for final tax preparation and filing.
+                </p>
+              </div>
             </div>
           </div>
+
+          {/* Tax Filing Manager Integration */}
+          <TaxFilingManager />
         </div>
       )}
     </div>
