@@ -762,6 +762,7 @@ const AddOpportunityModal = ({ opportunity, setOpportunity, contacts, onClose, o
 const ContactDetailModal = ({ contact, opportunities, onClose, onGenerateThankYou, onGenerateTaxReceipt }) => {
   const displayName = contact.name || contact.companyName || `${contact.firstName} ${contact.lastName}`;
   const totalGiven = opportunities.reduce((sum, o) => sum + (Number(o.amountReceived) || 0), 0);
+  const wonOpps = opportunities.filter(o => o.stage === 'awarded' || o.stage === 'committed' || o.stage === 'stewarded');
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -784,6 +785,7 @@ const ContactDetailModal = ({ contact, opportunities, onClose, onGenerateThankYo
             {contact.typicalRange && <Field label="Typical Range" value={contact.typicalRange} />}
             {contact.employer && <Field label="Employer" value={contact.employer} />}
             {contact.industry && <Field label="Industry" value={contact.industry} />}
+            {contact.address && <Field label="Address" value={`${contact.address}, ${contact.city}, ${contact.state} ${contact.zip}`} />}
           </div>
 
           {contact.summary && (
@@ -797,40 +799,67 @@ const ContactDetailModal = ({ contact, opportunities, onClose, onGenerateThankYo
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <h3 className="font-semibold text-green-900 mb-2">Giving History</h3>
             <div className="text-3xl font-bold text-green-600 mb-2">${totalGiven.toLocaleString()}</div>
-            <div className="text-sm text-gray-700">{opportunities.length} opportunit{opportunities.length === 1 ? 'y' : 'ies'}</div>
+            <div className="text-sm text-gray-700">{wonOpps.length} gift{wonOpps.length === 1 ? '' : 's'} • {opportunities.length} total opportunit{opportunities.length === 1 ? 'y' : 'ies'}</div>
           </div>
 
           {/* Opportunities List */}
           {opportunities.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-3">Opportunities</h3>
+              <h3 className="font-semibold mb-3">All Opportunities</h3>
               <div className="space-y-2">
-                {opportunities.map(opp => (
-                  <div key={opp.id} className="p-3 bg-gray-50 rounded border flex items-center justify-between">
-                    <div>
-                      <div className="font-medium text-sm">{opp.name}</div>
-                      <div className="text-xs text-gray-600">${opp.askAmount?.toLocaleString() || '0'} • {opp.stage}</div>
+                {opportunities.map(opp => {
+                  const stage = GRANT_STAGES.find(s => s.id === opp.stage) || DONOR_STAGES.find(s => s.id === opp.stage);
+                  return (
+                    <div key={opp.id} className="p-3 bg-gray-50 rounded border flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-sm">{opp.name}</div>
+                        <div className="text-xs text-gray-600">
+                          Ask: ${opp.askAmount?.toLocaleString() || '0'} • {stage?.name || opp.stage}
+                        </div>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-medium rounded bg-${stage?.color}-100 text-${stage?.color}-800`}>
+                        {stage?.name}
+                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* Stewardship Actions */}
-          {contact.contactType === 'individual' && totalGiven > 0 && (
+          {/* Stewardship Actions - For Individual/Corporate with Gifts */}
+          {(contact.contactType === 'individual' || contact.contactType === 'corporation') && wonOpps.length > 0 && (
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <h3 className="font-semibold text-purple-900 mb-3">Donor Stewardship</h3>
-              <div className="flex gap-3">
-                <button onClick={() => onGenerateThankYou(contact)} className="px-4 py-2 bg-purple-600 text-white rounded-lg flex items-center gap-2">
+              <div className="flex gap-3 mb-3">
+                <button onClick={() => onGenerateThankYou(contact)} className="touch-target px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2">
                   <EnvelopeIcon className="h-4 w-4" />
-                  Thank You Letter
+                  Generate Thank You Letter
                 </button>
-                <button onClick={() => onGenerateTaxReceipt(contact)} className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2">
+                <button onClick={() => onGenerateTaxReceipt(contact)} className="touch-target px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
                   <DocumentArrowDownIcon className="h-4 w-4" />
-                  Tax Receipt
+                  Generate Tax Receipt
                 </button>
               </div>
+              <div className="text-xs text-gray-600">
+                💙 Keep your donors connected—gratitude strengthens relationships!
+              </div>
+            </div>
+          )}
+
+          {/* Bookkeeping Integration */}
+          {wonOpps.length > 0 && (
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+              <h3 className="font-semibold text-teal-900 mb-2">📊 Bookkeeping Integration</h3>
+              <p className="text-sm text-teal-800 mb-3">
+                {wonOpps.length} gift{wonOpps.length === 1 ? '' : 's'} ready to sync to your books
+              </p>
+              <button className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-semibold">
+                Sync to Bookkeeping
+              </button>
+              <p className="text-xs text-teal-700 mt-2">
+                Hank will categorize as restricted/unrestricted revenue and handle cash vs. accrual
+              </p>
             </div>
           )}
         </div>

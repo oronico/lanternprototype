@@ -78,7 +78,15 @@ const navigationGroups = [
     icon: CurrencyDollarIcon,
     href: '/crm/fundraising',
     color: 'red',
-    badge: '501c3 Only'
+    badge: 'Nonprofit'
+  },
+  {
+    id: 'governance',
+    name: 'Governance',
+    icon: ScaleIcon,
+    href: '/governance',
+    color: 'purple',
+    badge: 'Nonprofit'
   },
   {
     id: 'students',
@@ -176,7 +184,7 @@ const navigationGroups = [
 
 const Sidebar = () => {
   const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'fundraising', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
+  const [expandedGroups, setExpandedGroups] = useState(['home', 'today', 'money', 'students', 'fundraising', 'governance', 'reports', 'documents', 'facility', 'people', 'tools', 'enterprise']);
   
   // Check entity type safely (inside component, not at module level)
   const [entityType, setEntityType] = useState('llc-single');
@@ -224,27 +232,12 @@ const Sidebar = () => {
 
   // Filter navigation groups based on entity type
   const filteredNavigationGroups = navigationGroups.filter(group => {
-    // Show fundraising only for 501c3
-    if (group.id === 'fundraising' && entityType !== '501c3') {
+    // Show fundraising and governance only for 501c3
+    if ((group.id === 'fundraising' || group.id === 'governance') && entityType !== '501c3') {
       return false;
     }
     return true;
   });
-
-  // Build navigation with conditional governance
-  const navigation = [
-    ...filteredNavigationGroups.slice(0, 7), // Everything up to People & HR
-    ...(needsGovernance ? [{
-      id: 'governance',
-      name: 'Governance',
-      icon: ScaleIcon,
-      href: '/governance',
-      color: 'purple',
-      badge: entityType === '501c3' ? 'Nonprofit' : 'Corp'
-      // No subItems - page has its own tab navigation!
-    }] : []),
-    ...filteredNavigationGroups.slice(7) // Rest of navigation
-  ];
 
   return (
     <div className="h-screen flex flex-col bg-white border-r border-gray-200 shadow-soft">
@@ -266,7 +259,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <div className="flex-1 flex flex-col overflow-y-auto pt-4 pb-4">
         <nav className="flex-1 px-3 space-y-1">
-          {navigation.map((group) => {
+          {filteredNavigationGroups.map((group) => {
             const isActive = isGroupActive(group);
             const isExpanded = expandedGroups.includes(group.id);
             const hasSubItems = group.subItems && group.subItems.length > 0;
