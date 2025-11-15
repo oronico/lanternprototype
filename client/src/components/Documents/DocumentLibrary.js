@@ -106,47 +106,55 @@ export default function DocumentLibrary() {
       if (storedDocs) {
         setDocuments(JSON.parse(storedDocs));
       } else {
-        // Prototype docs to show structure
+        // Prototype docs - essential starting documents
         const prototypeDocs = [
           {
             id: '1',
             category: 'Legal & Formation',
             type: 'Articles of Incorporation',
             name: 'Articles of Incorporation - Sunshine Microschool',
-            uploadDate: '2024-08-15',
+            uploadDate: '2024-01-15',
             expirationDate: null
           },
           {
             id: '2',
-            category: 'Insurance',
-            type: 'General Liability',
-            name: 'General Liability Insurance 2024-2025 State Farm',
-            uploadDate: '2024-09-01',
-            expirationDate: '2025-08-31'
-          },
-          {
-            id: '3',
-            category: 'Facility',
-            type: 'Lease',
-            name: 'Lease Agreement 123 Main St 2024-2027',
-            uploadDate: '2024-08-01',
-            expirationDate: '2027-07-31'
-          },
-          {
-            id: '4',
-            category: 'Tuition Contracts',
-            type: 'Enrollment Contracts (Families)',
-            name: 'Master Enrollment Contract 2024-2025',
-            uploadDate: '2024-07-15',
+            category: 'Legal & Formation',
+            type: 'EIN Letter',
+            name: 'IRS EIN Confirmation Letter',
+            uploadDate: '2024-01-10',
             expirationDate: null
           },
           {
+            id: '3',
+            category: 'Legal & Formation',
+            type: 'Business Registration (State)',
+            name: 'Florida Business Registration Certificate',
+            uploadDate: '2024-01-20',
+            expirationDate: null
+          },
+          {
+            id: '4',
+            category: 'Legal & Formation',
+            type: 'Business License (Local)',
+            name: 'City Business Operating License 2024',
+            uploadDate: '2024-02-01',
+            expirationDate: '2025-01-31'
+          },
+          {
             id: '5',
+            category: 'Legal & Formation',
+            type: entityType === '501c3' ? 'Bylaws (C Corp & 501c3)' : 'Operating Agreement (LLC)',
+            name: entityType === '501c3' ? 'Corporate Bylaws 2024' : 'LLC Operating Agreement',
+            uploadDate: '2024-01-25',
+            expirationDate: null
+          },
+          {
+            id: '6',
             category: 'Facility',
-            type: 'Fire Inspection',
-            name: 'Fire Inspection Certificate 2024',
-            uploadDate: '2024-08-10',
-            expirationDate: '2025-08-10'
+            type: 'Lease',
+            name: 'Facility Lease Agreement 2024-2027',
+            uploadDate: '2024-02-15',
+            expirationDate: '2027-02-14'
           }
         ];
         setDocuments(prototypeDocs);
@@ -204,9 +212,16 @@ export default function DocumentLibrary() {
   };
 
   const getMustHaves = () => {
-    const mustHave = ['Articles of Incorporation', 'General Liability', 'Enrollment Contracts'];
+    const mustHave = [
+      'Articles of Incorporation',
+      'EIN Letter',
+      'Business Registration (State)',
+      'Business License (Local)',
+      entityType === '501c3' ? 'Bylaws (C Corp & 501c3)' : 'Operating Agreement (LLC)',
+      'Lease'
+    ];
     return mustHave.filter(name => 
-      !documents.some(d => d.type.includes(name.split(' ')[0]))
+      !documents.some(d => d.type === name || d.type.includes(name.split(' ')[0]))
     );
   };
 
@@ -250,13 +265,13 @@ export default function DocumentLibrary() {
               </p>
             </div>
           </div>
-          <button
+              <button
             onClick={() => setShowUpload(true)}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
-          >
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
+            >
             <ArrowUpTrayIcon className="h-5 w-5" />
             Upload
-          </button>
+            </button>
         </div>
       </div>
 
@@ -301,10 +316,10 @@ export default function DocumentLibrary() {
                         <div className="text-lg font-bold text-red-600">{doc.daysUntil}</div>
                         <div className="text-xs text-gray-600">days</div>
                       </div>
-                    </div>
+      </div>
                   </div>
-                );
-              })}
+              );
+            })}
             </div>
           </div>
         </div>
@@ -323,34 +338,34 @@ export default function DocumentLibrary() {
               <button onClick={() => setSelectedDocs([])} className="text-sm text-gray-600">Clear</button>
             </>
           )}
-        </div>
+            </div>
         <button
           onClick={() => setShowArchive(!showArchive)}
           className="text-sm text-gray-600 hover:text-gray-900"
         >
           {showArchive ? 'Hide' : 'Show'} Archived ({archivedDocs.length})
         </button>
-      </div>
+          </div>
 
       {/* Documents by Category with Subcategories */}
       <div className="space-y-4">
         {visibleCategories.map(([categoryName, config]) => {
           const categoryDocs = documents.filter(d => d.category === categoryName);
-          
-          return (
+                  
+                  return (
             <div key={categoryName} className="bg-white rounded-lg shadow border">
               {/* Category Header */}
               <div className="px-6 py-3 bg-gray-50 border-b flex items-center justify-between">
-                <div>
+                          <div>
                   <h3 className="font-bold text-gray-900">{categoryName}</h3>
                   <p className="text-xs text-gray-600 mt-0.5">
                     {config.items.slice(0, 5).join(', ')}{config.items.length > 5 && '...'}
                   </p>
-                </div>
+                            </div>
                 <div className="text-sm text-gray-600">
                   {categoryDocs.length} document{categoryDocs.length !== 1 ? 's' : ''}
-                </div>
-              </div>
+                          </div>
+                        </div>
 
               {/* Documents in Category */}
               <div className="overflow-x-auto">
@@ -370,14 +385,14 @@ export default function DocumentLibrary() {
                       <tr>
                         <td colSpan="6" className="px-4 py-6 text-center text-sm text-gray-500">
                           No documents yet. Common types: {config.items.slice(0, 3).join(', ')}
-                        </td>
+                      </td>
                       </tr>
                     ) : (
                       categoryDocs.map(doc => (
                         <tr key={doc.id} className="hover:bg-gray-50">
                           <td className="px-3 py-2">
                             <input type="checkbox" checked={selectedDocs.includes(doc.id)} onChange={() => toggleSelect(doc.id)} className="rounded" />
-                          </td>
+                      </td>
                           <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.type}</td>
                           <td className="px-4 py-2 text-sm font-medium whitespace-nowrap">{doc.name}</td>
                           <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.uploadDate}</td>
@@ -389,18 +404,18 @@ export default function DocumentLibrary() {
                               <button onClick={() => handleArchive(doc.id)} className="p-1 hover:bg-gray-100 rounded" title="Archive">
                                 <ArchiveBoxIcon className="h-4 w-4 text-gray-400" />
                               </button>
-                            </div>
-                          </td>
-                        </tr>
+                        </div>
+                      </td>
+                    </tr>
                       ))
                     )}
-                  </tbody>
-                </table>
+              </tbody>
+            </table>
               </div>
             </div>
           );
         })}
-      </div>
+          </div>
 
       {/* Archived Documents */}
       {showArchive && archivedDocs.length > 0 && (
@@ -432,7 +447,7 @@ export default function DocumentLibrary() {
               <label className="block text-sm font-medium mb-1">Category *</label>
               <select
                 value={newDoc.category}
-                onChange={(e) => setNewDoc(prev => ({ ...prev, category: e.target.value }))}
+                onChange={(e) => setNewDoc(prev => ({ ...prev, category: e.target.value, type: '' }))}
                 className="w-full px-3 py-2 border rounded-lg"
               >
                 <option value="">Select category...</option>
@@ -442,24 +457,27 @@ export default function DocumentLibrary() {
 
             {newDoc.category && (
               <div>
-                <label className="block text-sm font-medium mb-1">Type (select from category or type your own) *</label>
+                <label className="block text-sm font-medium mb-1">Type (select or type your own) *</label>
                 <input
                   type="text"
                   value={newDoc.type}
                   onChange={(e) => setNewDoc(prev => ({ ...prev, type: e.target.value }))}
                   className="w-full px-3 py-2 border rounded-lg"
                   list="type-options"
-                  placeholder="Start typing..."
+                  placeholder="Select from list or type your own..."
                 />
                 <datalist id="type-options">
                   {DOCUMENT_STRUCTURE[newDoc.category]?.items.map((item, idx) => (
                     <option key={idx} value={item} />
                   ))}
                 </datalist>
+                <p className="text-xs text-gray-500 mt-1">
+                  Common types for {newDoc.category}: {DOCUMENT_STRUCTURE[newDoc.category]?.items.slice(0, 3).join(', ')}
+                </p>
               </div>
             )}
 
-            <div>
+                    <div>
               <label className="block text-sm font-medium mb-1">Document Name *</label>
               <input
                 type="text"
@@ -472,8 +490,8 @@ export default function DocumentLibrary() {
                 <p className="text-xs text-purple-700 mt-1">
                   💡 Suggested format: <span className="font-mono">{NAMING_TIPS[newDoc.type]}</span>
                 </p>
-              )}
-            </div>
+                    )}
+                  </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">File *</label>
@@ -482,7 +500,7 @@ export default function DocumentLibrary() {
                 onChange={(e) => setNewDoc(prev => ({ ...prev, file: e.target.files[0] }))}
                 className="w-full px-3 py-2 border rounded-lg"
               />
-            </div>
+                    </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">Expiration Date (if applicable)</label>
@@ -495,12 +513,12 @@ export default function DocumentLibrary() {
               <p className="text-xs text-gray-500 mt-1">
                 Leases: 6-month warning • Insurance/Licenses: 90-day warning
               </p>
-            </div>
+                  </div>
 
             <div className="flex gap-3 justify-end pt-4 border-t">
               <button onClick={() => setShowUpload(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
               <button onClick={handleUpload} className="px-4 py-2 bg-primary-600 text-white rounded-lg">Upload</button>
-            </div>
+                </div>
           </div>
         </div>
       )}
