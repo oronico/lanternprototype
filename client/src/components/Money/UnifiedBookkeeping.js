@@ -9,7 +9,10 @@ import {
   ChartBarIcon,
   DocumentTextIcon,
   Cog6ToothIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
+  SparklesIcon,
+  ClipboardDocumentCheckIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import toast from 'react-hot-toast';
@@ -176,6 +179,57 @@ export default function UnifiedBookkeeping() {
 
   const currentMethod = ACCOUNTING_METHODS[accountingMethod.toUpperCase()];
 
+  const aiCoachInsights = [
+    {
+      id: 'weekly',
+      title: 'Weekly Reconciliation',
+      description: 'Sync Plaid feeds, split tranche receivables per student/program, and add descriptions for auditors.',
+      status: needsReviewCount === 0 ? 'On track' : `${needsReviewCount} txns need review`,
+      actionLabel: 'Review transactions',
+      action: () => setActiveTab('categorization')
+    },
+    {
+      id: 'chart',
+      title: 'Chart of Accounts + Program Codes',
+      description: 'AI recommends GL accounts + program tags so reports stay lender-ready.',
+      status: 'Recommended',
+      actionLabel: 'Generate recommendations',
+      action: () => toast.success('AI chart of accounts coming right up (mock demo).')
+    },
+    {
+      id: 'reports',
+      title: 'Monthly Close Reports',
+      description: 'Cash flow, P&L, balance sheet posted automatically when everything is categorized.',
+      status: categorizedCount === transactions.length ? 'Ready to export' : 'Finish categorizing',
+      actionLabel: 'Run reports',
+      action: () => window.open('/health', '_blank')
+    }
+  ];
+
+  const closeCheckpoints = [
+    {
+      id: 'month',
+      label: 'Month End',
+      why: 'Lock books so investors + board trust the numbers.',
+      done: categorizedCount === transactions.length && needsReviewCount === 0 && syncedToQBCount === categorizedCount,
+      steps: ['Categorize every txn', 'Attach bank/credit statements', 'Sync to QuickBooks', 'Generate CF / P&L / BS']
+    },
+    {
+      id: 'quarter',
+      label: 'Quarter Close',
+      why: 'Spot trend shifts and prep for lender updates.',
+      done: false,
+      steps: ['Review program profitability', 'True-up deferred revenue', 'Update fundraising pipeline assumptions']
+    },
+    {
+      id: 'year',
+      label: 'Year Close',
+      why: 'Audit-ready package with footnotes + board resolutions.',
+      done: false,
+      steps: ['Confirm 1099 + W2 totals', 'Finalize depreciation / amortization', 'Package audited-ready docs']
+    }
+  ];
+
   return (
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
@@ -198,6 +252,80 @@ export default function UnifiedBookkeeping() {
           </button>
         </div>
       </div>
+
+      {/* AI Bookkeeper Coach */}
+      <section className="mb-10 bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
+        <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary-100 rounded-xl">
+              <SparklesIcon className="h-6 w-6 text-primary-600" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">AI Bookkeeper</p>
+              <h2 className="text-xl font-bold text-gray-900">Your Noom-style coach for closing the books</h2>
+              <p className="text-sm text-gray-600">
+                Why it matters: clean books unlock loans, board trust, and stress-free audits.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => toast.success('AI Bookkeeper is monitoring all transactions.')}
+            className="px-4 py-2 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700"
+          >
+            Ask AI what to do next
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {aiCoachInsights.map((insight) => (
+            <div key={insight.id} className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-500">{insight.title}</p>
+                <p className="text-sm text-gray-600">{insight.description}</p>
+              </div>
+              <div className="text-xs font-semibold text-primary-600">{insight.status}</div>
+              <button
+                onClick={insight.action}
+                className="text-sm font-semibold text-primary-600 hover:text-primary-800 inline-flex items-center gap-1"
+              >
+                {insight.actionLabel}
+                <ArrowPathIcon className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {closeCheckpoints.map((checkpoint) => (
+            <div key={checkpoint.id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-gray-100 rounded-lg">
+                  {checkpoint.id === 'month' && <ClipboardDocumentCheckIcon className="h-5 w-5 text-primary-600" />}
+                  {checkpoint.id === 'quarter' && <ChartBarIcon className="h-5 w-5 text-primary-600" />}
+                  {checkpoint.id === 'year' && <CalendarIcon className="h-5 w-5 text-primary-600" />}
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-500">{checkpoint.label}</p>
+                  <p className="text-sm text-gray-600">{checkpoint.why}</p>
+                </div>
+              </div>
+              <div className="mb-3 text-sm">
+                <span className={`font-semibold ${checkpoint.done ? 'text-success-600' : 'text-primary-600'}`}>
+                  {checkpoint.done ? 'Ready' : 'In progress'}
+                </span>
+              </div>
+              <ul className="space-y-1 text-xs text-gray-600">
+                {checkpoint.steps.map((step, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="mt-0.5 h-2 w-2 rounded-full bg-primary-300"></span>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Accounting Method Notice */}
       <div className="mb-8 p-4 bg-blue-50 border border-primary-300 rounded-lg">
