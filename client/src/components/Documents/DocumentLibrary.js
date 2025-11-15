@@ -6,56 +6,88 @@ import {
   XMarkIcon,
   EyeIcon,
   ArrowDownTrayIcon,
-  TrashIcon,
+  ArchiveBoxIcon,
   SparklesIcon,
-  ExclamationTriangleIcon,
-  ArchiveBoxIcon
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 
-// AI-Suggested Categories (alphabetical)
-const CATEGORIES = [
-  { id: 'accreditation', name: 'Accreditation', all: true },
-  { id: 'board', name: 'Board & Governance', nonprofit: true, corp: true },
-  { id: 'contracts', name: 'Contracts (Vendor)', all: true },
-  { id: 'debt', name: 'Debt', all: true },
-  { id: 'facility', name: 'Facility Lease/Title', all: true },
-  { id: 'grants', name: 'Grant Applications', nonprofit: true },
-  { id: 'hr', name: 'Human Resources', all: true },
-  { id: 'insurance', name: 'Insurance', all: true },
-  { id: 'legal', name: 'Legal & Formation', all: true },
-  { id: 'tax', name: 'Tax Filings', all: true }
-];
-
-// AI-Suggested Document Types per Category
-const AI_SUGGESTIONS = {
-  legal: ['Articles of Incorporation', 'Bylaws', 'Operating Agreement', 'EIN Letter', '501(c)(3) Determination Letter', 'Business License', 'State Registration'],
-  board: ['Board Meeting Minutes', 'Board Resolutions', 'Conflict of Interest Policy', 'Board Roster'],
-  facility: ['Lease Agreement', 'Title Deed', 'Fire Inspection', 'Certificate of Occupancy', 'Zoning Approval'],
-  insurance: ['General Liability', 'Professional Liability (E&O)', 'Workers Compensation', 'Property Insurance', 'Directors & Officers (D&O)', 'Cyber Liability'],
-  hr: ['W-2 Forms', '1099-NEC Forms', 'Background Checks', 'Employment Agreements', 'Staff Handbook', 'I-9 Forms'],
-  grants: ['Grant Applications', 'Award Letters', 'Grant Reports', 'Budget Narratives'],
-  contracts: ['Vendor Contracts', 'Service Agreements', 'Software Licenses', 'Janitorial Contract'],
-  debt: ['Loan Documents', 'Promissory Notes', 'Credit Agreements', 'Payment Schedules'],
-  accreditation: ['Accreditation Certificate', 'State Compliance Reports', 'FERPA Policy'],
-  tax: ['Form 990', 'Form 1120-S', 'Form 1120', 'Form 1065', 'State Tax Returns', 'Payroll Tax Filings']
+// Document structure with subcategories
+const DOCUMENT_STRUCTURE = {
+  'Accreditation': {
+    items: ['Accreditation Certificate', 'State Compliance Reports', 'FERPA Policy'],
+    all: true
+  },
+  'Board & Governance': {
+    items: ['Board Meeting Minutes', 'Board Resolutions', 'Conflict of Interest Policy', 'Board Roster'],
+    nonprofit: true,
+    corp: true
+  },
+  'Contracts (Vendor)': {
+    items: ['Vendor Contracts', 'Service Agreements', 'Software Licenses'],
+    all: true
+  },
+  'Debt': {
+    items: ['Loan Documents', 'Promissory Notes', 'Credit Agreements', 'Payment Schedules'],
+    all: true
+  },
+  'Facility': {
+    items: ['Lease', 'Floorplan', 'Survey', 'Certificate of Occupancy', 'Fire Inspection'],
+    all: true
+  },
+  'Grant Applications': {
+    items: ['Grant Applications', 'Award Letters', 'Grant Reports', 'Budget Narratives'],
+    nonprofit: true
+  },
+  'Human Resources': {
+    items: ['W-2 Forms', '1099-NEC Forms', 'Background Checks', 'Employment Agreements', 'I-9 Forms', 'Staff Handbook'],
+    all: true
+  },
+  'Insurance': {
+    items: ['General Liability', 'Professional Liability', 'Workers Compensation', 'Property Insurance', 'D&O Insurance'],
+    all: true
+  },
+  'Legal & Formation': {
+    items: [
+      'I-9 Forms',
+      'Articles of Incorporation',
+      'Bylaws (C Corp & 501c3)',
+      'Operating Agreement (LLC)',
+      'Partnership Agreement (Multi-member)',
+      '1023 Application (501c3)',
+      '1023 Receipt from IRS',
+      'EIN Letter',
+      'Business License (Local)',
+      'Business Registration (State)'
+    ],
+    all: true
+  },
+  'Tax Filings': {
+    items: ['Form 990 (Nonprofit)', 'Form 1120-S (S Corp)', 'Form 1120 (C Corp)', 'Form 1065 (Partnership)', 'State Tax Returns'],
+    all: true
+  },
+  'Tuition Contracts': {
+    items: ['Enrollment Contracts (Families)', 'Master Tuition Contract Template', 'Handbook Signed Copies'],
+    all: true
+  }
 };
 
-// Expiration warning thresholds
-const EXPIRATION_WARNINGS = {
-  lease: 180, // 6 months
-  insurance: 90, // 90 days
-  license: 90, // 90 days
-  default: 60
+const NAMING_TIPS = {
+  'Lease': 'Lease_[Address]_[StartDate]_to_[EndDate].pdf',
+  'General Liability': 'GL_Insurance_[Year]_[Carrier].pdf',
+  'Tuition': 'Enrollment_Contract_[FamilyName]_[Year].pdf',
+  'W-2': 'W2_[EmployeeName]_[Year].pdf',
+  '1099': '1099_[ContractorName]_[Year].pdf'
 };
 
 export default function DocumentLibrary() {
   const [schoolName, setSchoolName] = useState('Your School');
   const [entityType, setEntityType] = useState('llc-single');
   const [documents, setDocuments] = useState([]);
+  const [archivedDocs, setArchivedDocs] = useState([]);
   const [selectedDocs, setSelectedDocs] = useState([]);
   const [showUpload, setShowUpload] = useState(false);
-  const [showAIHelper, setShowAIHelper] = useState(true);
+  const [showArchive, setShowArchive] = useState(false);
   const [newDoc, setNewDoc] = useState({
     category: '',
     type: '',
@@ -66,38 +98,21 @@ export default function DocumentLibrary() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('schoolSettings');
-      if (stored) {
-        const settings = JSON.parse(stored);
-        setSchoolName(settings.schoolName || 'Your School');
-      }
+      const settings = JSON.parse(localStorage.getItem('schoolSettings') || '{}');
+      setSchoolName(settings.schoolName || 'Your School');
       setEntityType(localStorage.getItem('entityType') || 'llc-single');
       
-      const storedDocs = localStorage.getItem('documents');
-      if (storedDocs) setDocuments(JSON.parse(storedDocs));
+      const docs = JSON.parse(localStorage.getItem('documents') || '[]');
+      setDocuments(docs);
+      
+      const archived = JSON.parse(localStorage.getItem('archivedDocuments') || '[]');
+      setArchivedDocs(archived);
     }
   }, []);
 
-  const getExpiringDocuments = () => {
-    return documents.filter(doc => {
-      if (!doc.expirationDate) return false;
-      const daysUntil = Math.ceil((new Date(doc.expirationDate) - new Date()) / (1000 * 60 * 60 * 24));
-      
-      let threshold = EXPIRATION_WARNINGS.default;
-      if (doc.type.toLowerCase().includes('lease')) threshold = EXPIRATION_WARNINGS.lease;
-      else if (doc.type.toLowerCase().includes('insurance')) threshold = EXPIRATION_WARNINGS.insurance;
-      else if (doc.type.toLowerCase().includes('license')) threshold = EXPIRATION_WARNINGS.license;
-      
-      return daysUntil <= threshold && daysUntil >= 0;
-    }).map(doc => {
-      const daysUntil = Math.ceil((new Date(doc.expirationDate) - new Date()) / (1000 * 60 * 60 * 24));
-      return { ...doc, daysUntil };
-    });
-  };
-
   const handleUpload = () => {
     if (!newDoc.category || !newDoc.type || !newDoc.name || !newDoc.file) {
-      return toast.error('Please fill in all required fields');
+      return toast.error('Fill in all required fields');
     }
 
     const doc = {
@@ -116,36 +131,61 @@ export default function DocumentLibrary() {
     
     setShowUpload(false);
     setNewDoc({ category: '', type: '', name: '', file: null, expirationDate: '' });
-    toast.success(`✨ ${doc.name} added to your library!`);
+    toast.success(`✨ ${doc.name} added!`);
   };
 
-  const handleDelete = (id) => {
-    const updated = documents.filter(d => d.id !== id);
-    setDocuments(updated);
-    localStorage.setItem('documents', JSON.stringify(updated));
-    toast.success('Document removed');
+  const handleArchive = (id) => {
+    const doc = documents.find(d => d.id === id);
+    const archived = { ...doc, archivedDate: new Date().toISOString().split('T')[0] };
+    
+    setDocuments(prev => prev.filter(d => d.id !== id));
+    setArchivedDocs(prev => [...prev, archived]);
+    
+    localStorage.setItem('documents', JSON.stringify(documents.filter(d => d.id !== id)));
+    localStorage.setItem('archivedDocuments', JSON.stringify([...archivedDocs, archived]));
+    
+    toast.success('Document archived');
   };
 
-  const handleExportSelected = () => {
-    if (selectedDocs.length === 0) return toast.error('Select documents to export');
-    toast.success(`📦 Exporting ${selectedDocs.length} documents as ZIP...`);
+  const handleExport = () => {
+    if (selectedDocs.length === 0) return toast.error('Select documents');
+    toast.success(`📦 Exporting ${selectedDocs.length} documents...`);
   };
 
   const toggleSelect = (id) => {
     setSelectedDocs(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
-  const selectAll = () => {
-    setSelectedDocs(selectedDocs.length === documents.length ? [] : documents.map(d => d.id));
+  const getMustHaves = () => {
+    const mustHave = ['Articles of Incorporation', 'General Liability', 'Enrollment Contracts'];
+    return mustHave.filter(name => 
+      !documents.some(d => d.type.includes(name.split(' ')[0]))
+    );
   };
 
-  const expiringDocs = getExpiringDocuments();
-  
-  // Filter categories by entity type
-  const visibleCategories = CATEGORIES.filter(cat => {
-    if (cat.all) return true;
-    if (cat.nonprofit && entityType === '501c3') return true;
-    if (cat.corp && (entityType === 'scorp' || entityType === 'ccorp')) return true;
+  const getExpiring = () => {
+    return documents.filter(doc => {
+      if (!doc.expirationDate) return false;
+      const days = Math.ceil((new Date(doc.expirationDate) - new Date()) / (1000 * 60 * 60 * 24));
+      
+      let threshold = 60;
+      if (doc.type.toLowerCase().includes('lease')) threshold = 180;
+      if (doc.type.toLowerCase().includes('insurance') || doc.type.toLowerCase().includes('license')) threshold = 90;
+      
+      return days <= threshold && days >= 0;
+    }).map(doc => ({
+      ...doc,
+      daysUntil: Math.ceil((new Date(doc.expirationDate) - new Date()) / (1000 * 60 * 60 * 24))
+    }));
+  };
+
+  const mustHaves = getMustHaves();
+  const expiring = getExpiring();
+
+  const visibleCategories = Object.entries(DOCUMENT_STRUCTURE).filter(([name, config]) => {
+    if (config.all) return true;
+    if (config.nonprofit && entityType === '501c3') return true;
+    if (config.corp && (entityType === 'scorp' || entityType === 'ccorp')) return true;
     return false;
   });
 
@@ -153,96 +193,71 @@ export default function DocumentLibrary() {
     <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-primary-50 to-blue-50 border border-primary-200 rounded-2xl p-6">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FolderIcon className="h-8 w-8 text-primary-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{schoolName} Document Library</h1>
+              <h1 className="text-2xl font-bold">{schoolName} Document Library</h1>
               <p className="text-sm text-gray-700 mt-1">
                 Your single source of truth for all business documents. Keep everything organized, accessible, and lender-ready. 💙
               </p>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-primary-600">{documents.length}</div>
-            <div className="text-xs text-gray-600">documents stored</div>
-          </div>
+          <button
+            onClick={() => setShowUpload(true)}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
+          >
+            <ArrowUpTrayIcon className="h-5 w-5" />
+            Upload
+          </button>
         </div>
       </div>
 
-      {/* AI Helper - Suggestions */}
-      {showAIHelper && documents.length < 5 && (
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-6">
-          <div className="flex items-start gap-4">
-            <SparklesIcon className="h-8 w-8 text-purple-600 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">AI Document Coach</h3>
-              <p className="text-sm text-gray-700 mb-4">
-                Here's what most schools keep in their library. Upload what you have, and we'll help you stay organized:
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="bg-white rounded-lg p-3 border border-purple-100">
-                  <div className="font-semibold text-sm text-gray-900 mb-2">Must-Haves (Get These First):</div>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    <li>• EIN Letter from IRS</li>
-                    <li>• General Liability Insurance</li>
-                    <li>• Lease Agreement</li>
-                    <li>• Fire Inspection Certificate</li>
-                  </ul>
-                </div>
-                <div className="bg-white rounded-lg p-3 border border-purple-100">
-                  <div className="font-semibold text-sm text-gray-900 mb-2">Build Over Time:</div>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    <li>• Articles of Incorporation</li>
-                    <li>• Enrollment Contracts</li>
-                    <li>• Staff Background Checks</li>
-                    <li>• Tax Returns (annual)</li>
-                  </ul>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowAIHelper(false)}
-                className="mt-4 text-xs text-purple-700 hover:text-purple-900 font-medium"
-              >
-                Dismiss this guide
-              </button>
+      {/* Must-Haves Alert */}
+      {mustHaves.length > 0 && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <SparklesIcon className="h-6 w-6 text-yellow-600 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-yellow-900 mb-2">📋 Priority Documents Missing</h3>
+              <p className="text-sm text-yellow-800 mb-2">These are critical - upload them first:</p>
+              <ul className="text-sm text-yellow-900 space-y-1">
+                {mustHaves.map((doc, idx) => <li key={idx}>• {doc}</li>)}
+              </ul>
             </div>
           </div>
         </div>
       )}
 
-      {/* Expiration Warnings */}
-      {expiringDocs.length > 0 && (
+      {/* Expiring Warnings */}
+      {expiring.length > 0 && (
         <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <ExclamationTriangleIcon className="h-6 w-6 text-red-600 flex-shrink-0" />
             <div className="flex-1">
-              <h3 className="font-semibold text-red-900 mb-3">⚠️ Action Needed - Documents Expiring</h3>
-              <div className="space-y-2">
-                {expiringDocs.map(doc => {
-                  const isLease = doc.type.toLowerCase().includes('lease');
-                  const isInsurance = doc.type.toLowerCase().includes('insurance');
-                  
-                  return (
-                    <div key={doc.id} className="bg-white rounded-lg p-3 border border-red-200">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-sm text-gray-900">{doc.name}</div>
-                          <div className="text-xs text-gray-600 mt-1">
-                            {isLease && '🏢 Lease expires in ' + doc.daysUntil + ' days - Start negotiating renewal now'}
-                            {isInsurance && '🛡️ Insurance expires in ' + doc.daysUntil + ' days - Call your broker to renew'}
-                            {!isLease && !isInsurance && '📋 Expires in ' + doc.daysUntil + ' days - Renew before deadline'}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-red-600">{doc.daysUntil}</div>
-                          <div className="text-xs text-gray-600">days</div>
+              <h3 className="font-semibold text-red-900 mb-3">⚠️ Renewals Needed</h3>
+              {expiring.map(doc => {
+                const isLease = doc.type.toLowerCase().includes('lease');
+                const isInsurance = doc.type.toLowerCase().includes('insurance');
+                return (
+                  <div key={doc.id} className="bg-white rounded p-3 mb-2 border border-red-200">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-semibold text-sm">{doc.name}</div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          {isLease && '🏢 Start lease negotiations'}
+                          {isInsurance && '🛡️ Call your broker'}
+                          {!isLease && !isInsurance && '📋 Renew soon'}
                         </div>
                       </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-red-600">{doc.daysUntil}</div>
+                        <div className="text-xs text-gray-600">days</div>
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -253,142 +268,129 @@ export default function DocumentLibrary() {
         <div className="flex items-center gap-3">
           {selectedDocs.length > 0 && (
             <>
-              <span className="text-sm text-gray-700 font-medium">{selectedDocs.length} selected</span>
-              <button
-                onClick={handleExportSelected}
-                className="px-3 py-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-semibold flex items-center gap-2"
-              >
-                <ArchiveBoxIcon className="h-4 w-4" />
-                Export as ZIP
+              <span className="text-sm font-medium">{selectedDocs.length} selected</span>
+              <button onClick={handleExport} className="px-3 py-1.5 bg-teal-600 text-white rounded text-sm font-semibold">
+                <ArchiveBoxIcon className="h-4 w-4 inline mr-1" />
+                Export ZIP
               </button>
-              <button onClick={() => setSelectedDocs([])} className="text-sm text-gray-600 hover:text-gray-900">
-                Clear
-              </button>
+              <button onClick={() => setSelectedDocs([])} className="text-sm text-gray-600">Clear</button>
             </>
           )}
         </div>
         <button
-          onClick={() => setShowUpload(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
+          onClick={() => setShowArchive(!showArchive)}
+          className="text-sm text-gray-600 hover:text-gray-900"
         >
-          <ArrowUpTrayIcon className="h-5 w-5" />
-          Upload Document
+          {showArchive ? 'Hide' : 'Show'} Archived ({archivedDocs.length})
         </button>
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow border">
-        <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead className="bg-gray-50 border-b">
+        <table className="min-w-full">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="px-3 py-2"><input type="checkbox" className="rounded" /></th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Type</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Category</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Document Name</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Uploaded</th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase whitespace-nowrap">Expires</th>
+              <th className="px-4 py-2 text-right text-xs font-semibold uppercase whitespace-nowrap">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {documents.length === 0 ? (
               <tr>
-                <th className="px-3 py-2 text-left">
-                  <input type="checkbox" checked={selectedDocs.length === documents.length && documents.length > 0} onChange={selectAll} className="rounded" />
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Type</th>
-                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Category</th>
-                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Document Name</th>
-                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Date Uploaded</th>
-                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Date Expires</th>
-                <th className="px-4 py-2 text-right text-xs font-semibold text-gray-600 uppercase whitespace-nowrap">Actions</th>
+                <td colSpan="7" className="px-4 py-12 text-center">
+                  <p className="text-gray-600 font-medium mb-2">Start building your document library</p>
+                  <p className="text-sm text-gray-500">Upload: Articles, Tuition Contracts, Liability Insurance first</p>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {documents.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="px-4 py-12 text-center">
-                    <FolderIcon className="mx-auto h-12 w-12 text-gray-400 mb-3" />
-                    <p className="text-gray-600 font-medium mb-2">Your document library is ready!</p>
-                    <p className="text-sm text-gray-500 mb-4">Upload your first document to get started. The AI helper above will guide you.</p>
-                    <button
-                      onClick={() => setShowUpload(true)}
-                      className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                    >
-                      Upload First Document
-                    </button>
+            ) : (
+              documents.map(doc => (
+                <tr key={doc.id} className="hover:bg-gray-50">
+                  <td className="px-3 py-2">
+                    <input type="checkbox" checked={selectedDocs.includes(doc.id)} onChange={() => toggleSelect(doc.id)} className="rounded" />
+                  </td>
+                  <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.type}</td>
+                  <td className="px-4 py-2 text-sm whitespace-nowrap">{doc.category}</td>
+                  <td className="px-4 py-2 text-sm font-medium whitespace-nowrap">{doc.name}</td>
+                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.uploadDate}</td>
+                  <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.expirationDate || '—'}</td>
+                  <td className="px-4 py-2 text-right whitespace-nowrap">
+                    <div className="inline-flex gap-1">
+                      <button className="p-1 hover:bg-gray-100 rounded"><EyeIcon className="h-4 w-4 text-gray-600" /></button>
+                      <button className="p-1 hover:bg-gray-100 rounded"><ArrowDownTrayIcon className="h-4 w-4 text-gray-600" /></button>
+                      <button onClick={() => handleArchive(doc.id)} className="p-1 hover:bg-gray-100 rounded" title="Archive">
+                        <ArchiveBoxIcon className="h-4 w-4 text-gray-400" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                documents.map(doc => (
-                  <tr key={doc.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-2">
-                      <input type="checkbox" checked={selectedDocs.includes(doc.id)} onChange={() => toggleSelect(doc.id)} className="rounded" />
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-900 whitespace-nowrap">{doc.type}</td>
-                    <td className="px-4 py-2 text-sm text-gray-700 whitespace-nowrap">{doc.category}</td>
-                    <td className="px-4 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">{doc.name}</td>
-                    <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.uploadDate}</td>
-                    <td className="px-4 py-2 text-xs text-gray-600 whitespace-nowrap">{doc.expirationDate || '—'}</td>
-                    <td className="px-4 py-2 text-right whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1">
-                        <button className="p-1 hover:bg-gray-100 rounded" title="View"><EyeIcon className="h-4 w-4 text-gray-600" /></button>
-                        <button className="p-1 hover:bg-gray-100 rounded" title="Download"><ArrowDownTrayIcon className="h-4 w-4 text-gray-600" /></button>
-                        <button onClick={() => handleDelete(doc.id)} className="p-1 hover:bg-gray-100 rounded" title="Delete"><TrashIcon className="h-4 w-4 text-gray-400" /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Upload Modal with AI Guidance */}
+      {/* Archived Documents */}
+      {showArchive && archivedDocs.length > 0 && (
+        <div className="bg-gray-50 rounded-lg border p-4">
+          <h3 className="font-semibold text-gray-900 mb-3">Archived Documents</h3>
+          <div className="space-y-2">
+            {archivedDocs.map(doc => (
+              <div key={doc.id} className="text-sm text-gray-600 flex justify-between">
+                <span>{doc.name}</span>
+                <span className="text-xs">Archived {doc.archivedDate}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold">Add Document to Library</h2>
-                <p className="text-sm text-gray-600">Build your organized file cabinet 💙</p>
-              </div>
+              <h2 className="text-xl font-bold">Upload Document</h2>
               <button onClick={() => setShowUpload(false)} className="p-2 hover:bg-gray-100 rounded">
                 <XMarkIcon className="h-6 w-6" />
               </button>
             </div>
 
-            {/* Category Selection with AI Suggestions */}
             <div>
               <label className="block text-sm font-medium mb-1">Category *</label>
               <select
                 value={newDoc.category}
-                onChange={(e) => setNewDoc(prev => ({ ...prev, category: e.target.value, type: '' }))}
+                onChange={(e) => setNewDoc(prev => ({ ...prev, category: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg"
               >
-                <option value="">Select a category...</option>
-                {visibleCategories.map(cat => (
-                  <option key={cat.id} value={cat.name}>{cat.name}</option>
-                ))}
+                <option value="">Select category...</option>
+                {visibleCategories.map(([name]) => <option key={name} value={name}>{name}</option>)}
               </select>
             </div>
 
-            {/* Type Selection with AI Suggestions */}
             {newDoc.category && (
               <div>
-                <label className="block text-sm font-medium mb-1">Document Type *</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={newDoc.type}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, type: e.target.value }))}
-                    className="w-full px-3 py-2 border rounded-lg"
-                    placeholder="Start typing or select from suggestions..."
-                    list="type-suggestions"
-                  />
-                  <datalist id="type-suggestions">
-                    {AI_SUGGESTIONS[CATEGORIES.find(c => c.name === newDoc.category)?.id]?.map((suggestion, idx) => (
-                      <option key={idx} value={suggestion} />
-                    ))}
-                  </datalist>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 AI suggestions based on category (or type your own)
-                </p>
+                <label className="block text-sm font-medium mb-1">Type (select from category or type your own) *</label>
+                <input
+                  type="text"
+                  value={newDoc.type}
+                  onChange={(e) => setNewDoc(prev => ({ ...prev, type: e.target.value }))}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  list="type-options"
+                  placeholder="Start typing..."
+                />
+                <datalist id="type-options">
+                  {DOCUMENT_STRUCTURE[newDoc.category]?.items.map((item, idx) => (
+                    <option key={idx} value={item} />
+                  ))}
+                </datalist>
               </div>
             )}
 
-            {/* Document Name */}
             <div>
               <label className="block text-sm font-medium mb-1">Document Name *</label>
               <input
@@ -396,16 +398,17 @@ export default function DocumentLibrary() {
                 value={newDoc.name}
                 onChange={(e) => setNewDoc(prev => ({ ...prev, name: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-lg"
-                placeholder="e.g., General Liability Insurance 2024-2025 State Farm"
+                placeholder="e.g., General Liability 2024-2025 State Farm"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Be specific - include year, vendor, version
-              </p>
+              {NAMING_TIPS[newDoc.type] && (
+                <p className="text-xs text-purple-700 mt-1">
+                  💡 Suggested format: <span className="font-mono">{NAMING_TIPS[newDoc.type]}</span>
+                </p>
+              )}
             </div>
 
-            {/* File Upload */}
             <div>
-              <label className="block text-sm font-medium mb-1">Upload File *</label>
+              <label className="block text-sm font-medium mb-1">File *</label>
               <input
                 type="file"
                 onChange={(e) => setNewDoc(prev => ({ ...prev, file: e.target.files[0] }))}
@@ -413,7 +416,6 @@ export default function DocumentLibrary() {
               />
             </div>
 
-            {/* Expiration Date */}
             <div>
               <label className="block text-sm font-medium mb-1">Expiration Date (if applicable)</label>
               <input
@@ -423,15 +425,13 @@ export default function DocumentLibrary() {
                 className="w-full px-3 py-2 border rounded-lg"
               />
               <p className="text-xs text-gray-500 mt-1">
-                We'll remind you: Leases (6 months early), Insurance & Licenses (90 days early)
+                Leases: 6-month warning • Insurance/Licenses: 90-day warning
               </p>
             </div>
 
             <div className="flex gap-3 justify-end pt-4 border-t">
               <button onClick={() => setShowUpload(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
-              <button onClick={handleUpload} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-                Add to Library
-              </button>
+              <button onClick={handleUpload} className="px-4 py-2 bg-primary-600 text-white rounded-lg">Upload</button>
             </div>
           </div>
         </div>
