@@ -63,6 +63,7 @@ import DocumentLibrary from './components/Documents/DocumentLibrary';
 import ComprehensiveMetrics from './components/Reports/ComprehensiveMetrics';
 import BusinessHealthDashboard from './components/Reports/BusinessHealthDashboard';
 import FinancialsLanding from './components/Money/FinancialsLanding';
+import ReportsHub from './components/Reports/ReportsHub';
 
 // Services
 import { initializeApp } from './services/api';
@@ -174,7 +175,8 @@ function AppContent() {
               <Route path="/nudges" element={<NudgeCenter />} />
               <Route path="/milestones" element={<MilestoneTracker />} />
               <Route path="/bookkeeping" element={<UnifiedBookkeeping />} />
-              <Route path="/reports/bank-ready" element={<BankReadyReports />} />
+              <Route path="/reports" element={<ReportsHub />} />
+              <Route path="/reports/bank-ready-archived" element={<BankReadyReports />} />
               <Route path="/reports/year-end" element={<YearEndFinancials />} />
               <Route path="/documents" element={<DocumentLibrary />} />
               <Route path="/documents/repository" element={<DocumentRepository />} />

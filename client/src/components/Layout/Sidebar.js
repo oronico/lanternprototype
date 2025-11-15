@@ -104,13 +104,8 @@ const navigationGroups = [
     id: 'reports',
     name: 'Reports',
     icon: ChartBarIcon,
-    href: '/tax',
-    color: 'indigo',
-    subItems: [
-      { name: 'Tax Filings', href: '/tax' },
-      { name: 'Year-End Financials', href: '/reports/year-end', badge: 'Pro' },
-      { name: 'Bank Reports', href: '/reports/bank-ready', badge: 'Pro' }
-    ]
+    href: '/reports',
+    color: 'indigo'
   },
   {
     id: 'documents',
