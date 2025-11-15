@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import TaxFilingManager from '../Tax/TaxFilingManager';
+import FlexibleReportGenerator from './FlexibleReportGenerator';
 
 /**
  * Reports Hub
@@ -27,7 +28,7 @@ import TaxFilingManager from '../Tax/TaxFilingManager';
  */
 
 export default function ReportsHub() {
-  const [activeTab, setActiveTab] = useState('monthly'); // monthly, quarterly, yearend, tax
+  const [activeTab, setActiveTab] = useState('generator'); // generator, monthly, quarterly, yearend, tax
   const [entityType, setEntityType] = useState('llc-single');
 
   useEffect(() => {
@@ -128,12 +129,16 @@ export default function ReportsHub() {
       {/* Report Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-6">
-          <ReportTab active={activeTab === 'monthly'} onClick={() => setActiveTab('monthly')} label="Monthly Reports" />
-          <ReportTab active={activeTab === 'quarterly'} onClick={() => setActiveTab('quarterly')} label="Quarterly Reports" />
-          <ReportTab active={activeTab === 'yearend'} onClick={() => setActiveTab('yearend')} label="Year-End Reports" />
+          <ReportTab active={activeTab === 'generator'} onClick={() => setActiveTab('generator')} label="Report Generator" />
+          <ReportTab active={activeTab === 'monthly'} onClick={() => setActiveTab('monthly')} label="Monthly" />
+          <ReportTab active={activeTab === 'quarterly'} onClick={() => setActiveTab('quarterly')} label="Quarterly" />
+          <ReportTab active={activeTab === 'yearend'} onClick={() => setActiveTab('yearend')} label="Year-End" />
           <ReportTab active={activeTab === 'tax'} onClick={() => setActiveTab('tax')} label="Tax Filings" />
         </nav>
       </div>
+
+      {/* Report Generator */}
+      {activeTab === 'generator' && <FlexibleReportGenerator />}
 
       {/* Monthly Reports */}
       {activeTab === 'monthly' && (
