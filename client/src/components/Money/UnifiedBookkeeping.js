@@ -1038,7 +1038,8 @@ export default function UnifiedBookkeeping() {
                       </button>
                     </td>
                   </tr>
-                )})}
+                );
+                })}
               </tbody>
               </table>
             </div>
