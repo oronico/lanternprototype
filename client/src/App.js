@@ -38,6 +38,7 @@ import FeatureAdmin from './components/Admin/FeatureAdmin';
 import FacilityManagement from './components/Facility/FacilityManagement';
 import LeaseOCRUpload from './components/Facility/LeaseOCRUpload';
 import CleanRecruitmentPipeline from './components/CRM/CleanRecruitmentPipeline';
+import EnrollmentCRM from './components/CRM/EnrollmentCRM';
 import EnrollmentDashboard from './components/CRM/EnrollmentDashboard';
 import FundraisingCRM from './components/CRM/FundraisingCRM';
 import EnhancedOnboarding from './components/Onboarding/EnhancedOnboarding';
@@ -189,7 +190,8 @@ function AppContent() {
               <Route path="/health-old" element={<FinancialHealth />} />
               <Route path="/enrollment" element={<EnrollmentPipeline />} />
               <Route path="/students" element={<EnrolledStudentsSIS />} />
-              <Route path="/crm/recruitment" element={<CleanRecruitmentPipeline />} />
+              <Route path="/crm/recruitment" element={<EnrollmentCRM />} />
+              <Route path="/crm/recruitment-old" element={<CleanRecruitmentPipeline />} />
               <Route path="/crm/enrolled" element={<EnrollmentDashboard />} />
               <Route path="/fundraising" element={<FundraisingCRM />} />
               <Route path="/crm/fundraising" element={<FundraisingCRM />} />
