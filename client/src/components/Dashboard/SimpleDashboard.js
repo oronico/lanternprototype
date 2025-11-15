@@ -586,24 +586,26 @@ const CoachingNudges = ({ nudges }) => (
 );
 
 const DailyMomentum = ({ streaks, dailyWins, winsGoal, winsProgress, onLogWin }) => (
-  <section className="bg-gradient-to-r from-success-50 to-success-100 border-2 border-success-200 rounded-2xl p-6 space-y-4 shadow-sm">
+  <section className="bg-white border-2 border-gray-200 rounded-2xl p-6 space-y-4 shadow-sm">
     <div className="flex items-center gap-3">
-      <SparklesIcon className="h-6 w-6 text-success-600" />
+      <div className="p-2 bg-success-600 rounded-lg">
+        <SparklesIcon className="h-6 w-6 text-white" />
+      </div>
       <div>
-        <p className="text-xs uppercase tracking-wide text-success-700 font-semibold">Daily Momentum</p>
+        <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">Daily Momentum</p>
         <p className="text-sm text-gray-700">Small wins compound into big results.</p>
       </div>
     </div>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {Object.entries(streaks).map(([key, value]) => (
-        <div key={key} className="bg-white rounded-xl border border-success-100 shadow-sm p-4">
+        <div key={key} className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm p-4">
           <p className="text-xs uppercase tracking-wide text-gray-500">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
           <p className="text-2xl font-bold text-gray-900">{value}</p>
           <p className="text-xs text-gray-500">day streak</p>
         </div>
       ))}
     </div>
-    <div className="bg-white rounded-xl border border-success-100 p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div>
         <p className="text-sm font-semibold text-gray-900">Daily Wins ({dailyWins}/{winsGoal})</p>
         <p className="text-xs text-gray-500">Log three wins to unlock tomorrow's insight.</p>
