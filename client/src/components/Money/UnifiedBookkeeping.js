@@ -12,10 +12,13 @@ import {
   InformationCircleIcon,
   SparklesIcon,
   ClipboardDocumentCheckIcon,
-  CalendarIcon
+  CalendarIcon,
+  PaperClipIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import toast from 'react-hot-toast';
+import TransactionSplitModal from './TransactionSplitModal';
+import { buildDefaultAllocations, normalizeAllocations } from '../../utils/financials';
 
 /**
  * Unified Bookkeeping Hub
@@ -50,6 +53,30 @@ const ACCOUNTING_METHODS = {
   }
 };
 
+const CHART_OF_ACCOUNTS = [
+  { id: 'tuition_revenue', name: 'Tuition Revenue' },
+  { id: 'esa_funding', name: 'ESA / Scholarship Funding' },
+  { id: 'utilities', name: 'Utilities - Electric' },
+  { id: 'supplies', name: 'Classroom Supplies' },
+  { id: 'rent', name: 'Rent & Facilities' },
+  { id: 'payroll_teachers', name: 'Teacher Payroll' }
+];
+
+const PROGRAM_CODES = [
+  { id: 'full_time', name: 'Full-Time Microschool' },
+  { id: 'after_school', name: 'After-School Program' },
+  { id: 'esa_program', name: 'ESA / Scholarship Program' },
+  { id: 'summer', name: 'Summer Session' }
+];
+
+const defaultSplitModalState = {
+  open: false,
+  transaction: null,
+  allocations: [],
+  error: '',
+  saving: false
+};
+
 export default function UnifiedBookkeeping() {
   const [activeTab, setActiveTab] = useState('accounts'); // accounts, categorization, sync, settings
   const [accountingMethod, setAccountingMethod] = useState('accrual');
@@ -57,6 +84,7 @@ export default function UnifiedBookkeeping() {
   const [transactions, setTransactions] = useState([]);
   const [quickbooksConnected, setQuickbooksConnected] = useState(false);
   const [plaidConnected, setPlaidConnected] = useState(false);
+  const [splitModal, setSplitModal] = useState(defaultSplitModalState);
 
   useEffect(() => {
     analytics.trackPageView('unified-bookkeeping');
@@ -119,9 +147,14 @@ export default function UnifiedBookkeeping() {
         amount: 1200,
         account: 'Chase Checking',
         category: 'Tuition Revenue',
+        glAccount: 'tuition_revenue',
+        programCode: 'full_time',
+        descriptionNote: 'September tuition payment',
         confidence: 98,
         status: 'categorized',
-        syncedToQB: true
+        syncedToQB: true,
+        requiresSplit: false,
+        receiptAttached: true
       },
       {
         id: 2,
@@ -130,9 +163,14 @@ export default function UnifiedBookkeeping() {
         amount: -467,
         account: 'Chase Checking',
         category: 'Utilities - Electric',
+        glAccount: 'utilities',
+        programCode: 'full_time',
+        descriptionNote: 'September electric bill',
         confidence: 95,
         status: 'categorized',
-        syncedToQB: true
+        syncedToQB: true,
+        requiresSplit: false,
+        receiptAttached: true
       },
       {
         id: 3,
@@ -141,9 +179,14 @@ export default function UnifiedBookkeeping() {
         amount: -156,
         account: 'Chase Credit',
         category: 'Supplies',
+        glAccount: '',
+        programCode: '',
+        descriptionNote: '',
         confidence: 85,
         status: 'review_needed',
-        syncedToQB: false
+        syncedToQB: false,
+        requiresSplit: false,
+        receiptAttached: false
       }
     ]);
   };
@@ -178,6 +221,77 @@ export default function UnifiedBookkeeping() {
   const syncedToQBCount = transactions.filter(t => t.syncedToQB).length;
 
   const currentMethod = ACCOUNTING_METHODS[accountingMethod.toUpperCase()];
+
+  const getTransactionStatus = (txn) => {
+    if (txn.requiresSplit) return 'needs_split';
+    if (!txn.glAccount) return 'needs_category';
+    if (!txn.programCode) return 'needs_program';
+    if (!txn.descriptionNote) return 'needs_description';
+    if (!txn.receiptAttached) return 'needs_receipt';
+    return 'ready';
+  };
+
+  const statusStyles = {
+    ready: { label: 'Ready', className: 'bg-green-100 text-green-800' },
+    needs_split: { label: 'Split deposit', className: 'bg-amber-100 text-amber-700' },
+    needs_category: { label: 'Pick category', className: 'bg-amber-100 text-amber-700' },
+    needs_program: { label: 'Assign program', className: 'bg-amber-100 text-amber-700' },
+    needs_description: { label: 'Add description', className: 'bg-amber-100 text-amber-700' },
+    needs_receipt: { label: 'Attach receipt', className: 'bg-amber-100 text-amber-700' }
+  };
+
+  const handleTransactionFieldChange = (id, field, value) => {
+    setTransactions(prev =>
+      prev.map(txn =>
+        txn.id === id ? { ...txn, [field]: value } : txn
+      )
+    );
+  };
+
+  const handleAttachReceipt = (id) => {
+    setTransactions(prev =>
+      prev.map(txn =>
+        txn.id === id ? { ...txn, receiptAttached: true } : txn
+      )
+    );
+    toast.success('Receipt noted');
+  };
+
+  const openSplitModal = (txn) => {
+    setSplitModal({
+      open: true,
+      transaction: txn,
+      allocations: buildDefaultAllocations({ ...txn, family: txn.description }),
+      error: '',
+      saving: false
+    });
+  };
+
+  const closeSplitModal = () => setSplitModal(defaultSplitModalState);
+
+  const handleSplitSave = async (allocations) => {
+    if (!splitModal.transaction) return;
+    const normalized = normalizeAllocations(allocations);
+    const total = normalized.reduce((sum, alloc) => sum + alloc.amount, 0);
+    const txnAmount = Math.abs(splitModal.transaction.amount);
+    if (Math.round(total * 100) !== Math.round(txnAmount * 100)) {
+      setSplitModal(prev => ({ ...prev, error: `Split must total $${txnAmount}` }));
+      return;
+    }
+
+    setTransactions(prev =>
+      prev.map(txn =>
+        txn.id === splitModal.transaction.id
+          ? { ...txn, splitAllocations: normalized, requiresSplit: false }
+          : txn
+      )
+    );
+    toast.success('Split saved');
+    closeSplitModal();
+  };
+
+  const readyCount = transactions.filter(txn => getTransactionStatus(txn) === 'ready').length;
+  const needsAttentionCount = transactions.length - readyCount;
 
   const aiCoachInsights = [
     {
@@ -548,15 +662,28 @@ export default function UnifiedBookkeeping() {
       {/* Categorization Tab */}
       {activeTab === 'categorization' && (
         <div>
-          <div className="mb-6 p-4 bg-blue-50 border border-primary-300 rounded-lg">
-            <div className="font-medium text-blue-900 mb-1">AI-Powered Categorization</div>
-            <div className="text-sm text-blue-700">
-              Transactions are automatically categorized and synced to QuickBooks.
-              Review any with low confidence (&lt;90%).
+          <div className="mb-6 p-4 bg-primary-50 border border-primary-200 rounded-lg">
+            <div className="font-medium text-primary-900 mb-1">AI-powered categorization</div>
+            <div className="text-sm text-primary-700">
+              Every transaction lands here. Choose the category (GL code), assign the program, add a plain-language description, and split if needed. Hank won’t close the books until each row is marked Ready.
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white rounded-lg shadow border border-gray-100 mb-4">
+            <div className="p-4 flex flex-wrap gap-4 text-sm text-gray-700">
+              <div>
+                <span className="font-semibold text-gray-900">{readyCount}</span> ready for close
+              </div>
+              <div>
+                <span className="font-semibold text-gray-900">{needsAttentionCount}</span> need details
+              </div>
+              <div className="text-gray-500">
+                Hank requires category + program + description + split + receipt for every row.
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow border border-gray-100">
             <div className="table-scroll">
               <table className="min-w-full">
               <thead className="bg-gray-50">
@@ -564,14 +691,18 @@ export default function UnifiedBookkeeping() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category (GL code)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program / Project</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Receipts</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Confidence</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {transactions.map(txn => (
-                  <tr key={txn.id} className={txn.status === 'review_needed' ? 'bg-orange-50' : 'hover:bg-gray-50'}>
+                  <tr key={txn.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm">{txn.date}</td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-gray-900">{txn.description}</div>
@@ -582,7 +713,52 @@ export default function UnifiedBookkeeping() {
                     }`}>
                       {txn.amount >= 0 ? '+' : '-'}${Math.abs(txn.amount).toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 text-sm">{txn.category}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <select
+                        value={txn.glAccount || ''}
+                        onChange={(e) => handleTransactionFieldChange(txn.id, 'glAccount', e.target.value)}
+                        className="w-full border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
+                      >
+                        <option value="">Select GL code</option>
+                        {CHART_OF_ACCOUNTS.map(option => (
+                          <option key={option.id} value={option.id}>{option.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <select
+                        value={txn.programCode || ''}
+                        onChange={(e) => handleTransactionFieldChange(txn.id, 'programCode', e.target.value)}
+                        className="w-full border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
+                      >
+                        <option value="">Choose program</option>
+                        {PROGRAM_CODES.map(option => (
+                          <option key={option.id} value={option.id}>{option.name}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <textarea
+                        value={txn.descriptionNote || ''}
+                        onChange={(e) => handleTransactionFieldChange(txn.id, 'descriptionNote', e.target.value)}
+                        className="w-full border-gray-300 rounded-lg text-sm focus:ring-primary-500 focus:border-primary-500"
+                        rows={2}
+                        placeholder="Explain this in plain language"
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleAttachReceipt(txn.id)}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1 ${
+                          txn.receiptAttached
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        <PaperClipIcon className="h-4 w-4" />
+                        {txn.receiptAttached ? 'Attached' : 'Attach'}
+                      </button>
+                    </td>
                     <td className="px-6 py-4">
                       <div className={`text-sm font-medium ${
                         txn.confidence >= 90 ? 'text-green-600' :
@@ -593,15 +769,25 @@ export default function UnifiedBookkeeping() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {txn.status === 'categorized' ? (
-                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                          Categorized
-                        </span>
-                      ) : (
-                        <button className="touch-target px-3 py-2 bg-orange-600 text-white text-xs rounded hover:bg-orange-700">
-                          Review
-                        </button>
-                      )}
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        (statusStyles[getTransactionStatus(txn)] || {}).className || 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {(statusStyles[getTransactionStatus(txn)] || {}).label || 'Review'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 space-x-2 whitespace-nowrap">
+                      <button
+                        onClick={() => openSplitModal(txn)}
+                        className="px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Split
+                      </button>
+                      <button
+                        onClick={() => handleTransactionFieldChange(txn.id, 'requiresSplit', false)}
+                        className="px-3 py-1.5 text-xs font-semibold border border-primary-200 text-primary-700 rounded-lg hover:bg-primary-50"
+                      >
+                        Mark ready
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -741,6 +927,14 @@ export default function UnifiedBookkeeping() {
             </div>
           </div>
         </div>
+      )}
+      {splitModal.open && (
+        <TransactionSplitModal
+          data={splitModal}
+          onClose={closeSplitModal}
+          onChangeAllocations={(allocs) => setSplitModal(prev => ({ ...prev, allocations: allocs, error: '' }))}
+          onSave={handleSplitSave}
+        />
       )}
     </div>
   );
