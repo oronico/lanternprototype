@@ -49,7 +49,7 @@ const navigationGroups = [
     color: 'teal',
     subItems: [
       {
-        name: 'Cash & Collections',
+        name: 'Receivables',
         href: '/payments'
       },
       {
@@ -58,10 +58,14 @@ const navigationGroups = [
         badge: 'Pro'
       },
       {
-        name: 'Payroll & Staff Costs',
+        name: 'Payroll',
         href: '/payroll',
         badge: 'Pro'
       },
+        {
+        name: 'Cash Flow Forecast',
+        href: '/cash-reality'
+        },
       {
         name: 'Financial Health',
         href: '/health'

@@ -306,7 +306,7 @@ const FinancialsLanding = () => {
           description="Track private-pay tuition, ESA reimbursements, and LEA/state deposits with the right reconciliation rules."
           cards={[
             {
-              title: 'Cash & Collections (Private Tuition)',
+              title: 'Receivables (Private Tuition)',
               description: 'Map family payments per student, unbundle siblings, and chase on-time collections.',
               href: '/payments',
               icon: BanknotesIcon
