@@ -13,7 +13,9 @@ import {
   SparklesIcon,
   ClipboardDocumentCheckIcon,
   CalendarIcon,
-  PaperClipIcon
+  PaperClipIcon,
+  CheckIcon,
+  QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import toast from 'react-hot-toast';
@@ -102,6 +104,7 @@ export default function UnifiedBookkeeping() {
   const [transactions, setTransactions] = useState([]);
   const [quickbooksConnected, setQuickbooksConnected] = useState(false);
   const [plaidConnected, setPlaidConnected] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
   const [chartAccounts, setChartAccounts] = useState(CHART_OF_ACCOUNTS);
   const [programCodes, setProgramCodes] = useState(PROGRAM_CODES);
   const [newAccountName, setNewAccountName] = useState('');
@@ -117,6 +120,12 @@ export default function UnifiedBookkeeping() {
     
     loadData();
   }, []);
+
+  useEffect(() => {
+    setSelectedTransactions(prev =>
+      prev.filter(id => transactions.some(txn => txn.id === id))
+    );
+  }, [transactions]);
 
   const loadData = () => {
     // Demo connected accounts via Plaid
@@ -211,6 +220,123 @@ export default function UnifiedBookkeeping() {
         receiptAttached: false
       }
     ]);
+  };
+
+  const normalizeString = (value = '') => value.toLowerCase();
+
+  const getHankSuggestions = (txn) => {
+    const suggestion = {};
+    const desc = normalizeString(txn.description);
+
+    if (!txn.glAccount) {
+      if (desc.includes('tuition') || desc.includes('family')) {
+        suggestion.glAccount = 'tuition_revenue';
+      } else if (desc.includes('esa') || desc.includes('voucher') || desc.includes('scholar')) {
+        suggestion.glAccount = 'esa_funding';
+      } else if (desc.includes('restricted')) {
+        suggestion.glAccount = 'fundraising_restricted';
+      } else if (desc.includes('donation') || desc.includes('gift') || desc.includes('grant')) {
+        suggestion.glAccount = 'fundraising_unrestricted';
+      } else if (desc.includes('rent') || desc.includes('lease')) {
+        suggestion.glAccount = 'rent';
+      } else if (desc.includes('loan') || desc.includes('debt')) {
+        suggestion.glAccount = 'debt_service';
+      } else if (desc.includes('electric') || desc.includes('power') || desc.includes('utility')) {
+        suggestion.glAccount = 'utilities';
+      } else if (desc.includes('insurance')) {
+        suggestion.glAccount = 'insurance';
+      } else if (desc.includes('payroll') || desc.includes('teacher')) {
+        suggestion.glAccount = 'payroll_teachers';
+      } else if (desc.includes('amazon') || desc.includes('supply') || desc.includes('supplies')) {
+        suggestion.glAccount = 'supplies';
+      } else if (desc.includes('tech') || desc.includes('software')) {
+        suggestion.glAccount = 'technology';
+      } else if (desc.includes('travel') || desc.includes('hotel') || desc.includes('gas')) {
+        suggestion.glAccount = 'travel';
+      } else if (desc.includes('meal') || desc.includes('food')) {
+        suggestion.glAccount = 'meals';
+      } else if (chartAccounts[0]) {
+        suggestion.glAccount = chartAccounts[0].id;
+      }
+    }
+
+    if (!txn.programCode) {
+      if (desc.includes('after')) {
+        suggestion.programCode = 'after_school';
+      } else if (desc.includes('summer')) {
+        suggestion.programCode = 'summer';
+      } else if (desc.includes('esa') || desc.includes('voucher')) {
+        suggestion.programCode = 'esa_program';
+      } else {
+        suggestion.programCode = 'full_time';
+      }
+    }
+
+    if (!txn.descriptionNote) {
+      suggestion.descriptionNote = txn.amount >= 0
+        ? `Payment received: ${txn.description}`
+        : `Expense paid: ${txn.description}`;
+    }
+
+    if (txn.requiresSplit && txn.amount >= 0) {
+      suggestion.requiresSplit = false;
+    }
+
+    return suggestion;
+  };
+
+  const applyHankSuggestionsToTransaction = (txnId) => {
+    let applied = false;
+    setTransactions(prev =>
+      prev.map(txn => {
+        if (txn.id !== txnId) return txn;
+        const suggestion = getHankSuggestions(txn);
+        if (Object.keys(suggestion).length === 0) return txn;
+        applied = true;
+        return { ...txn, ...suggestion };
+      })
+    );
+    if (applied) {
+      toast.success('Hank filled in the details.');
+    } else {
+      toast('Looks good already.');
+    }
+  };
+
+  const applyHankSuggestionsBulk = () => {
+    if (!selectedTransactions.length) return;
+    let applied = false;
+    setTransactions(prev =>
+      prev.map(txn => {
+        if (!selectedTransactions.includes(txn.id)) return txn;
+        const suggestion = getHankSuggestions(txn);
+        if (Object.keys(suggestion).length === 0) return txn;
+        applied = true;
+        return { ...txn, ...suggestion };
+      })
+    );
+    setSelectedTransactions([]);
+    if (applied) {
+      toast.success('Hank updated the selected transactions.');
+    } else {
+      toast('Those transactions were already ready.');
+    }
+  };
+
+  const toggleSelectTransaction = (txnId) => {
+    setSelectedTransactions(prev =>
+      prev.includes(txnId)
+        ? prev.filter(id => id !== txnId)
+        : [...prev, txnId]
+    );
+  };
+
+  const toggleSelectAllTransactions = (checked) => {
+    if (checked) {
+      setSelectedTransactions(transactions.map(txn => txn.id));
+    } else {
+      setSelectedTransactions([]);
+    }
   };
 
   const handleConnectPlaid = () => {
@@ -315,6 +441,7 @@ export default function UnifiedBookkeeping() {
   const needsReviewCount = transactionsNeedingAttention.length;
   const readyCount = transactions.length - needsReviewCount;
   const needsAttentionCount = needsReviewCount;
+  const allTransactionsSelected = transactions.length > 0 && selectedTransactions.length === transactions.length;
   const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   const handleAddChartAccount = () => {
@@ -744,16 +871,61 @@ export default function UnifiedBookkeeping() {
           </div>
 
           <div className="bg-white rounded-lg shadow border border-gray-100">
+            {selectedTransactions.length > 0 && (
+              <div className="px-4 py-3 flex flex-wrap gap-3 items-center border-b border-gray-100 bg-primary-50">
+                <div className="text-sm text-primary-800 font-medium">
+                  Hank selected <span className="font-semibold">{selectedTransactions.length}</span> item{selectedTransactions.length === 1 ? '' : 's'}.
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={applyHankSuggestionsBulk}
+                    className="px-3 py-1.5 text-xs font-semibold bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-1"
+                  >
+                    <CheckIcon className="h-4 w-4" />
+                    Apply Hank’s suggestion
+                  </button>
+                  <button
+                    onClick={() => setSelectedTransactions([])}
+                    className="px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
+                    Clear selection
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="table-scroll">
               <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-4 py-3 text-left">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"
+                      checked={allTransactionsSelected}
+                      onChange={(e) => toggleSelectAllTransactions(e.target.checked)}
+                    />
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category (GL code)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program / Project</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <div className="flex items-center gap-1">
+                      Category (GL code)
+                      <QuestionMarkCircleIcon className="h-3.5 w-3.5 text-gray-400" title="Where this lands on your financial statements. Lenders look for consistent GL codes." />
+                    </div>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <div className="flex items-center gap-1">
+                      Program / Project
+                      <QuestionMarkCircleIcon className="h-3.5 w-3.5 text-gray-400" title="Tie each dollar to the programs you offer so you can see which ones make money." />
+                    </div>
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <div className="flex items-center gap-1">
+                      Description
+                      <QuestionMarkCircleIcon className="h-3.5 w-3.5 text-gray-400" title="Plain-language explanation that auditors and future you will understand." />
+                    </div>
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Receipts</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Confidence</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
@@ -761,8 +933,19 @@ export default function UnifiedBookkeeping() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {transactions.map(txn => (
+                {transactions.map(txn => {
+                  const hankSuggestion = getHankSuggestions(txn);
+                  const suggestionAvailable = Object.keys(hankSuggestion).length > 0;
+                  return (
                   <tr key={txn.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedTransactions.includes(txn.id)}
+                        onChange={() => toggleSelectTransaction(txn.id)}
+                        className="h-4 w-4 rounded text-primary-600 focus:ring-primary-500"
+                      />
+                    </td>
                     <td className="px-6 py-4 text-sm">{txn.date}</td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-gray-900">{txn.description}</div>
@@ -843,14 +1026,19 @@ export default function UnifiedBookkeeping() {
                         Split
                       </button>
                       <button
-                        onClick={() => handleTransactionFieldChange(txn.id, 'requiresSplit', false)}
-                        className="px-3 py-1.5 text-xs font-semibold border border-primary-200 text-primary-700 rounded-lg hover:bg-primary-50"
+                        onClick={() => applyHankSuggestionsToTransaction(txn.id)}
+                        disabled={!suggestionAvailable}
+                        className={`px-3 py-1.5 text-xs font-semibold border border-primary-200 rounded-lg ${
+                          suggestionAvailable
+                            ? 'text-primary-700 hover:bg-primary-50'
+                            : 'text-gray-400 bg-gray-50 cursor-not-allowed border-gray-200'
+                        }`}
                       >
-                        Mark ready
+                        Use Hank’s suggestion
                       </button>
                     </td>
                   </tr>
-                ))}
+                )})}
               </tbody>
               </table>
             </div>
