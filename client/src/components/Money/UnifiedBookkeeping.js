@@ -645,16 +645,6 @@ export default function UnifiedBookkeeping() {
             )}
           </button>
           <button
-            onClick={() => setActiveTab('chart')}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === 'chart'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Chart & Programs
-          </button>
-          <button
             onClick={() => setActiveTab('sync')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'sync'
@@ -868,9 +858,8 @@ export default function UnifiedBookkeeping() {
         </div>
       )}
 
-      {/* Chart of Accounts & Programs Tab */}
-      {activeTab === 'chart' && (
-        <div>
+      {/* Chart of Accounts & Programs */}
+      <div className="mb-10">
           <div className="mb-6 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
             <div className="flex items-start gap-3">
               <SparklesIcon className="h-6 w-6 text-primary-600 flex-shrink-0" />
@@ -970,7 +959,7 @@ export default function UnifiedBookkeeping() {
             </ul>
           </div>
         </div>
-      )}
+      </div>
 
       {/* QuickBooks Sync Tab */}
       {activeTab === 'sync' && (
