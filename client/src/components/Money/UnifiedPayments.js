@@ -326,8 +326,12 @@ export default function UnifiedPayments() {
   };
 
   const filteredTransactions = transactions.filter(t => {
-    const matchesSearch = t.family.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         t.student.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchLower = searchTerm.toLowerCase();
+    const familyName = (t.family || '').toLowerCase();
+    const studentName = t.student
+      ? t.student.toLowerCase()
+      : (t.students || []).map(s => s.name || '').join(' ').toLowerCase();
+    const matchesSearch = familyName.includes(searchLower) || studentName.includes(searchLower);
     const matchesFilter =
       filterStatus === 'all'
         ? true
