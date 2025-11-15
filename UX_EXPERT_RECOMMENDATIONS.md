@@ -1,3 +1,47 @@
+---
+
+## 🏗 Fintech + AI Architecture Recommendation (Plaid + QuickBooks Layer)
+
+To keep the UX simple while the platform handles Plaid ingestion, tuition splits, and QuickBooks synchronization in the background, use the following architecture (mirrored in today’s Financials Hub sandbox):
+
+### 1. Data Acquisition Layer
+- **Plaid Assets & Transactions**: Plaid Link connects operating, savings, and card accounts. Backend workers call `/transactions/sync` for incremental activity and `/assets/report/create` for verified statement PDFs, stored encrypted (S3/GCS) for “View Statement” actions.
+- **Manual/CSV Uploads**: When Plaid isn’t available, accept CSV/PDF statements and normalize them into the same activity queue with `source: 'manual'`.
+
+### 2. Finance Activity Store
+Single source of truth per transaction:
+```
+activity_id, account_id, txn_type (tuition_inbound, fundraising, expense, payroll),
+amount, currency, memo, Plaid metadata, status (needs_split, needs_category, mapped, synced),
+linked_entities (student_ids, donor_id, vendor_id), attachments (statement_id, receipt_id),
+ledger_mapping (chart_of_accounts_id, program_id), audit_log (user/AI actions).
+```
+Statements reference this store via `statement_id`, enabling instant previews during reconciliation.
+
+### 3. Intelligence & Automation Services
+1. **Categorization + Split Service** – Rule engine + ML that auto-suggests GL accounts and per-student allocations, enforcing “all tuition dollars must map to individual students” before a transaction can close.
+2. **Student Matching Service** – Maintains roster metadata (family names, ESA IDs, payment patterns) and learns from overrides to improve future auto-mapping.
+3. **Statement Reconciliation Service** – Cross-checks Plaid transactions against statement line items, flagging exceptions or missing receipts.
+4. **AI Coach Engine** – Reads real-time metrics + outstanding tasks to produce “built-in consultant” copy (“Collect from Chen to add +2 days cash; need suggested outreach text?”).
+
+### 4. Month-End Close Workflow
+- Each month’s checklist is data-driven (`transactions_mapped`, `receipts_attached`, `payroll_accrued`). Tasks auto-complete when requirements are satisfied but support manual overrides with audit trails.
+- Cash vs. accrual toggles switch which tasks appear (e.g., deferred revenue for accrual, deposit verification for cash).
+- When a checklist passes, auto-generate QuickBooks-ready journal entries grouped by account/program, with sync metadata stored on each activity row.
+
+### 5. QuickBooks / Ledger Integration
+- Push journal entries through the QBO API (or export CSV) with SchoolStack IDs so we can trace back to the originating activity.
+- Maintain sync status + timestamps to prevent double posting and allow targeted retries.
+
+### 6. Security & Roles
+- Encrypt Plaid tokens and statement files with KMS. Apply RBAC so teachers can upload receipts but never see bank balances, while directors/controllers manage reconciliation and closes.
+
+### 7. AI Touchpoints
+- **Classification**: AI recommends categories/splits with transparent “why”.
+- **Guidance**: Coach bar bundles alerts + next actions (e.g., “Cash Cushion” thread includes deposits, expenses, suggested nudges).
+- **Natural-language Q&A**: “Why did Days Cash drop?” triggers templated LLM analysis referencing recent activity and nudges.
+
+This architecture keeps the director experience to one inbox + one guided close, while backend services quietly manage Plaid feeds, tuition enforcement, AI coaching, and ledger sync—ready for lender-grade reporting and scenario planning.
 # 🎨 UX Expert Recommendations - Platform Simplification
 
 ## 📊 Current State Analysis

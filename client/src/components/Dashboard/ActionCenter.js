@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   CheckCircleIcon,
   EnvelopeIcon,
@@ -59,62 +59,70 @@ const determineActions = (nudge) => {
   if (nudge.type === 'contract') return ['email', 'sendContract'];
   if (nudge.type === 'attendance') return ['call', 'text', 'email'];
   if (nudge.type === 'payment') return ['call', 'text', 'email'];
+  if (nudge.type === 'financial') return ['view'];
   return ['email'];
 };
 
 const getSource = (type) => {
   const sources = {
-    'contract': 'Document Compliance',
-    'attendance': 'Daily Attendance',
-    'payment': 'Payment Tracking',
-    'enrollment': 'Recruitment',
-    'financial': 'Financial Dashboard'
+    contract: 'Document Compliance',
+    attendance: 'Daily Attendance',
+    payment: 'Payments',
+    enrollment: 'Recruitment',
+    financial: 'Money Mission',
+    fundraising: 'Fundraising Workspace'
   };
-  return sources[type] || 'System';
+  return sources[type] || 'Command Center';
 };
 
-const getPriorityColor = (priority) => {
-  const colors = {
-    'urgent': 'red',
-    'high': 'orange',
-    'medium': 'yellow',
-    'low': 'gray'
-  };
-  return colors[priority] || 'gray'
+const PRIORITY_COLOR = {
+  urgent: { border: 'border-red-500', pill: 'bg-red-100 text-red-800', iconBg: 'bg-red-50', icon: 'text-red-600' },
+  high: { border: 'border-orange-500', pill: 'bg-orange-100 text-orange-800', iconBg: 'bg-orange-50', icon: 'text-orange-600' },
+  medium: { border: 'border-yellow-500', pill: 'bg-yellow-100 text-yellow-800', iconBg: 'bg-yellow-50', icon: 'text-yellow-600' },
+  low: { border: 'border-gray-400', pill: 'bg-gray-100 text-gray-800', iconBg: 'bg-gray-50', icon: 'text-gray-500' }
 };
 
 export default function ActionCenter() {
   const emit = useEventEmit();
   const [actions, setActions] = useState([]);
   const [filter, setFilter] = useState('all'); // all, urgent, today, thisWeek
+  const [loading, setLoading] = useState(true);
+  const [completedToday, setCompletedToday] = useState(0);
+  const [todayWins, setTodayWins] = useState({
+    attendance: false,
+    payments: false,
+    fundraising: false
+  });
 
   useEffect(() => {
     analytics.trackPageView('action-center');
     loadActions();
+    const storedCompleted = localStorage.getItem('action_center_completed_today');
+    if (storedCompleted) setCompletedToday(parseInt(storedCompleted));
+    const storedWins = localStorage.getItem('action_center_wins');
+    if (storedWins) setTodayWins(JSON.parse(storedWins));
   }, []);
 
   const loadActions = () => {
-    // Generate actions from centralized data
-    const generatedNudges = generateNudges();
-    
-    // Convert to action format
-    const allActions = generatedNudges.map((nudge, index) => {
-      const icons = {
-        'contract': DocumentTextIcon,
-        'attendance': ExclamationCircleIcon,
-        'payment': BanknotesIcon,
-        'enrollment': UserGroupIcon,
-        'financial': BanknotesIcon,
-        'celebration': CalendarIcon
+    try {
+      const generatedNudges = generateNudges();
+      const iconMap = {
+        contract: DocumentTextIcon,
+        attendance: ExclamationCircleIcon,
+        payment: BanknotesIcon,
+        enrollment: UserGroupIcon,
+        financial: BanknotesIcon,
+        fundraising: BanknotesIcon,
+        celebration: CalendarIcon
       };
-      
-      return {
+
+      const actionPayload = generatedNudges.map((nudge, index) => ({
         id: `${nudge.type}_${index}`,
         type: nudge.type,
-        priority: nudge.priority,
+        priority: nudge.priority === 'urgent' ? PRIORITY.URGENT : nudge.priority,
         title: nudge.title,
         description: nudge.description || '',
-        dueDate: 'Today',
+        dueDate: nudge.priority === 'urgent' ? 'Today' : 'This Week',
         family: nudge.family || '',
         student: nudge.student || '',
         phone: nudge.phone || '',
@@ -122,145 +130,30 @@ export default function ActionCenter() {
         actions: determineActions(nudge),
         completed: false,
         source: getSource(nudge.type),
-        icon: icons[nudge.type] || ExclamationCircleIcon,
-        color: getPriorityColor(nudge.priority),
-        actionData: nudge
-      };
-    });
-    
-    // Add recruitment pipeline actions manually for now
-    const recruitmentActions = [
-      {
-        id: 'rec_1',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.HIGH,
-        title: 'Schedule Tour - Johnson Family',
-        description: 'New lead from Facebook, very interested',
-        dueDate: 'Today',
-        family: 'Johnson',
-        phone: '555-0101',
-        email: 'sarah@email.com',
-        actions: ['text', 'email', 'schedule'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: CalendarIcon,
-        color: 'blue'
-      },
-      
-      // From Recruitment Pipeline
-      {
-        id: 'rec_1',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.HIGH,
-        title: 'Schedule Tour - Johnson Family',
-        description: 'New lead from Facebook, very interested',
-        dueDate: 'Today',
-        family: 'Johnson',
-        contact: 'Sarah Johnson',
-        phone: '555-0101',
-        email: 'sarah@email.com',
-        actions: ['text', 'email', 'schedule'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: CalendarIcon,
-        color: 'blue'
-      },
-      {
-        id: 'rec_2',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.MEDIUM,
-        title: 'Follow Up - Martinez Family',
-        description: 'Interested stage, check on application status',
-        dueDate: 'Today',
-        family: 'Martinez',
-        contact: 'Maria Martinez',
-        phone: '555-0201',
-        email: 'maria@email.com',
-        actions: ['text', 'email'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: UserGroupIcon,
-        color: 'purple'
-      },
-      {
-        id: 'rec_3',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.HIGH,
-        title: 'Send Deposit Invoice - Chen Family',
-        description: 'Application submitted, ready for deposit',
-        dueDate: 'Today',
-        family: 'Chen',
-        contact: 'Wei Chen',
-        phone: '555-0301',
-        email: 'wei@email.com',
-        actions: ['email', 'sendInvoice'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: BanknotesIcon,
-        color: 'green'
-      },
-      {
-        id: 'rec_4',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.HIGH,
-        title: 'Send Enrollment Contract - Williams Family',
-        description: 'Deposit paid, ready for contract',
-        dueDate: 'Today',
-        family: 'Williams',
-        contact: 'Lisa Williams',
-        phone: '555-0402',
-        email: 'lisa@email.com',
-        actions: ['email', 'sendContract'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: DocumentTextIcon,
-        color: 'blue'
-      },
-      {
-        id: 'rec_5',
-        type: ACTION_TYPES.RECRUITMENT,
-        priority: PRIORITY.MEDIUM,
-        title: 'Follow Up on Contract - Brown Family',
-        description: 'Contract sent 9/18, waiting for signature',
-        dueDate: 'Tomorrow',
-        family: 'Brown',
-        contact: 'Amanda Brown',
-        phone: '555-0501',
-        email: 'amanda@email.com',
-        actions: ['text', 'email'],
-        completed: false,
-        source: 'Recruitment Pipeline',
-        icon: DocumentTextIcon,
-        color: 'yellow'
-      },
-      
-      // Celebrations
-      {
-        id: 'cel_1',
-        type: ACTION_TYPES.CELEBRATION,
-        priority: PRIORITY.MEDIUM,
-        title: 'Emma Johnson\'s Birthday in 3 Days',
-        description: 'Send birthday card or call to wish happy birthday',
-        dueDate: 'October 3',
-        family: 'Johnson',
-        student: 'Emma Johnson',
-        phone: '555-0101',
-        email: 'sarah@email.com',
-        actions: ['email', 'text', 'sendCard'],
-        completed: false,
-        source: 'Student Records',
-        icon: CalendarIcon,
-        color: 'pink'
-      }
-    ];
+        icon: iconMap[nudge.type] || ExclamationCircleIcon,
+        color: nudge.priority
+      }));
 
-    setActions(allActions);
+      setActions(actionPayload);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const markComplete = (actionId) => {
-    setActions(prev => prev.map(a => 
-      a.id === actionId ? { ...a, completed: true } : a
-    ));
+  const markComplete = (actionId, meta = {}) => {
+    setActions(prev =>
+      prev.map(a => (a.id === actionId ? { ...a, completed: true } : a))
+    );
+
+    const updatedCount = completedToday + 1;
+    setCompletedToday(updatedCount);
+    localStorage.setItem('action_center_completed_today', String(updatedCount));
+
+    if (meta.type && todayWins[meta.type] === false) {
+      const updatedWins = { ...todayWins, [meta.type]: true };
+      setTodayWins(updatedWins);
+      localStorage.setItem('action_center_wins', JSON.stringify(updatedWins));
+    }
     
     analytics.trackFeatureUsage('actionCenter', 'mark_complete', {
       actionId: actionId
@@ -351,18 +244,33 @@ export default function ActionCenter() {
   const todayCount = actions.filter(a => !a.completed && a.dueDate === 'Today').length;
   const totalCount = actions.filter(a => !a.completed).length;
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case PRIORITY.URGENT: return 'red';
-      case PRIORITY.HIGH: return 'orange';
-      case PRIORITY.MEDIUM: return 'yellow';
-      case PRIORITY.LOW: return 'gray';
-      default: return 'gray';
-    }
-  };
+  const encouragementCopy = useMemo(() => {
+    if (loading) return 'Loading your nudges...';
+    if (totalCount === 0) return 'All caught up! Enjoy the calm. 🌤️';
+    if (urgentCount > 0) return 'Tackle the red badges first—then celebrate!';
+    if (todayCount > 0) return 'A few quick wins and you’ll be done. 💪';
+    return 'Keep the rhythm going—consistency compounds.';
+  }, [loading, totalCount, urgentCount, todayCount]);
+
+  const winChips = [
+    { key: 'attendance', label: 'Daily attendance done' },
+    { key: 'payments', label: 'Payments checked' },
+    { key: 'fundraising', label: 'Fundraising touch' }
+  ];
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow p-8 text-center">
+          <div className="animate-spin mx-auto h-8 w-8 border-2 border-primary-200 border-t-primary-600 rounded-full mb-4"></div>
+          <p className="text-sm text-gray-600">Pulling the latest nudges...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 space-y-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -377,7 +285,42 @@ export default function ActionCenter() {
           <div className="text-right">
             <div className="text-3xl font-bold text-gray-900">{totalCount}</div>
             <div className="text-sm text-gray-600">actions pending</div>
+            {completedToday > 0 && (
+              <div className="text-xs text-primary-600 mt-1">{completedToday} wins today 🎉</div>
+            )}
           </div>
+        </div>
+        <p className="mt-3 text-sm text-gray-600">{encouragementCopy}</p>
+      </div>
+
+      {/* Daily wins meter */}
+      <div className="bg-gradient-to-r from-primary-50 via-white to-indigo-50 border border-primary-100 rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-primary-600">Daily rhythm</p>
+            <h3 className="text-lg font-semibold text-gray-900">3 wins to protect each day</h3>
+          </div>
+          <div className="text-right">
+            <p className="text-3xl font-bold text-primary-600">
+              {Object.values(todayWins).filter(Boolean).length}/3
+            </p>
+            <p className="text-xs text-gray-500">Complete them for a perfect day</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {winChips.map((chip) => (
+            <span
+              key={chip.key}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-full border ${
+                todayWins[chip.key]
+                  ? 'bg-primary-600 text-white border-primary-600'
+                  : 'bg-white text-gray-600 border-gray-200'
+              }`}
+            >
+              {todayWins[chip.key] ? '✓ ' : '○ '}
+              {chip.label}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -415,20 +358,25 @@ export default function ActionCenter() {
         </button>
       </div>
 
+      {/* Encouragement banner */}
+      <div className="bg-white border border-primary-100 rounded-xl p-5">
+        <p className="text-sm text-gray-700">{encouragementCopy}</p>
+      </div>
+
       {/* Action Items */}
       <div className="space-y-3">
         {filteredActions.map(action => {
           const Icon = action.icon;
-          const priorityColor = getPriorityColor(action.priority);
+          const priorityStyles = PRIORITY_COLOR[action.priority] || PRIORITY_COLOR.low;
           
           return (
-            <div key={action.id} className={`bg-white rounded-lg shadow border-l-4 border-${priorityColor}-500 p-5 hover:shadow-md transition-shadow`}>
+            <div key={action.id} className={`bg-white rounded-lg shadow border-l-4 ${priorityStyles.border} p-5 hover:shadow-md transition-shadow`}>
               <div className="flex items-start justify-between gap-4">
                 {/* Left: Action Details */}
                 <div className="flex items-start gap-4 flex-1">
                   {/* Icon */}
-                  <div className={`p-2 rounded-lg bg-${priorityColor}-50 flex-shrink-0`}>
-                    <Icon className={`h-6 w-6 text-${priorityColor}-600`} />
+                  <div className={`p-2 rounded-lg ${priorityStyles.iconBg} flex-shrink-0`}>
+                    <Icon className={`h-6 w-6 ${priorityStyles.icon}`} />
                   </div>
                   
                   {/* Content */}
@@ -533,7 +481,7 @@ export default function ActionCenter() {
 
                   {/* Mark Complete */}
                   <button
-                    onClick={() => markComplete(action.id)}
+                    onClick={() => markComplete(action.id, { type: action.type })}
                     className="p-2 border border-gray-300 rounded-lg hover:bg-green-50 hover:border-green-500 hover:text-green-600 transition-colors"
                     title="Mark complete"
                   >

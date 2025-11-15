@@ -286,5 +286,99 @@ export const mockData = {
       { id: 'sync_001', opportunityId: 'opp_004', description: 'Learning Recovery Fund installment', account: '4230 · Restricted Grants', amount: 50000, status: 'ready_to_sync', lastSynced: '2024-09-08' },
       { id: 'sync_002', opportunityId: 'opp_003', description: 'Innovators Gala pledges', account: '4250 · Events Revenue', amount: 40000, status: 'pending_amount', lastSynced: null }
     ]
+  },
+  financials: {
+    activity: [
+      {
+        id: 'txn_001',
+        date: '2024-09-27',
+        description: 'ACH CLASSWALLET BATCH',
+        amount: 2332,
+        direction: 'inbound',
+        account: 'Chase Operating',
+        memo: 'ACH CLASSWALLET * 10331',
+        family: 'Lopez',
+        requiresSplit: true,
+        status: 'needs_split',
+        source: 'Plaid'
+      },
+      {
+        id: 'txn_002',
+        date: '2024-09-26',
+        description: 'Stripe Auto-Pay',
+        amount: 1200,
+        direction: 'inbound',
+        account: 'Chase Operating',
+        memo: 'STRIPE*Emma Johnson',
+        family: 'Johnson',
+        requiresSplit: false,
+        status: 'mapped',
+        students: [
+          { name: 'Emma Johnson', amount: 1200 }
+        ],
+        source: 'Plaid'
+      },
+      {
+        id: 'txn_003',
+        date: '2024-09-25',
+        description: 'Staples Store 885',
+        amount: 218,
+        direction: 'outbound',
+        account: 'AmEx Card',
+        memo: 'Office supplies for classrooms',
+        vendor: 'Staples',
+        requiresSplit: false,
+        status: 'needs_category',
+        source: 'Statement',
+        statementId: 'stmt_sep_card'
+      },
+      {
+        id: 'txn_004',
+        date: '2024-09-24',
+        description: 'Gusto Payroll Debit',
+        amount: 8421,
+        direction: 'outbound',
+        account: 'Chase Operating',
+        memo: 'Payroll batch 09/24',
+        requiresSplit: false,
+        status: 'mapped',
+        source: 'Plaid'
+      }
+    ],
+    statements: [
+      {
+        id: 'stmt_sep_card',
+        account: 'AmEx School Card',
+        period: 'Sep 2024',
+        file: 'amex-sep-2024.pdf',
+        status: 'uploaded',
+        type: 'credit_card',
+        lines: [
+          { id: 'line_card_1', date: '2024-09-22', description: 'Staples Store 885', amount: 218, category: 'Classroom Supplies', status: 'needs_review', receiptAttached: false },
+          { id: 'line_card_2', date: '2024-09-20', description: 'Home Depot #442', amount: 146, category: 'Facilities', status: 'matched', receiptAttached: true },
+          { id: 'line_card_3', date: '2024-09-18', description: 'Uber Trip', amount: 32, category: 'Travel', status: 'flagged', receiptAttached: false }
+        ]
+      },
+      {
+        id: 'stmt_sep_operating',
+        account: 'Chase Operating',
+        period: 'Sep 2024',
+        file: 'chase-operating-sep-2024.pdf',
+        status: 'processing',
+        type: 'bank',
+        lines: [
+          { id: 'line_bank_1', date: '2024-09-27', description: 'ACH CLASSWALLET BATCH', amount: 2332, category: 'Tuition Deposits', status: 'needs_review', receiptAttached: false },
+          { id: 'line_bank_2', date: '2024-09-24', description: 'Gusto Payroll Debit', amount: 8421, category: 'Payroll', status: 'matched', receiptAttached: false }
+        ]
+      }
+    ],
+    checklist: [
+      { id: 'step_plaid_sync', title: 'Review Plaid feed', description: 'Categorize all transactions & split per student', done: false, type: 'sync' },
+      { id: 'step_statements', title: 'Attach bank & card statements', description: 'Upload PDF statements or Plaid Assets reports', done: false, type: 'documents' },
+      { id: 'step_tuition', title: 'Confirm tuition per student', description: 'Every deposit mapped to individual students + GL', done: false, type: 'tuition' },
+      { id: 'step_expenses', title: 'Categorize expenses to GL accounts', description: 'Ensure uncategorized bucket is under 10%', done: false, type: 'bookkeeping' },
+      { id: 'step_payroll', title: 'Verify payroll + benefits', description: 'Confirm gross payroll, taxes & reimbursements', done: false, type: 'payroll' },
+      { id: 'step_reports', title: 'Generate bank-ready financials', description: 'Export cash flow, P&L, and balance sheet', done: false, type: 'reporting' }
+    ]
   }
 };

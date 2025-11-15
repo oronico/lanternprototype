@@ -45,14 +45,32 @@ const navigationGroups = [
     id: 'money',
     name: 'Financials',
     icon: BanknotesIcon,
-    href: '/payments',
+    href: '/financials',
     color: 'green',
     subItems: [
-      { name: 'Payments & Reconciliation', href: '/payments' },
-      { name: 'Payroll & Staff Costs', href: '/payroll', badge: 'Pro' },
-      { name: 'Bookkeeping & Accounts', href: '/bookkeeping', badge: 'Pro' },
-      { name: 'Cash Flow Forecast', href: '/cash-reality' },
-      { name: 'Financial Health', href: '/health' }
+      {
+        name: 'Cash & Collections',
+        href: '/payments'
+      },
+      {
+        name: 'Accounting & Bookkeeping',
+        href: '/bookkeeping',
+        badge: 'Pro'
+      },
+      {
+        name: 'Payroll & Staff Costs',
+        href: '/payroll',
+        badge: 'Pro'
+      },
+      {
+        name: 'Fundraising (501c3)',
+        href: '/crm/fundraising',
+        badge: 'Beta'
+      },
+      {
+        name: 'Financial Health',
+        href: '/health'
+      }
     ]
   },
   {

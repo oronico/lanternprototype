@@ -21,20 +21,21 @@ Opens at http://localhost:3000
 ## 📚 **Documentation Index**
 
 ### **Start Here:**
-1. **PLATFORM_OVERVIEW.md** - Complete feature list and architecture
-2. **INVESTOR_DEMO_GUIDE.md** - How to demo for investors
-3. **TECHNICAL_ARCHITECTURE.md** - Engineering documentation
+1. **PLATFORM_OVERVIEW.md** – Complete feature list and architecture
+2. **INVESTOR_DEMO_GUIDE.md** – How to demo for investors
+3. **MODULAR_ARCHITECTURE_GUIDE.md** – Engineering & systems documentation
 
 ### **Strategic Planning:**
-4. **GAMIFICATION_STRATEGY.md** - Noom/Duolingo engagement features
-5. **MOBILE_ATTENDANCE_STRATEGY.md** - Role-based access & mobile design
-6. **BOOKKEEPER_REPLACEMENT.md** - Automation roadmap
-7. **AI_MEETING_ASSISTANT_DESIGN.md** - Board meeting automation
+4. **GAMIFICATION_STRATEGY.md** – Noom/Duolingo engagement plan
+5. **MOBILE_ATTENDANCE_STRATEGY.md** – Role-based access & mobile design
+6. **BOOKKEEPER_REPLACEMENT_SYSTEM.md** – Automation roadmap
+7. **AI_MEETING_ASSISTANT_DESIGN.md** – Board meeting automation
 
 ### **Implementation Guides:**
-8. **ENROLLMENT_DOCUMENTS_STRATEGY.md** - Interest forms, applications, contracts
-9. **BUSINESS_MODEL.md** - Pricing, market, competitive analysis
-10. **BRAND_IDENTITY.md** - Design system and messaging
+8. **ENROLLMENT_DOCUMENTS_STRATEGY.md** – Interest forms, applications, contracts
+9. **COMPLETE_PLATFORM_OVERVIEW.md** – Feature-by-feature UX walkthrough
+10. **BUSINESS_MODEL.md** – Pricing, market, competitive analysis
+11. **BRAND_IDENTITY.md** – Design system and messaging
 
 ---
 
@@ -49,8 +50,10 @@ Opens at http://localhost:3000
 - Built specifically for education (ESA/vouchers, tuition, attendance)
 
 ### **Key Features:**
+- **Today Command Center:** Habit-forming GTD view with streaks, guided nudges, milestone path
 - **Students:** Complete SIS, 24-student demo, attendance tracking
 - **Money:** Multi-payment engines, payroll providers, QuickBooks sync
+- **Fundraising (501c3 only):** Pipeline, goal tracker, restricted vs. unrestricted mix, finance sync
 - **Operations:** Facility management, staff management, compliance
 - **Reports:** Tax filings (entity-aware), year-end financials
 - **Documents:** Smart categorization, package creation for grants/loans

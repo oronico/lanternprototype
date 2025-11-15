@@ -73,6 +73,10 @@ let mockFundraisingState = mockData.fundraising
   ? JSON.parse(JSON.stringify(mockData.fundraising))
   : { annualGoal: 0, opportunities: [], documents: [], bookkeepingSync: [] };
 
+let mockFinancialsState = mockData.financials
+  ? JSON.parse(JSON.stringify(mockData.financials))
+  : { activity: [], statements: [], checklist: [] };
+
 const computeMockFundraisingSummary = () => {
   const securedRestricted = mockFundraisingState.opportunities
     .filter(op => op.stage === 'closed_won' && op.awardType === 'restricted')
@@ -101,6 +105,31 @@ const computeMockFundraisingSummary = () => {
     pipelineTotal,
     weightedForecast,
     winRate: closedCount ? Math.round((wonCount / closedCount) * 100) : 0
+  };
+};
+
+const computeMockFinancialActivitySummary = () => {
+  const inbound = mockFinancialsState.activity.filter(txn => txn.direction === 'inbound');
+  const outbound = mockFinancialsState.activity.filter(txn => txn.direction === 'outbound');
+  const needsReview = mockFinancialsState.activity.filter(txn => txn.status !== 'mapped');
+
+  return {
+    inboundCount: inbound.length,
+    inboundAmount: inbound.reduce((sum, txn) => sum + txn.amount, 0),
+    outboundCount: outbound.length,
+    outboundAmount: outbound.reduce((sum, txn) => sum + txn.amount, 0),
+    needsReviewCount: needsReview.length,
+    needsSplitCount: mockFinancialsState.activity.filter(txn => txn.requiresSplit).length
+  };
+};
+
+const computeMockChecklistProgress = () => {
+  const total = mockFinancialsState.checklist.length || 1;
+  const completed = mockFinancialsState.checklist.filter(step => step.done).length;
+  return {
+    completed,
+    total,
+    percent: Math.round((completed / total) * 100)
   };
 };
 
@@ -457,6 +486,91 @@ export const fundraisingAPI = {
       });
     }
     return api.put('/fundraising/goal', { goal });
+  }
+};
+
+export const financialsAPI = {
+  getActivityFeed: () => {
+    if (USE_MOCK_DATA) {
+      return Promise.resolve({
+        data: {
+          activity: mockFinancialsState.activity,
+          statements: mockFinancialsState.statements,
+          summary: computeMockFinancialActivitySummary()
+        }
+      });
+    }
+    return api.get('/financials/activity');
+  },
+  splitTransaction: (activityId, allocations) => {
+    if (USE_MOCK_DATA) {
+      mockFinancialsState.activity = mockFinancialsState.activity.map(txn => {
+        if (txn.id !== activityId) return txn;
+        return {
+          ...txn,
+          requiresSplit: false,
+          status: 'mapped',
+          students: allocations.map(alloc => ({ name: alloc.name, amount: Number(alloc.amount) }))
+        };
+      });
+      return Promise.resolve({ data: { success: true } });
+    }
+    return api.post(`/financials/activity/${activityId}/split`, { allocations });
+  },
+  markCategorized: (activityId) => {
+    if (USE_MOCK_DATA) {
+      mockFinancialsState.activity = mockFinancialsState.activity.map(txn =>
+        txn.id === activityId ? { ...txn, status: 'mapped' } : txn
+      );
+      return Promise.resolve({ data: { success: true } });
+    }
+    return api.post(`/financials/activity/${activityId}/mark-categorized`);
+  },
+  getMonthCloseChecklist: () => {
+    if (USE_MOCK_DATA) {
+      return Promise.resolve({
+        data: {
+          checklist: mockFinancialsState.checklist,
+          progress: computeMockChecklistProgress()
+        }
+      });
+    }
+    return api.get('/financials/month-close');
+  },
+  updateChecklistStep: (stepId, completed) => {
+    if (USE_MOCK_DATA) {
+      mockFinancialsState.checklist = mockFinancialsState.checklist.map(step =>
+        step.id === stepId ? { ...step, done: completed } : step
+      );
+      return Promise.resolve({
+        data: {
+          success: true,
+          checklist: mockFinancialsState.checklist,
+          progress: computeMockChecklistProgress()
+        }
+      });
+    }
+    return api.post(`/financials/month-close/${stepId}`, { completed });
+  },
+  updateStatementLine: (statementId, lineId, updates) => {
+    if (USE_MOCK_DATA) {
+      mockFinancialsState.statements = (mockFinancialsState.statements || []).map(stmt => {
+        if (stmt.id !== statementId) return stmt;
+        return {
+          ...stmt,
+          lines: stmt.lines.map(line =>
+            line.id === lineId ? { ...line, ...updates } : line
+          )
+        };
+      });
+      return Promise.resolve({
+        data: {
+          success: true,
+          statements: mockFinancialsState.statements
+        }
+      });
+    }
+    return api.post(`/financials/statements/${statementId}/lines/${lineId}`, updates);
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   CreditCardIcon,
   BanknotesIcon,
@@ -8,11 +8,15 @@ import {
   MagnifyingGlassIcon,
   ChartBarIcon,
   ExclamationCircleIcon,
-  ClockIcon
+  ClockIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import { analytics } from '../../shared/analytics';
 import { useEventEmit } from '../../shared/hooks/useEventBus';
 import toast from 'react-hot-toast';
+import TransactionSplitModal from './TransactionSplitModal';
+import { financialsAPI } from '../../services/api';
+import { buildDefaultAllocations, normalizeAllocations, computeActivitySummary } from '../../utils/financials';
 
 /**
  * Unified Payments Hub
@@ -33,10 +37,17 @@ export default function UnifiedPayments() {
   const [trancheDeposits, setTrancheDeposits] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [statements, setStatements] = useState([]);
+  const [activitySummary, setActivitySummary] = useState(null);
+  const [activityLoading, setActivityLoading] = useState(true);
+  const [activityError, setActivityError] = useState('');
+  const defaultSplitModalState = { open: false, transaction: null, allocations: [], error: '', saving: false };
+  const [splitModal, setSplitModal] = useState(defaultSplitModalState);
 
   useEffect(() => {
     analytics.trackPageView('unified-payments');
     loadData();
+    loadActivityFeed();
   }, []);
 
   const loadData = () => {
@@ -81,8 +92,11 @@ export default function UnifiedPayments() {
         amount: 1200,
         method: 'Stripe Auto-pay',
         engine: 'stripe',
-        status: 'completed',
-        reconciled: true
+        direction: 'inbound',
+        status: 'mapped',
+        requiresSplit: false,
+        reconciled: true,
+        students: [{ name: 'Emma Johnson', amount: 1200 }]
       },
       {
         id: 2,
@@ -92,10 +106,11 @@ export default function UnifiedPayments() {
         amount: 1166,
         method: 'ClassWallet ESA',
         engine: 'classwallet',
-        status: 'completed',
+        direction: 'inbound',
+        status: 'needs_split',
+        requiresSplit: true,
         reconciled: false,
-        needsAllocation: true,
-        trancheId: 1
+        statementId: 'stmt_sep_operating'
       },
       {
         id: 3,
@@ -105,8 +120,11 @@ export default function UnifiedPayments() {
         amount: 1200,
         method: 'Stripe Auto-pay',
         engine: 'stripe',
-        status: 'completed',
-        reconciled: true
+        direction: 'inbound',
+        status: 'mapped',
+        requiresSplit: false,
+        reconciled: true,
+        students: [{ name: 'Noah Williams', amount: 1200 }]
       },
       {
         id: 4,
@@ -116,8 +134,14 @@ export default function UnifiedPayments() {
         amount: 828,
         method: 'Stripe Auto-pay',
         engine: 'stripe',
-        status: 'completed',
-        reconciled: true
+        direction: 'inbound',
+        status: 'mapped',
+        requiresSplit: false,
+        reconciled: true,
+        students: [
+          { name: 'Olivia Brown', amount: 414 },
+          { name: 'Ethan Brown', amount: 414 }
+        ]
       },
       {
         id: 5,
@@ -127,9 +151,11 @@ export default function UnifiedPayments() {
         amount: 0,
         method: 'Check',
         engine: 'manual',
-        status: 'pending',
+        direction: 'outbound',
+        status: 'needs_category',
         reconciled: false,
-        dueDate: '2024-09-30'
+        vendor: 'Supplies Co',
+        memo: 'STEM classroom kits'
       }
     ]);
 
@@ -146,6 +172,84 @@ export default function UnifiedPayments() {
     ]);
   };
 
+  const loadActivityFeed = async () => {
+    setActivityLoading(true);
+    setActivityError('');
+    try {
+      const { data } = await financialsAPI.getActivityFeed();
+      const normalized = (data.activity || []).map(txn => ({
+        ...txn,
+        reconciled: txn.reconciled ?? false
+      }));
+      setTransactions(normalized);
+      setStatements(data.statements || []);
+      setActivitySummary(data.summary || computeActivitySummary(normalized));
+    } catch (error) {
+      console.error('Failed to load activity feed', error);
+      setActivityError('Unable to load Plaid feed right now. Showing cached data.');
+      setActivitySummary(prev => prev || computeActivitySummary(transactions));
+    } finally {
+      setActivityLoading(false);
+    }
+  };
+
+  const openSplitModalForTransaction = (txn) => {
+    setSplitModal({
+      open: true,
+      transaction: txn,
+      allocations: buildDefaultAllocations(txn),
+      error: '',
+      saving: false
+    });
+  };
+
+  const closeSplitModal = () => setSplitModal(defaultSplitModalState);
+
+  const handleSplitSave = async (allocations) => {
+    if (!splitModal.transaction) return;
+    const txn = splitModal.transaction;
+    const normalized = normalizeAllocations(allocations);
+    const total = normalized.reduce((sum, alloc) => sum + alloc.amount, 0);
+
+    if (Math.round(total * 100) !== Math.round(txn.amount * 100)) {
+      setSplitModal(prev => ({ ...prev, error: `Allocation must total $${txn.amount}` }));
+      return;
+    }
+
+    try {
+      setSplitModal(prev => ({ ...prev, saving: true, error: '' }));
+      await financialsAPI.splitTransaction(txn.id, normalized);
+      await loadActivityFeed();
+      closeSplitModal();
+      toast.success('Deposit mapped per student');
+    } catch (error) {
+      console.error('Failed to save split', error);
+      setSplitModal(prev => ({ ...prev, error: 'Unable to save split. Try again.' }));
+    } finally {
+      setSplitModal(prev => ({ ...prev, saving: false }));
+    }
+  };
+
+  const handleMarkCategorized = async (txnId) => {
+    try {
+      await financialsAPI.markCategorized(txnId);
+      await loadActivityFeed();
+      toast.success('Expense categorized');
+    } catch (error) {
+      console.error('Failed to mark categorized', error);
+      setActivityError('Unable to update transaction. Try again.');
+    }
+  };
+
+  const handleViewStatement = (statementId) => {
+    const statement = statements.find(stmt => stmt.id === statementId);
+    if (statement?.file) {
+      window.open(statement.file, '_blank');
+    } else {
+      toast('Statement available soon.');
+    }
+  };
+
   const handleSyncToQuickBooks = (trancheId) => {
     setTrancheDeposits(prev => prev.map(t =>
       t.id === trancheId ? { ...t, quickbooksSync: true } : t
@@ -156,6 +260,19 @@ export default function UnifiedPayments() {
   };
 
   const handleReconcile = (transactionId) => {
+    const txn = transactions.find(t => t.id === transactionId);
+    if (!txn) return;
+
+    if (txn.requiresSplit) {
+      toast.error('Split this deposit per student before reconciling.');
+      return;
+    }
+
+    if (txn.status !== 'mapped') {
+      toast.error('Categorize this transaction before reconciling.');
+      return;
+    }
+
     setTransactions(prev => prev.map(t =>
       t.id === transactionId ? { ...t, reconciled: true } : t
     ));
@@ -164,21 +281,64 @@ export default function UnifiedPayments() {
     analytics.trackFeatureUsage('unifiedPayments', 'reconcile_transaction');
   };
 
-  const totalRevenue = transactions
-    .filter(t => t.status === 'completed')
-    .reduce((sum, t) => sum + t.amount, 0);
+  const totalRevenue = activitySummary?.inboundAmount ??
+    transactions
+      .filter(t => t.direction === 'inbound')
+      .reduce((sum, t) => sum + t.amount, 0);
   
   const unreconciledCount = transactions.filter(t => !t.reconciled).length;
   const connectedEnginesCount = engines.filter(e => e.status === 'connected').length;
+  const reviewCount = activitySummary?.needsReviewCount ?? transactions.filter(t => t.status !== 'mapped').length;
+  const needsSplitCount = activitySummary?.needsSplitCount ?? transactions.filter(t => t.requiresSplit).length;
+  const statementsNeedingReview = useMemo(
+    () => statements.reduce((sum, stmt) => sum + (stmt.lines?.filter(line => line.status !== 'matched').length || 0), 0),
+    [statements]
+  );
+  const coachPrompts = useMemo(() => {
+    const prompts = [];
+    if (needsSplitCount > 0) {
+      prompts.push({
+        id: 'split',
+        text: `Let's split ${needsSplitCount} deposit${needsSplitCount === 1 ? '' : 's'} to the right students so reconciliation stays clean.`,
+        actions: [{ label: 'Split deposits', onClick: () => setActiveTab('transactions') }]
+      });
+    }
+    if (statementsNeedingReview > 0) {
+      prompts.push({
+        id: 'statements',
+        text: `${statementsNeedingReview} statement line${statementsNeedingReview === 1 ? '' : 's'} still need receipts or categorization.`,
+        actions: [{ label: 'Review statements', onClick: () => setActiveTab('transactions') }]
+      });
+    }
+    if (unreconciledCount > 0) {
+      prompts.push({
+        id: 'reconcile',
+        text: `${unreconciledCount} transaction${unreconciledCount === 1 ? '' : 's'} are ready for reconciliation.`,
+        actions: [{ label: 'Open reconcile tab', onClick: () => setActiveTab('reconcile') }]
+      });
+    }
+    return prompts;
+  }, [needsSplitCount, statementsNeedingReview, unreconciledCount]);
+  const primaryCoachPrompt = coachPrompts[0];
+  const runCoachAction = (action) => {
+    if (action.onClick) action.onClick();
+    if (action.href) window.location.href = action.href;
+  };
 
   const filteredTransactions = transactions.filter(t => {
     const matchesSearch = t.family.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          t.student.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || t.status === filterStatus;
+    const matchesFilter =
+      filterStatus === 'all'
+        ? true
+        : filterStatus === 'completed'
+          ? t.status === 'mapped' && !t.requiresSplit
+          : t.status !== 'mapped' || t.requiresSplit;
     return matchesSearch && matchesFilter;
   });
 
   return (
+    <>
     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
@@ -221,6 +381,29 @@ export default function UnifiedPayments() {
           <div className="text-xs text-gray-500 mt-1">need attention</div>
         </div>
       </div>
+
+      {primaryCoachPrompt && (
+        <div className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 rounded-2xl p-4">
+          <div className="flex items-start gap-3">
+            <SparklesIcon className="h-6 w-6 text-purple-500" />
+            <div>
+              <p className="text-xs uppercase tracking-wide text-purple-600 font-semibold">AI Coach</p>
+              <p className="text-sm text-gray-800">{primaryCoachPrompt.text}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {primaryCoachPrompt.actions.map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={() => runCoachAction(action)}
+                    className="px-3 py-1.5 text-xs font-semibold bg-white text-purple-700 border border-purple-100 rounded-lg shadow-sm"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
@@ -288,6 +471,11 @@ export default function UnifiedPayments() {
               <option value="pending">Pending</option>
             </select>
           </div>
+          <div className="mb-4 flex flex-wrap gap-3 text-xs text-gray-600">
+            <span className="px-3 py-1.5 bg-gray-100 rounded-full">{reviewCount} transactions need review</span>
+            <span className="px-3 py-1.5 bg-gray-100 rounded-full">{needsSplitCount} deposits need student splits</span>
+            <span className="px-3 py-1.5 bg-gray-100 rounded-full">{statements.length} statements available</span>
+          </div>
 
           {/* Transaction Table */}
           <div className="bg-white rounded-lg shadow">
@@ -304,12 +492,31 @@ export default function UnifiedPayments() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredTransactions.map(txn => (
+                {activityLoading ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-6 text-center text-sm text-gray-500">
+                      Loading Plaid feed...
+                    </td>
+                  </tr>
+                ) : filteredTransactions.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-6 text-center text-sm text-gray-500">
+                      No transactions match your filters.
+                    </td>
+                  </tr>
+                ) : filteredTransactions.map(txn => (
                   <tr key={txn.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">{txn.date}</td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-gray-900">{txn.family}</div>
                       <div className="text-sm text-gray-500">{txn.student}</div>
+                      {txn.students && txn.students.length > 0 && (
+                        <div className="mt-1 text-xs text-primary-700 space-x-2">
+                          {txn.students.map(s => (
+                            <span key={`${txn.id}-${s.name}`}>{s.name}: ${s.amount.toLocaleString()}</span>
+                          ))}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       ${txn.amount.toLocaleString()}
@@ -317,14 +524,24 @@ export default function UnifiedPayments() {
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">{txn.method}</div>
                       <div className="text-xs text-gray-500">{engines.find(e => e.id === txn.engine)?.name || txn.engine}</div>
+                      {txn.statementId && (
+                        <button
+                          onClick={() => handleViewStatement(txn.statementId)}
+                          className="mt-2 text-xs text-primary-600 font-semibold"
+                        >
+                          View statement
+                        </button>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        txn.status === 'completed' 
+                        txn.status === 'mapped' && !txn.requiresSplit
                           ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                          : txn.status === 'needs_category'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-orange-100 text-orange-800'
                       }`}>
-                        {txn.status === 'completed' ? 'Completed' : 'Pending'}
+                        {txn.status === 'mapped' && !txn.requiresSplit ? 'Ready' : txn.status === 'needs_category' ? 'Needs category' : 'Needs split'}
                       </span>
                       {!txn.reconciled && (
                         <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
@@ -333,14 +550,32 @@ export default function UnifiedPayments() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      {!txn.reconciled && (
-                        <button
-                          onClick={() => handleReconcile(txn.id)}
-                          className="touch-target px-3 py-2 text-sm text-primary-600 hover:text-primary-800 font-medium"
-                        >
-                          Reconcile
-                        </button>
-                      )}
+                      <div className="flex flex-wrap gap-2">
+                        {txn.requiresSplit && (
+                          <button
+                            onClick={() => openSplitModalForTransaction(txn)}
+                            className="touch-target px-3 py-2 text-xs font-semibold bg-primary-600 text-white rounded-lg"
+                          >
+                            Split per student
+                          </button>
+                        )}
+                        {txn.status === 'needs_category' && (
+                          <button
+                            onClick={() => handleMarkCategorized(txn.id)}
+                            className="touch-target px-3 py-2 text-xs font-semibold border border-gray-300 rounded-lg"
+                          >
+                            Mark categorized
+                          </button>
+                        )}
+                        {!txn.reconciled && (
+                          <button
+                            onClick={() => handleReconcile(txn.id)}
+                            className="touch-target px-3 py-2 text-sm text-primary-600 hover:text-primary-800 font-medium"
+                          >
+                            Reconcile
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -348,6 +583,11 @@ export default function UnifiedPayments() {
               </table>
             </div>
           </div>
+          {activityError && (
+            <div className="mt-3 text-xs text-yellow-700 bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2">
+              {activityError}
+            </div>
+          )}
         </div>
       )}
 
@@ -460,13 +700,39 @@ export default function UnifiedPayments() {
             <div className="space-y-3">
               {transactions.filter(t => !t.reconciled).map(txn => (
                 <div key={txn.id} className="bg-white rounded-lg shadow p-5 border-l-4 border-orange-500">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
                     <div>
                       <div className="font-medium text-gray-900">{txn.family} - {txn.student}</div>
                       <div className="text-sm text-gray-600">${txn.amount} via {txn.method}</div>
                       <div className="text-xs text-gray-500">{txn.date}</div>
+                      {txn.requiresSplit && (
+                        <div className="mt-2 text-xs text-orange-700">
+                          Split this deposit per student before reconciling.
+                        </div>
+                      )}
+                      {txn.status === 'needs_category' && !txn.requiresSplit && (
+                        <div className="mt-2 text-xs text-yellow-700">
+                          Categorize this transaction before reconciling.
+                        </div>
+                      )}
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 flex-wrap">
+                      {txn.requiresSplit && (
+                        <button
+                          onClick={() => openSplitModalForTransaction(txn)}
+                          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                        >
+                          Split deposit
+                        </button>
+                      )}
+                      {txn.status === 'needs_category' && !txn.requiresSplit && (
+                        <button
+                          onClick={() => handleMarkCategorized(txn.id)}
+                          className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                        >
+                          Mark categorized
+                        </button>
+                      )}
                       <button
                         onClick={() => handleReconcile(txn.id)}
                         className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
@@ -491,6 +757,15 @@ export default function UnifiedPayments() {
         </div>
       )}
     </div>
+    {splitModal.open && (
+      <TransactionSplitModal
+        data={splitModal}
+        onClose={closeSplitModal}
+        onChangeAllocations={(allocs) => setSplitModal(prev => ({ ...prev, allocations: allocs, error: '' }))}
+        onSave={handleSplitSave}
+      />
+    )}
+    </>
   );
 }
 
